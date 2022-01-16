@@ -256,7 +256,8 @@ const bomber = {
 }
 
 export const tech = {
-  objects: [
+  object:
+  [
     buildingCenter,
     barracs,
     energyPlant,

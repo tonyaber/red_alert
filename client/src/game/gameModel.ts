@@ -38,19 +38,42 @@ class MapInfo{
 class GamePlayer{
   money: number;
   //this is all object
-  allObject: IObject[];
-  availableObject: IObjectInfo[];
-  buildsInProgress: BuildingProgress[];
-  buildsReady: IObjectInfo[];
+  allObject: IObject[]=[];
+  availableObject: IObjectInfo[]=[];
+  buildsInProgress: BuildingProgress[]=[];
+  buildsReady: IObjectInfo[]=[];
   onUpdatePlayer: () => void;
+
+
 
   //delete it
   onUpdateProgress: (progress: number, name: string) => void;
 
+
+  constructor() {
+    this.allObject = tech.object.map(item => {
+      const newItem:IObjectInfo = {
+        deps: item.deps,
+        name: item.name,
+        cost: item.cost,
+        category: 'gg',
+        time: item.time,
+        type: 'build',
+      }
+      return newItem;
+    }).map(item => {
+      return {
+        object: item,
+        status: 'inActive',
+        progress: 0,
+      }
+    })
+  }
+
   addBuildsInProgress(object: IObjectInfo) {
     
-    const time = tech.objects.filter(item => item.name = object.name)[0].time;
-    const money =  tech.objects.filter(item => item.name = object.name)[0].cost;
+    const time = object.time;
+    const money =  object.cost;
     const progress = new BuildingProgress(object);
     //progress.onTick = (delta: number) => {
 
@@ -69,12 +92,15 @@ class GamePlayer{
     this.buildsInProgress.forEach(item => {
       const nextMoney = item.updateProgress(delta, this.money);
       this.money = nextMoney;
+      this.allObject.find(it => it.object.name == item.object.name).progress = item.progress;
       if (item.isReady) {
         //удалять с buildsInProgress, добавить в buildsReady
+        
 
       }
     })
-
+    this.buildsInProgress = this.buildsInProgress.filter(it => !it.isReady);
+    this.onUpdatePlayer();
     //вызывать апдейт всего и панели
   }
 }
@@ -102,9 +128,11 @@ class BuildingProgress{
     let nextMoney = money;
     this.progress += delta * 0.001;
     //
+    console.log(this.progress, this.object.time)
     const time = this.object.time * 100 / delta;
 //посчитать чтобы прогресс не перескочил время
     if (this.progress >= this.object.time) {
+      this.progress = this.object.time;
 //считаю деньги
       
      // return nextMoney;
@@ -113,6 +141,7 @@ class BuildingProgress{
        // this.onUpdateProgress(progress,object.name);
     } 
     if (this.progress > this.object.time) {
+      
       throw new Error('Invalid progress');
     }
     return nextMoney;

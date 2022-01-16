@@ -22,13 +22,15 @@ export class Game extends Control{
 
 class TickList {
   setInt: NodeJS.Timer;
-  tickable: ITickable[];
+  tickable: ITickable[] = [];
   lastTick: number;
   
   constructor() {
     this.lastTick = Date.now();
     this.setInt = setInterval(() => {
-      const delta = Date.now() - this.lastTick;
+      const currentTick = Date.now()
+      const delta = currentTick - this.lastTick;
+      this.lastTick = currentTick;
       this.tickable.forEach(item => {
         item.tick(delta);
       })

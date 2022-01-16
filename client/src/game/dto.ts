@@ -10,6 +10,7 @@ export interface IObjectInfo {
 export interface IObject{
   object: IObjectInfo;
   status: string;
+  progress: number;
 }
 
 export interface IProgress {
