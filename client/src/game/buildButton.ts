@@ -16,6 +16,15 @@ export class BuildButton extends Control{
     //if(item.status)
     this.button.node.textContent = item.object.name;
     this.progress.node.textContent = item.progress.toString();
+    
+    if (item.status === 'notAvailable') {
+      this.node.style.display = 'none'
+    } else {
+      this.node.style.display = 'block';
+    }
+    if (item.status === 'isReady') {
+      this.progress.node.textContent = 'is Ready';
+    }
   }
 
 }

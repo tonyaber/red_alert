@@ -38,15 +38,15 @@ export class GameSidePanel extends Control{
   }
 
   update() {
-    this.money.node.textContent = this.model.player.money.toString();
+    this.money.node.textContent = this.model.player.money.toFixed(2).toString();
     const list = this.model.player.allObject;
     list.map(item => {
       if (this.buildButtons[item.object.name]) {
         this.buildButtons[item.object.name].update(item)
       } else {
-        const obj = new BuildButton(this.node)
+        const obj = new BuildButton(this.node);
         obj.node.onclick = () => {
-          this.model.player.addBuildsInProgress(item.object);
+          this.model.player.addBuildsInProgress(item);
         }
         obj.update(item);
         this.buildButtons[item.object.name] = obj;    

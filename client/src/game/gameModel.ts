@@ -36,7 +36,8 @@ class GamePlayer{
   allObject: IObject[]=[];
   availableObject: IObjectInfo[]=[];
   buildsInProgress: BuildingProgress[]=[];
-  buildsReady: IObjectInfo[]=[];
+  buildsReady: IObjectInfo[] = [];
+  buildsInGame: IObjectInfo[]=[]
   onUpdatePlayer: () => void;
 
   constructor() {
@@ -57,12 +58,23 @@ class GamePlayer{
         progress: 0,
       }
     })
+    this.getAvailableObject();
   }
 
-  addBuildsInProgress(object: IObjectInfo) {    
-    const progress = new BuildingProgress(object);    
-    this.buildsInProgress.push(progress);
+  addBuildsInProgress(object: IObject) {   
+    if (object.status === 'Available') {
+      object.status = 'InProcess'
+      const progress = new BuildingProgress(object.object);    
+      this.buildsInProgress.push(progress);
+    } else if (object.status === 'isReady') {
+      object.status = 'Available';
+      object.progress = 0;
+      this.buildsInGame.push(object.object);
+      this.getAvailableObject()
+      this.onUpdatePlayer();
+    }
   }
+
 
   tick(delta: number) {
     this.buildsInProgress.forEach(item => {
@@ -70,15 +82,31 @@ class GamePlayer{
       this.money = nextMoney;
       this.allObject.find(it => it.object.name == item.object.name).progress = item.progress;
       if (item.isReady) {
-
-        //удалять с buildsInProgress, добавить в buildsReady
-        
-
+        this.buildsReady.push(item.object);
+        this.allObject.find(it => it.object === item.object).status='isReady';
+        this.buildsInProgress = this.buildsInProgress.filter(it => item != it);   
       }
     })
-    this.buildsInProgress = this.buildsInProgress.filter(it => !it.isReady);
+    //this.buildsInProgress = this.buildsInProgress.filter(it => !it.isReady);
     this.onUpdatePlayer();
-    //вызывать апдейт всего и панели
+  }
+
+  getAvailableObject() {
+    const availableObject = Array.from(new Set(this.buildsInGame.map(item => {
+      return item.name;
+    })));
+    
+    this.availableObject = [];
+    
+    this.allObject.filter(item => item.object.deps.includes('rootAccess'))
+      .concat(this.allObject.filter(item => item.object.deps.every(el=>availableObject.includes(el))))
+      .filter(item => item.status === 'notAvailable')
+      .map(item => item.status = 'Available'); 
+    
+   this.allObject.filter(item => item.status !== 'notAvailable').map(item => {
+      this.availableObject.push(item.object)
+    })
+   
   }
 }
 
@@ -106,6 +134,6 @@ class BuildingProgress{
       nextMoney =  nextMoney + (this.object.cost/(this.object.time/difference))
       this.progress = this.object.time;
     } 
-    return +nextMoney.toFixed(2);
+    return +nextMoney;
   }
 }

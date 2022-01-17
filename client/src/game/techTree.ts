@@ -5,7 +5,7 @@ const buildingCenter = {
   name: 'buildingCenter',
   energy: 0,
   cost: 1000,
-  time: 20,
+  time: 5,
   mtx:[
     '0000'.split(''),
     '0110'.split(''),
