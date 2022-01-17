@@ -7,12 +7,13 @@ export class BuildButton extends Control{
   constructor(parentNode: HTMLElement) {
     super(parentNode);
     this.button = new Control(this.node, 'div');
-    this.button.node.style.border = '1px solid black';
-    this.button.node.style.padding = '10px';
+    this.node.style.border = '1px solid black';
+    this.node.style.padding = '10px';
     this.progress = new Control(this.node, 'div');
   }
 
-  update(item:IObject) {
+  update(item: IObject) {
+    //if(item.status)
     this.button.node.textContent = item.object.name;
     this.progress.node.textContent = item.progress.toString();
   }

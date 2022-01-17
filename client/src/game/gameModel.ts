@@ -8,7 +8,6 @@ export class GameModel implements ITickable{
   mapInfo: MapInfo;
   player: GamePlayer;
   onUpdateSidePanel: Signal<void> = new Signal();
-  onUpdateSidePanelProgress: Signal<IProgress> = new Signal<IProgress>();
   onUpdateCanvas: Signal<void> = new Signal();
   constructor() {
     this.objectList = new GameObjectList();
@@ -16,9 +15,6 @@ export class GameModel implements ITickable{
     this.player = new GamePlayer();
     this.player.onUpdatePlayer = () => {
       this.onUpdateSidePanel.emit();
-    }
-    this.player.onUpdateProgress = (progress, name) => {
-      this.onUpdateSidePanelProgress.emit({ "progress": progress, "name": name })
     }
   }
   tick(delta: number) {
@@ -36,19 +32,12 @@ class MapInfo{
 }
 
 class GamePlayer{
-  money: number;
-  //this is all object
+  money: number = 30000;
   allObject: IObject[]=[];
   availableObject: IObjectInfo[]=[];
   buildsInProgress: BuildingProgress[]=[];
   buildsReady: IObjectInfo[]=[];
   onUpdatePlayer: () => void;
-
-
-
-  //delete it
-  onUpdateProgress: (progress: number, name: string) => void;
-
 
   constructor() {
     this.allObject = tech.object.map(item => {
@@ -64,28 +53,15 @@ class GamePlayer{
     }).map(item => {
       return {
         object: item,
-        status: 'inActive',
+        status: 'notAvailable',
         progress: 0,
       }
     })
   }
 
-  addBuildsInProgress(object: IObjectInfo) {
-    
-    const time = object.time;
-    const money =  object.cost;
-    const progress = new BuildingProgress(object);
-    //progress.onTick = (delta: number) => {
-
-      //progress.progress++;
-     // this.onUpdateProgress(progress.progress, object.name);
-    //}
-
-    
+  addBuildsInProgress(object: IObjectInfo) {    
+    const progress = new BuildingProgress(object);    
     this.buildsInProgress.push(progress);
-    //this.money-= Math.round(money/time);
-    //this.onUpdateProgress(progress, object.name);
-
   }
 
   tick(delta: number) {
@@ -94,6 +70,7 @@ class GamePlayer{
       this.money = nextMoney;
       this.allObject.find(it => it.object.name == item.object.name).progress = item.progress;
       if (item.isReady) {
+
         //удалять с buildsInProgress, добавить в buildsReady
         
 
@@ -110,9 +87,6 @@ class BuildingProgress{
   object: IObjectInfo;
   progress: number = 0;
 
-  //onTick: (delta: number) => void;
-  //onReady: () => void;
-
   get isReady() {
     return this.progress === this.object.time;
   }
@@ -122,28 +96,16 @@ class BuildingProgress{
   }
 
   updateProgress(delta: number, money: number) {
-    //уменьшаем деньги
+    const segmentOfTime = delta*0.001
+    let nextMoney = money - (this.object.cost / (this.object.time / segmentOfTime));
+    
+    this.progress += segmentOfTime;
 
-    //this.onTick(delta, money);
-    let nextMoney = money;
-    this.progress += delta * 0.001;
-    //
-    console.log(this.progress, this.object.time)
-    const time = this.object.time * 100 / delta;
-//посчитать чтобы прогресс не перескочил время
     if (this.progress >= this.object.time) {
+      const difference = this.progress - this.object.time;
+      nextMoney =  nextMoney + (this.object.cost/(this.object.time/difference))
       this.progress = this.object.time;
-//считаю деньги
-      
-     // return nextMoney;
-        //this.buildsInProgress.filter(item => item != object);
-        //this.buildsReady.push(object);
-       // this.onUpdateProgress(progress,object.name);
     } 
-    if (this.progress > this.object.time) {
-      
-      throw new Error('Invalid progress');
-    }
-    return nextMoney;
+    return +nextMoney.toFixed(2);
   }
 }

@@ -11,6 +11,7 @@ export class GameSidePanel extends Control{
   updateHandler: () => void;
   updateProgress: (props: IProgress) => void;
   buildButtons: Record <string, BuildButton> = {};
+  money: Control<HTMLElement>;
 
   constructor(parentNode: HTMLElement,model: GameModel) {
     super(parentNode);
@@ -27,17 +28,17 @@ export class GameSidePanel extends Control{
       const { progress, name } = props;
       this.updateObject(progress, name);
     }
-    this.model.onUpdateSidePanelProgress.add(this.updateProgress);
 
     const availableObject = this.model.player.availableObject;
     //this.update(availableObject);
     const newArray = [];
     const list = this.model.player.allObject;
-
+    this.money = new Control(this.node, 'div', '', this.model.player.money.toString());
     this.update();
   }
 
   update() {
+    this.money.node.textContent = this.model.player.money.toString();
     const list = this.model.player.allObject;
     list.map(item => {
       if (this.buildButtons[item.object.name]) {
@@ -77,8 +78,6 @@ export class GameSidePanel extends Control{
   }
 
   destroy() {
-    this.model.onUpdateSidePanel.remove(this.updateHandler);
-    this.model.onUpdateSidePanelProgress.remove(this.updateProgress);
-  
+    this.model.onUpdateSidePanel.remove(this.updateHandler);  
   }
 }
