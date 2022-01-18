@@ -3,6 +3,8 @@ import { GameModel } from './gameModel';
 import { GameCanvas } from './gameCanvas';
 import { GameSidePanel } from './gameSidePanel';
 import { IObjectInfo, ITickable } from "./dto";
+import { InteractiveObject } from "./interactiveObject";
+import { InteractiveTile } from './interactiveTile';
 export class Game extends Control{
   constructor(parentNode: HTMLElement) {
     super(parentNode);
@@ -12,17 +14,16 @@ export class Game extends Control{
     const tickList = new TickList();
     tickList.add(model);
     sidePanel.onSelectReady = (obj) => {
-      canvas.node.onclick = () => {
-        canvas.node.onclick = null;
+      canvas.onClick = (position) => {
+        canvas.onClick = null;
         model.addBuild(obj);
+        
+        const tile = new InteractiveTile();
+        tile.position = position;
+        
+        canvas.interactiveList.add(tile);
       }
-      //canvas.addObject(obj);
     }
-    // model.onBuild = (build: IObjectInfo) => {
-    //   //canvas.addBuild(build);
-    // }
-
-    //Bot here
 
   }
 
