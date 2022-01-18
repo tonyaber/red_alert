@@ -4,6 +4,7 @@ import { tech } from './techTree';
 import { IProgress,ITickable } from './dto';
 import { Vector } from '../common/vector';
 import { InteractiveObject } from './interactiveObject';
+import { InteractiveTile } from './interactiveTile';
 
 export class GameModel implements ITickable{
   objectList: GameObjectList;
@@ -63,7 +64,7 @@ class GameObject{
     this.bullet = 10;
     this.player = player;
     this.position = position.clone();
-    this.node = new InteractiveObject();   
+    this.node = new InteractiveTile();   
     this.node.position = position.clone();
   }
   

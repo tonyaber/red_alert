@@ -23,6 +23,7 @@ export class InteractiveList{
 
 
   add(object: InteractiveObject) {
+
     object.getList = () => {
       return this;
     }
@@ -40,9 +41,9 @@ export class InteractiveList{
       this.handleHover();
     }
     this.list.push(object);
-    this.list.sort((a,b)=>{
-     return (a.position.y - b.position.y)*1000 + a.position.x - b.position.x;
-    })
+    // this.list.sort((a,b)=>{
+    //  return (a.position.y - b.position.y)*1000 + a.position.x - b.position.x;
+    // })
   }
 
   public handleMove(tile:Vector, cursor:Vector){

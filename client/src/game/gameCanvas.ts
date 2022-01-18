@@ -2,7 +2,7 @@ import Control from '../common/control';
 import { Vector } from '../common/vector';
 import { GameModel } from "./gameModel";
 import { InteractiveList } from './interactiveList';
-import { interactiveList } from './interactiveObject';
+import { interactiveList, InteractiveObject } from './interactiveObject';
 export class GameCanvas extends Control {
   model: GameModel;
   updateHandler: () => void;
@@ -27,6 +27,15 @@ export class GameCanvas extends Control {
     this.canvas.node.style.background = 'green';
     this.ctx = this.canvas.node.getContext('2d');
     this.interactiveList = interactiveList;
+    this.canvas.node.onmousemove = (e)=>{
+      this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY))
+    }
+    this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
+      //передавать изменения в геймОбжект
+      //
+    }
+
+    
     
     this.canvas.node.onclick = (e: MouseEvent) => {
       this.onClick?.(new Vector(e.offsetX, e.offsetY))
