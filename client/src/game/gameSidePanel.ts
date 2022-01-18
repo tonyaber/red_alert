@@ -1,6 +1,6 @@
 import Control from '../common/control';
 import { GameModel } from "./gameModel";
-import { IObjectInfo } from './dto';
+import { IObject, IObjectInfo } from './dto';
 import { IProgress } from './dto';
 import { tech } from './techTree';
 import { BuildButton } from './buildButton';
@@ -10,6 +10,7 @@ export class GameSidePanel extends Control{
 
   updateHandler: () => void;
   updateProgress: (props: IProgress) => void;
+  onSelectReady: (data: IObject) => void;
   buildButtons: Record <string, BuildButton> = {};
   money: Control<HTMLElement>;
 
@@ -45,8 +46,19 @@ export class GameSidePanel extends Control{
         this.buildButtons[item.object.name].update(item)
       } else {
         const obj = new BuildButton(this.node);
-        obj.node.onclick = () => {
-          this.model.player.addBuildsInProgress(item);
+        obj.onAvailableClick = (data) => {
+          this.model.player.addBuildsInProgress(data);
+        }
+        obj.onInprogressClick = (data) => {
+          this.model.player.pauseBuildProgress(data);
+        }
+
+        obj.onIsPauseClick = (data)=>{
+          this.model.player.resumeBuildProgress(data);
+        }
+
+        obj.onIsReadyClick = (data) => {
+          this.onSelectReady(data);
         }
         obj.update(item);
         this.buildButtons[item.object.name] = obj;    

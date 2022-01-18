@@ -1,3 +1,5 @@
+import { GamePlayer } from "./gameModel";
+import { Vector } from '../common/vector';
 export interface IObjectInfo {
   deps: string[];
   name: string;
@@ -11,6 +13,18 @@ export interface IObject{
   object: IObjectInfo;
   status: string;
   progress: number;
+}
+
+export interface IObjectList{
+  name: string;
+  health: number;
+  type: "unit" | "build";
+  radius?: number;
+  speed?: number;
+  minRadius?: number;
+  reloadingTime?: number;
+  bullet?: number;
+  player: GamePlayer;
 }
 
 export interface IProgress {

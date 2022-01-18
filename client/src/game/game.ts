@@ -2,7 +2,7 @@ import Control from "../common/control";
 import { GameModel } from './gameModel';
 import { GameCanvas } from './gameCanvas';
 import { GameSidePanel } from './gameSidePanel';
-import { ITickable } from "./dto";
+import { IObjectInfo, ITickable } from "./dto";
 export class Game extends Control{
   constructor(parentNode: HTMLElement) {
     super(parentNode);
@@ -11,6 +11,16 @@ export class Game extends Control{
     const sidePanel = new GameSidePanel(this.node, model);
     const tickList = new TickList();
     tickList.add(model);
+    sidePanel.onSelectReady = (obj) => {
+      canvas.node.onclick = () => {
+        canvas.node.onclick = null;
+        model.addBuild(obj);
+      }
+      //canvas.addObject(obj);
+    }
+    // model.onBuild = (build: IObjectInfo) => {
+    //   //canvas.addBuild(build);
+    // }
 
     //Bot here
 

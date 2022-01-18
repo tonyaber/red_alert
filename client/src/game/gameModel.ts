@@ -1,7 +1,8 @@
 import Signal from '../common/signal';
-import { IObject, IObjectInfo } from './dto';
+import { IObject, IObjectInfo ,IObjectList} from './dto';
 import { tech } from './techTree';
 import { IProgress,ITickable } from './dto';
+import { Vector } from '../common/vector';
 
 export class GameModel implements ITickable{
   objectList: GameObjectList;
@@ -9,6 +10,7 @@ export class GameModel implements ITickable{
   player: GamePlayer;
   onUpdateSidePanel: Signal<void> = new Signal();
   onUpdateCanvas: Signal<void> = new Signal();
+  //onBuild: (build: IObjectInfo) => void;
   constructor() {
     this.objectList = new GameObjectList();
     this.mapInfo = new MapInfo();
@@ -16,22 +18,60 @@ export class GameModel implements ITickable{
     this.player.onUpdatePlayer = () => {
       this.onUpdateSidePanel.emit();
     }
+    this.player.onAddBuild = (build) => {
+      //this.onBuild(build);///??? - это для того, чтобы на канвас передавать координаты
+      this.objectList.add(build, this.player)
+    }
   }
   tick(delta: number) {
     this.player.tick(delta)
   }
 
+  addBuild(obj: IObject) {
+    obj.status = 'Available';
+    obj.progress = 0;
+    this.player.buildsInGame.push(obj.object);
+    this.player.getAvailableObject();
+    this.onUpdateSidePanel.emit();
+    this.objectList.add(obj.object, this.player);
+  }
+
 }
 
 class GameObjectList{
+  list: GameObject[] = [];
 
+  add(object: IObjectInfo, player: GamePlayer) {
+    const newObject = new GameObject(object, player);
+
+    this.list.push(newObject);
+
+  }
 }
+
+class GameObject{
+  name: string;
+  health: number;
+  type: "unit" | "build";
+  bullet?: number;
+  player: GamePlayer;
+  position: Vector;
+
+  constructor(object: IObjectInfo, player: GamePlayer) {
+    this.name = object.name;
+    this.health= 1000;
+    this.type = object.type;
+    this.bullet = 10;
+    this.player = player;
+  }
+}
+
 
 class MapInfo{
 
 }
 
-class GamePlayer{
+export class GamePlayer{
   money: number = 30000;
   allObject: IObject[]=[];
   availableObject: IObjectInfo[]=[];
@@ -39,6 +79,7 @@ class GamePlayer{
   buildsReady: IObjectInfo[] = [];
   buildsInGame: IObjectInfo[]=[]
   onUpdatePlayer: () => void;
+  onAddBuild: (object: IObjectInfo) => void;
 
   constructor() {
     this.allObject = tech.object.map(item => {
@@ -61,20 +102,33 @@ class GamePlayer{
     this.getAvailableObject();
   }
 
-  addBuildsInProgress(object: IObject) {   
-    if (object.status === 'Available') {
-      object.status = 'InProcess'
-      const progress = new BuildingProgress(object.object);    
-      this.buildsInProgress.push(progress);
-    } else if (object.status === 'isReady') {
-      object.status = 'Available';
-      object.progress = 0;
-      this.buildsInGame.push(object.object);
-      this.getAvailableObject()
-      this.onUpdatePlayer();
-    }
+  pauseBuildProgress(object: IObject) {
+    
   }
 
+  resumeBuildProgress(object: IObject) {
+    
+  }
+
+  addBuildsInProgress(object: IObject) {   
+    if (object.status !== 'Available') {
+      throw new Error('Invalid data');
+      
+    }
+    object.status = 'InProcess'
+    const progress = new BuildingProgress(object.object);    
+    this.buildsInProgress.push(progress);
+     /*else if (object.status === 'isReady') {
+      object.status = 'Available';
+      object.progress = 0;
+      //
+      this.buildsInGame.push(object.object); ///костыль, потом удалю, когда смогу брать объекты с другой модели
+      //при постройке уже это делать
+      this.onAddBuild(object.object);
+      this.getAvailableObject();
+      this.onUpdatePlayer();
+    }*/
+  }
 
   tick(delta: number) {
     this.buildsInProgress.forEach(item => {
