@@ -3,6 +3,7 @@ import { IObject, IObjectInfo ,IObjectList} from './dto';
 import { tech } from './techTree';
 import { IProgress,ITickable } from './dto';
 import { Vector } from '../common/vector';
+import { InteractiveObject } from './interactiveObject';
 
 export class GameModel implements ITickable{
   objectList: GameObjectList;
@@ -10,6 +11,7 @@ export class GameModel implements ITickable{
   player: GamePlayer;
   onUpdateSidePanel: Signal<void> = new Signal();
   onUpdateCanvas: Signal<void> = new Signal();
+ 
   //onBuild: (build: IObjectInfo) => void;
   constructor() {
     this.objectList = new GameObjectList();
@@ -18,22 +20,21 @@ export class GameModel implements ITickable{
     this.player.onUpdatePlayer = () => {
       this.onUpdateSidePanel.emit();
     }
-    this.player.onAddBuild = (build) => {
-      //this.onBuild(build);///??? - это для того, чтобы на канвас передавать координаты
-      this.objectList.add(build, this.player)
-    }
   }
   tick(delta: number) {
     this.player.tick(delta)
   }
 
-  addBuild(obj: IObject) {
+  addBuild(obj: IObject, position:Vector) {
     obj.status = 'Available';
     obj.progress = 0;
     this.player.buildsInGame.push(obj.object);
     this.player.getAvailableObject();
     this.onUpdateSidePanel.emit();
-    this.objectList.add(obj.object, this.player);
+    const newObject = new GameObject(obj.object, this.player, position.clone());
+    
+    this.objectList.add(newObject);
+    //this.onUpdateCanvas.emit();
   }
 
 }
@@ -41,11 +42,8 @@ export class GameModel implements ITickable{
 class GameObjectList{
   list: GameObject[] = [];
 
-  add(object: IObjectInfo, player: GamePlayer) {
-    const newObject = new GameObject(object, player);
-
-    this.list.push(newObject);
-
+  add(object:GameObject) {   
+    this.list.push(object);
   }
 }
 
@@ -56,14 +54,19 @@ class GameObject{
   bullet?: number;
   player: GamePlayer;
   position: Vector;
+  node: InteractiveObject;
 
-  constructor(object: IObjectInfo, player: GamePlayer) {
+  constructor(object: IObjectInfo, player: GamePlayer, position:Vector) {
     this.name = object.name;
-    this.health= 1000;
+    this.health= 100;
     this.type = object.type;
     this.bullet = 10;
     this.player = player;
+    this.position = position.clone();
+    this.node = new InteractiveObject();   
+    this.node.position = position.clone();
   }
+  
 }
 
 
@@ -79,7 +82,6 @@ export class GamePlayer{
   buildsReady: IObjectInfo[] = [];
   buildsInGame: IObjectInfo[]=[]
   onUpdatePlayer: () => void;
-  onAddBuild: (object: IObjectInfo) => void;
 
   constructor() {
     this.allObject = tech.object.map(item => {
@@ -118,16 +120,6 @@ export class GamePlayer{
     object.status = 'InProcess'
     const progress = new BuildingProgress(object.object);    
     this.buildsInProgress.push(progress);
-     /*else if (object.status === 'isReady') {
-      object.status = 'Available';
-      object.progress = 0;
-      //
-      this.buildsInGame.push(object.object); ///костыль, потом удалю, когда смогу брать объекты с другой модели
-      //при постройке уже это делать
-      this.onAddBuild(object.object);
-      this.getAvailableObject();
-      this.onUpdatePlayer();
-    }*/
   }
 
   tick(delta: number) {
@@ -141,7 +133,6 @@ export class GamePlayer{
         this.buildsInProgress = this.buildsInProgress.filter(it => item != it);   
       }
     })
-    //this.buildsInProgress = this.buildsInProgress.filter(it => !it.isReady);
     this.onUpdatePlayer();
   }
 
@@ -163,7 +154,6 @@ export class GamePlayer{
    
   }
 }
-
 
 class BuildingProgress{
   object: IObjectInfo;

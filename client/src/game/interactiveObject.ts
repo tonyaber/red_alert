@@ -1,6 +1,8 @@
 import {Vector} from '../common/vector';
 import { InteractiveList } from './interactiveList';
 
+const interactiveList = new InteractiveList();
+
 export class InteractiveObject{
   isHovered: boolean;
   onMouseMove: any;
@@ -21,7 +23,8 @@ export class InteractiveObject{
     
   // }
 
-  constructor(){
+  constructor() {
+    interactiveList.add(this);
   }
 
   handleMove(tile:Vector, cursor:Vector){
@@ -64,3 +67,5 @@ export class InteractiveObject{
     
   }
 }
+
+export { interactiveList };

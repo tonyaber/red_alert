@@ -13,23 +13,15 @@ export class Game extends Control{
     const sidePanel = new GameSidePanel(this.node, model);
     const tickList = new TickList();
     tickList.add(model);
+
     sidePanel.onSelectReady = (obj) => {
       canvas.onClick = (position) => {
         canvas.onClick = null;
-        model.addBuild(obj);
-        
-        const tile = new InteractiveTile();
-        tile.position = position;
-        
-        canvas.interactiveList.add(tile);
+        model.addBuild(obj, position.clone());        
       }
     }
-
   }
-
-
 }
-
 
 class TickList {
   setInt: NodeJS.Timer;

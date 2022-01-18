@@ -21,6 +21,7 @@ export class InteractiveList{
     this.hoveredObjects = [];
   }
 
+
   add(object: InteractiveObject) {
     object.getList = () => {
       return this;

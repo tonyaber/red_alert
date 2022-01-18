@@ -2,6 +2,7 @@ import Control from '../common/control';
 import { Vector } from '../common/vector';
 import { GameModel } from "./gameModel";
 import { InteractiveList } from './interactiveList';
+import { interactiveList } from './interactiveObject';
 export class GameCanvas extends Control {
   model: GameModel;
   updateHandler: () => void;
@@ -25,7 +26,7 @@ export class GameCanvas extends Control {
     this.canvas.node.height = 500;
     this.canvas.node.style.background = 'green';
     this.ctx = this.canvas.node.getContext('2d');
-    this.interactiveList = new InteractiveList();
+    this.interactiveList = interactiveList;
     
     this.canvas.node.onclick = (e: MouseEvent) => {
       this.onClick?.(new Vector(e.offsetX, e.offsetY))
