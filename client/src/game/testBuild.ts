@@ -1,8 +1,7 @@
 import { Vector } from "../common/vector";
 import { InteractiveObject } from "./interactiveObject";
 
-export class InteractiveTile extends InteractiveObject{
-  health: number = 0;
+export class TestBuild extends InteractiveObject{
   constructor() {
     super();
   
@@ -26,8 +25,6 @@ export class InteractiveTile extends InteractiveObject{
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = '#fff';
-    ctx.fillText(this.health.toString(), this.position.x+20, this.position.y+20)
   }
 
 

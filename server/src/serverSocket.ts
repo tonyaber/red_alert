@@ -42,7 +42,7 @@ export class ServerSocket {
             }
             if (requestMessage.type === 'sendName') {
               this.connections.push({name: requestMessage.content, connection})
-              console.log('%^%^', requestMessage.content)
+              
               const response = requestMessage.content
 
               this.name = response
@@ -56,14 +56,15 @@ export class ServerSocket {
                   connect.connection.sendUTF(JSON.stringify({type: 'sendName', content: names}))
                 }
               })
-              //  console.log(response)
             }
             if (requestMessage.type === 'sendNewBuild') {
-             // console.log(this.connections.length)
               this.connections.forEach(connect => {
-                if (connect.name !== this.name) {
-                  connect.connection.sendUTF(JSON.stringify({type: 'addNewBuild', content: JSON.stringify(requestMessage.content)}))
-                }
+                connect.connection.sendUTF(JSON.stringify({type: 'addNewBuild', content: JSON.stringify(requestMessage.content)}))
+              })
+            }
+            if (requestMessage.type === 'sendUpdateObject') {
+               this.connections.forEach(connect => {
+                connect.connection.sendUTF(JSON.stringify({type: 'getUpdateObject', content: JSON.stringify(requestMessage.content)}))
               })
             }
           }

@@ -1,13 +1,16 @@
 import Control from "../common/control";
-import { GameModel } from './gameModel';
+import { GameModel, GameObject } from './gameModel';
 import { GameCanvas } from './gameCanvas';
 import { GameSidePanel } from './gameSidePanel';
 import {IObject, IObjectInfo, ITickable} from "./dto";
 import { InteractiveObject } from "./interactiveObject";
 import { InteractiveTile } from './interactiveTile';
-import {Vector} from "../common/vector";
+import { Vector } from "../common/vector";
+import { createIdGenerator } from './idGenerator';
+import { globalGameInfo } from './globalIdGenerator';
 export class Game extends Control{
-  sendBuildData:(obj:IObject, position:Vector)=>void
+  sendBuildData: (obj: IObject, position: Vector) => void;
+  updateObject: (data: string) => void;
   private model: GameModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
@@ -20,14 +23,25 @@ export class Game extends Control{
     sidePanel.onSelectReady = (obj) => {
       canvas.onClick = (position) => {
         canvas.onClick = null;
-        this.model.addBuild(obj, position.clone());
+        //this.model.addBuild(obj, position.clone());
         this.sendBuildData(obj, position.clone())
       }
     }
+
+    this.model.updateModel = (data: string) => {
+      this.updateObject(data)
+    }
+    const idGenerator =  createIdGenerator('playerId')
+    globalGameInfo.nextId = () => {
+      return idGenerator();
+    }
   }
 
-  getNewBuild(data: { obj: IObject; position: Vector }) {
-    this.model.addBuild(data.obj,data.position)
+  getNewBuild(data: { object: IObject; position: Vector }) {
+    this.model.addBuild(data.object,data.position)
+  }
+  setNewObject(data: string) {
+    this.model.setNewObject(data)
   }
 }
 

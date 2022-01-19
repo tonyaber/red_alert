@@ -1,4 +1,5 @@
 import {Vector} from '../common/vector';
+import { GameObject } from './gameModel';
 import { InteractiveList } from './interactiveList';
 
 const interactiveList = new InteractiveList();
@@ -16,6 +17,7 @@ export class InteractiveObject{
   //type: string = 'interactive';
   id: number;
   position: Vector;
+  gameObject:GameObject;
   // get position(){
   //   return new Vector(0,0);
   // }

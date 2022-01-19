@@ -12,6 +12,7 @@ export class GameCanvas extends Control {
   canvas: Control<HTMLCanvasElement>;
   interactiveList: InteractiveList;
   fps: number;
+  hoveredObjects: InteractiveObject = null;
 
   constructor(parentNode: HTMLElement, model: GameModel) {
     super(parentNode);
@@ -30,15 +31,24 @@ export class GameCanvas extends Control {
     this.canvas.node.onmousemove = (e)=>{
       this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY))
     }
+    
+    
     this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
-      //передавать изменения в геймОбжект
-      //
+      this.hoveredObjects = currentTarget;
     }
 
     
     
     this.canvas.node.onclick = (e: MouseEvent) => {
-      this.onClick?.(new Vector(e.offsetX, e.offsetY))
+      if (this.hoveredObjects === null) {
+         this.onClick?.(new Vector(e.offsetX, e.offsetY))
+      } else {
+        console.log('canvas-click', this.hoveredObjects)
+        this.hoveredObjects.gameObject.health--;
+        this.hoveredObjects.gameObject.onObjectUpdate();
+      }
+     
+
     }
     let lastTime: number = null;
     this.fps = 60;

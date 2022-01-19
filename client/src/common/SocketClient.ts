@@ -1,17 +1,17 @@
 import {IServerResponseMessage} from "./socketInterface";
 import {IObject} from "../game/dto";
 import {Vector} from "./vector";
+import { GameObject } from "../game/gameModel";
 
 export class ClientSocketModel {
 
   public websocket: WebSocket;
   private _websocket: WebSocket;
-  getNewBuild:(data:{obj:IObject,position:Vector})=>void
+  getNewBuild: (data: { object: IObject, position: Vector }) => void
+  getUpdateObject:(data:string)=>void
 
   constructor() {
-    console.log("****")
     this._websocket = new WebSocket('ws://localhost:3000/');
-    console.log(this._websocket)
     this._websocket.onopen = () => {
       console.log("OPEN")
     }
@@ -23,8 +23,10 @@ export class ClientSocketModel {
         console.log(response.content)
       }
       if(response.type==='addNewBuild'){
-        console.log('%%%',response.content)
         this.getNewBuild(JSON.parse(response.content))
+      }
+      if (response.type === 'getUpdateObject') {
+        this.getUpdateObject(JSON.parse(response.content))
       }
       // if (response.type === 'startGame') {
       //   const responseObj: IStartGameData = JSON.parse(response.content)
@@ -59,6 +61,14 @@ export class ClientSocketModel {
         object:obj,
         position:position
       }
+    }
+    this._websocket.send(JSON.stringify(requestMessage))
+  }
+
+  sendUpdateObject(data: string) {
+    const requestMessage = {
+      type: 'sendUpdateObject',
+      content: data
     }
     this._websocket.send(JSON.stringify(requestMessage))
   }
