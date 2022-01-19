@@ -12,7 +12,6 @@ export class GameModel implements ITickable{
   player: GamePlayer;
   onUpdateSidePanel: Signal<void> = new Signal();
   onUpdateCanvas: Signal<void> = new Signal();
- 
   //onBuild: (build: IObjectInfo) => void;
   constructor() {
     this.objectList = new GameObjectList();
