@@ -2,24 +2,32 @@ import Control from "../common/control";
 import { GameModel } from './gameModel';
 import { GameCanvas } from './gameCanvas';
 import { GameSidePanel } from './gameSidePanel';
-import { IObjectInfo, ITickable } from "./dto";
+import {IObject, IObjectInfo, ITickable} from "./dto";
 import { InteractiveObject } from "./interactiveObject";
 import { InteractiveTile } from './interactiveTile';
+import {Vector} from "../common/vector";
 export class Game extends Control{
+  sendBuildData:(obj:IObject, position:Vector)=>void
+  private model: GameModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
-    const model = new GameModel();
-    const canvas = new GameCanvas(this.node, model);
-    const sidePanel = new GameSidePanel(this.node, model);
+    this.model = new GameModel();
+    const canvas = new GameCanvas(this.node, this.model);
+    const sidePanel = new GameSidePanel(this.node, this.model);
     const tickList = new TickList();
-    tickList.add(model);
+    tickList.add(this.model);
 
     sidePanel.onSelectReady = (obj) => {
       canvas.onClick = (position) => {
         canvas.onClick = null;
-        model.addBuild(obj, position.clone());        
+        this.model.addBuild(obj, position.clone());
+        this.sendBuildData(obj, position.clone())
       }
     }
+  }
+
+  getNewBuild(data: { obj: IObject; position: Vector }) {
+    this.model.addBuild(data.obj,data.position)
   }
 }
 
