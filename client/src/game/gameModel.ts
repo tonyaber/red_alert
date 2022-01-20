@@ -6,7 +6,7 @@ import { Vector } from '../common/vector';
 import { InteractiveObject } from './interactiveObject';
 import { InteractiveTile } from './interactiveTile';
 import { globalGameInfo } from './globalIdGenerator';
-
+import { GamePlayerServer } from '../../../server/src/gameModelServer';
 export class GameModel implements ITickable{
   objectList: GameObjectList;
   mapInfo: MapInfo;
@@ -14,11 +14,18 @@ export class GameModel implements ITickable{
   onUpdateSidePanel: Signal<void> = new Signal();
   onUpdateCanvas: Signal<void> = new Signal();
   updateModel: (data: string) => void;
+  players: GamePlayer[]=[];
   //onBuild: (build: IObjectInfo) => void;
-  constructor() {
+  constructor(players: GamePlayerServer[], name: string) {
+    
     this.objectList = new GameObjectList();
     this.mapInfo = new MapInfo();
-    this.player = new GamePlayer();
+    players.forEach((item) => {
+      const player = new GamePlayer(item.id); 
+      this.players.push(player);
+    })
+    this.player = this.players.find(item => item.id === name);
+    //this.player = new GamePlayer();
     this.player.onUpdatePlayer = () => {
       this.onUpdateSidePanel.emit();
     }
@@ -29,13 +36,20 @@ export class GameModel implements ITickable{
   }
 
   //создать массив вскх игроков GamePlayer, наш игрок будет в this.player
-  addBuild(obj: IObject, position:Vector) {
-    obj.status = 'Available';
-    obj.progress = 0;
-    this.player.buildsInGame.push(obj.object);
-    this.player.getAvailableObject();
-    this.onUpdateSidePanel.emit();
-    const newObject = new GameObject1(obj.object, this.player, new Vector(position.x, position.y));
+  addBuild(data: {  object: IObject, name: string, position: Vector }) {
+    if (data.name === this.player.id) {
+      this.player.buildsInGame.push(data.object.object);
+      this.player.getAvailableObject();
+      const obj = this.player.allObject.find(item=>item.object.name===data.object.object.name);
+      obj.status = 'Available';
+      obj.progress = 0;
+      this.onUpdateSidePanel.emit();
+    }
+
+    //obj.status = 'Available';
+    //obj.progress = 0;
+    const player = this.players.find(item => item.id === data.name);
+    const newObject = new GameObject1(data.object.object, player, new Vector(data.position.x, data.position.y));
     newObject.onObjectUpdate = () => {
       this.updateModel(newObject.toJSON())
     }
@@ -79,8 +93,8 @@ export class GameObject{
     this.player = player;
     this.position = position.clone();
     this.id = globalGameInfo.nextId();
-   //this.node = new InteractiveObject();   
-    //this.node.position = position.clone();
+    this.node = new InteractiveObject();   
+    this.node.position = position.clone();
   }
 
   tick(delta: number) {
@@ -140,8 +154,10 @@ export class GamePlayer{
   buildsReady: IObjectInfo[] = [];
   buildsInGame: IObjectInfo[]=[]
   onUpdatePlayer: () => void;
+  id: string;
 
-  constructor() {
+  constructor(id: string) {
+    this.id = id;
     this.allObject = tech.object.map(item => {
       const newItem:IObjectInfo = {
         deps: item.deps,

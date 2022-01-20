@@ -8,13 +8,14 @@ import { InteractiveTile } from './interactiveTile';
 import { Vector } from "../common/vector";
 import { createIdGenerator } from './idGenerator';
 import { globalGameInfo } from './globalIdGenerator';
+import { GamePlayerServer } from '../../../server/src/gameModelServer';
 export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
   private model: GameModel;
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, players: GamePlayerServer[], name: string) {
     super(parentNode);
-    this.model = new GameModel();
+    this.model = new GameModel(players, name);
     const canvas = new GameCanvas(this.node, this.model);
     const sidePanel = new GameSidePanel(this.node, this.model);
     const tickList = new TickList();
@@ -37,8 +38,8 @@ export class Game extends Control{
     }
   }
 
-  getNewBuild(data: { object: IObject; position: Vector }) {
-    this.model.addBuild(data.object,data.position)
+  getNewBuild(data: {  object: IObject, name: string, position: Vector }) {
+    this.model.addBuild(data)
   }
   setNewObject(data: string) {
     this.model.setNewObject(data)
