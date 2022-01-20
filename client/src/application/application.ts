@@ -8,6 +8,7 @@ import { GameObject } from "../game/gameModel";
 export class Application extends Control {
   private clientSocketModel: ClientSocketModel
   private game: Game;
+  settingPage: SettingPage;
 
   constructor(parentNode: HTMLElement) {
     super(parentNode);
@@ -19,23 +20,31 @@ export class Application extends Control {
       this.game.setNewObject(data);
       console.log('response from server', data)
     }
+    this.clientSocketModel.addNewPlayer = (data) => {
+      this.settingPage.addNewPlayer(data);
+    }
+    this.clientSocketModel.getAllPlayer = (data) => {
+      this.settingPage.destroy();
+      const game = new Game(this.node, data);
+    }
 
     const startPage = new StartPage(this.node)
     startPage.onStartPageClick = async (name) => {
       this.send()
       startPage.destroy()
-
+      this.settingPage = new SettingPage(this.node);
+      
       //рисуем страницу с настройками
       //когда подключается 2 игрока - открываем страницу с игрой
       //передать все имена и имя нашего игрока в гейм
       //создать по списку модели плееров
-      this.game = new Game(this.node);
-      this.game.sendBuildData = (obj, position) => {
-        this.sendNewBuild(obj, position)
-      }
-      this.game.updateObject = (data: string) => {
-        this.sendUpdateObject(data);
-      }
+      //this.game = new Game(this.node);
+      // this.game.sendBuildData = (obj, position) => {
+      //   this.sendNewBuild(obj, position)
+      // }
+      // this.game.updateObject = (data: string) => {
+      //   this.sendUpdateObject(data);
+      // }
     }
 
   }
@@ -65,4 +74,22 @@ class StartPage extends Control {
     }
   }
 
+}
+
+class SettingPage extends Control {
+ 
+
+  constructor(parentNode: HTMLElement) {
+    super(parentNode);
+    const setting = new Control<HTMLInputElement>(this.node, 'div', '','Setting')
+  }
+
+  addNewPlayer(data: string) {
+    
+    const newPlayer = data;
+    for (let i = 0; i < newPlayer.length; i++){
+      
+      const player = new Control(this.node, 'div','',newPlayer[i])
+    }
+  }
 }

@@ -14,11 +14,17 @@ export class GameModel implements ITickable{
   onUpdateSidePanel: Signal<void> = new Signal();
   onUpdateCanvas: Signal<void> = new Signal();
   updateModel: (data: string) => void;
+  //players: GamePlayer[] = [];
   //onBuild: (build: IObjectInfo) => void;
-  constructor() {
+  constructor(players: string[], playerName: string) {
     this.objectList = new GameObjectList();
     this.mapInfo = new MapInfo();
-    this.player = new GamePlayer();
+    // players.map(item => {
+    //   const newPlayer = new GamePlayer(item);
+    //   this.players.push(newPlayer);
+    // })
+    //this.player = this.players.find(item=>item.id ===playerName)
+    this.player = new GamePlayer('fff')
     this.player.onUpdatePlayer = () => {
       this.onUpdateSidePanel.emit();
     }
@@ -140,8 +146,10 @@ export class GamePlayer{
   buildsReady: IObjectInfo[] = [];
   buildsInGame: IObjectInfo[]=[]
   onUpdatePlayer: () => void;
+  id: string;
 
-  constructor() {
+  constructor(name: string) {
+    this.id = name;
     this.allObject = tech.object.map(item => {
       const newItem:IObjectInfo = {
         deps: item.deps,

@@ -12,9 +12,12 @@ export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
   private model: GameModel;
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, dataPlayers: string) {
     super(parentNode);
-    this.model = new GameModel();
+    const players = JSON.parse(JSON.stringify(dataPlayers)).allPlayers;
+    const namePlayer = JSON.parse(JSON.stringify(dataPlayers)).ourPlayer;
+  
+    this.model = new GameModel(players, namePlayer);
     const canvas = new GameCanvas(this.node, this.model);
     const sidePanel = new GameSidePanel(this.node, this.model);
     const tickList = new TickList();

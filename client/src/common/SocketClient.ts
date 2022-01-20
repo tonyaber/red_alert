@@ -8,7 +8,9 @@ export class ClientSocketModel {
   public websocket: WebSocket;
   private _websocket: WebSocket;
   getNewBuild: (data: { object: IObject, position: Vector }) => void
-  getUpdateObject:(data:string)=>void
+  getUpdateObject: (data: string) => void
+  getAllPlayer: (data: string) => void;
+  addNewPlayer: (data: string) => void;
 
   constructor() {
     this._websocket = new WebSocket('ws://localhost:3000/');
@@ -20,13 +22,17 @@ export class ClientSocketModel {
       if (response.type === 'message') {
       }
       if (response.type == 'sendName') {
-        console.log(response.content)
+        this.addNewPlayer(JSON.parse(response.content))
       }
+
       if(response.type==='addNewBuild'){
         this.getNewBuild(JSON.parse(response.content))
       }
       if (response.type === 'getUpdateObject') {
         this.getUpdateObject(JSON.parse(response.content))
+      }
+      if (response.type === 'allPlayer') {
+        this.getAllPlayer(JSON.parse(response.content));
       }
       // if (response.type === 'startGame') {
       //   const responseObj: IStartGameData = JSON.parse(response.content)

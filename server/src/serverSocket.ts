@@ -1,6 +1,7 @@
 import {IUtf8Message, request} from "websocket";
 import {Server} from "http";
 import {IConnection, IServerRequestMessage, IServerResponseMessage} from "./serverInterfaces";
+import { connect } from "http2";
 
 const websocket = require('websocket')
 
@@ -49,13 +50,19 @@ export class ServerSocket {
 
               this.connections.forEach(connect => {
                 if (connect.name !== this.name) {
-                  connect.connection.sendUTF(JSON.stringify({type: 'sendName', content: response}))
+                  connect.connection.sendUTF(JSON.stringify({type: 'sendName', content: JSON.stringify(new Array(1).fill(this.name))}))
                 }
                 else {
                   const names = this.connections.map(c => c.name).filter(el => el !== this.name)
-                  connect.connection.sendUTF(JSON.stringify({type: 'sendName', content: names}))
+                  connect.connection.sendUTF(JSON.stringify({type: 'sendName', content: JSON.stringify(names)}))
                 }
               })
+              if (this.connections.length > 3) {
+                const names = this.connections.map(c => c.name);
+                this.connections.forEach(connect => {
+                  connect.connection.sendUTF(JSON.stringify({type: 'allPlayer', content: JSON.stringify({allPlayers: names, ourPlayer: connect.name })}))
+               })
+              }
             }
             if (requestMessage.type === 'sendNewBuild') {
               this.connections.forEach(connect => {
