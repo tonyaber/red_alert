@@ -8,6 +8,7 @@ import { GameObject } from "../game/gameModel";
 export class Application extends Control {
   private clientSocketModel: ClientSocketModel
   private game: Game;
+  
 
   constructor(parentNode: HTMLElement) {
     super(parentNode);

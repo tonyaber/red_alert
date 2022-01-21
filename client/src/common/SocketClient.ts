@@ -57,10 +57,10 @@ export class ClientSocketModel {
   addNewBuild(obj: IObject, position: Vector) {
     const requestMessage = {
       type: 'sendNewBuild',
-      content: {
+      content: JSON.stringify({
         object:obj,
         position:position
-      }
+      })
     }
     this._websocket.send(JSON.stringify(requestMessage))
   }
