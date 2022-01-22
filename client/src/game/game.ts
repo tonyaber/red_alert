@@ -9,11 +9,13 @@ import { Vector } from "../common/vector";
 import { createIdGenerator } from './idGenerator';
 import { globalGameInfo } from './globalIdGenerator';
 import { GamePlayerServer } from '../../../server/src/gameModelServer';
+import {TestListView, TestListModel, TestListClientModel, TestListLocalModel} from './testListView';
+import { ClientSocketModel } from "../common/SocketClient";
 export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
   private model: GameModel;
-  constructor(parentNode: HTMLElement, players: string[], name: string) {
+  constructor(parentNode: HTMLElement, players: string[], name: string, socket:ClientSocketModel) {
     super(parentNode);
     this.model = new GameModel(players, name);
     const canvas = new GameCanvas(this.node, this.model);
@@ -36,6 +38,11 @@ export class Game extends Control{
     globalGameInfo.nextId = () => {
       return idGenerator();
     }
+
+    const testListModel = new TestListModel();
+    const testListAnyModel = new TestListClientModel(socket, testListModel);
+    //const testListAnyModel = new TestListLocalModel(testListModel);
+    const testListView = new TestListView(this.node, testListAnyModel);
   }
 
   getNewBuild(data: {  object: IObject, name: string, position: Vector }) {

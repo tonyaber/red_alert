@@ -2,6 +2,7 @@ import {connection, IUtf8Message, request} from "websocket";
 import {Server} from "http";
 import {IConnection, IServerRequestMessage, IServerResponseMessage} from "./serverInterfaces";
 import { GameModelServer } from "./gameModelServer";
+import {TestListModel, TestListSocket} from "./testModel";
 
 const websocket = require('websocket')
 
@@ -18,6 +19,15 @@ export class ServerSocket {
       httpServer: server,
     });
     const gameModel = new GameModelServer();
+
+    const listModel = new TestListModel();
+    const listSocket = new TestListSocket(listModel, 
+      response=>{
+        this.connections.forEach(it=>{
+          it.sendUTF(JSON.stringify(response));
+        })
+      }
+    );
     
     wsServer.on('request', (request: request) => {
         console.log("^^^")
@@ -29,6 +39,9 @@ export class ServerSocket {
             const requestMessage: IServerRequestMessage = JSON.parse(
               message.utf8Data
             );
+
+            listSocket.handleMessage(connection, requestMessage);
+
             if (requestMessage.type === 'sendName') {
               gameModel.addNewUser({ name: requestMessage.content, connection });
               

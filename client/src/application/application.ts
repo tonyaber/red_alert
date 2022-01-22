@@ -26,7 +26,7 @@ export class Application extends Control {
     }
     this.clientSocketModel.startGame = (data) => {
       const players = JSON.parse(JSON.stringify(data));
-      this.game = new Game(this.node, players, this.name );
+      this.game = new Game(this.node, players, this.name, this.clientSocketModel);
         this.game.sendBuildData = (obj, position) => {
           this.sendNewBuild(obj, position)
         }

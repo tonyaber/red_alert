@@ -2,6 +2,7 @@ import {IServerResponseMessage} from "./socketInterface";
 import {IObject, IObjectInfo} from "../game/dto";
 import {Vector} from "./vector";
 import { GameObject } from "../game/gameModel";
+import Signal from "./signal";
 
 export class ClientSocketModel {
 
@@ -11,6 +12,7 @@ export class ClientSocketModel {
   getUpdateObject: (data: string) => void;
   startGame: (data: string) => void;
   getName: (data: string) => void;
+  onMessage: Signal<IServerResponseMessage> = new Signal();
 
   constructor() {
     this._websocket = new WebSocket('ws://localhost:3000/');
@@ -18,7 +20,9 @@ export class ClientSocketModel {
       console.log("OPEN")
     }
     this._websocket.onmessage = (message) => {
+      console.log(message.data);
       const response: IServerResponseMessage = JSON.parse(message.data)
+      this.onMessage?.emit(response);
       if (response.type === 'message') {
       }
       if (response.type == 'sendName') {
