@@ -24,6 +24,7 @@ export class GameModel implements ITickable{
       const player = new GamePlayer(item); 
       this.players.push(player);
     })
+    console.log(this.players, name);
     this.player = this.players.find(item => item.id === name);
     //this.player = new GamePlayer();
     this.player.onUpdatePlayer = () => {
@@ -48,6 +49,7 @@ export class GameModel implements ITickable{
 
     //obj.status = 'Available';
     //obj.progress = 0;
+    console.log(data)
     const player = this.players.find(item => item.id === data.name);
     const newObject = new GameObject1(data.object.object, player, new Vector(data.position.x, data.position.y));
     newObject.onObjectUpdate = () => {
@@ -56,9 +58,10 @@ export class GameModel implements ITickable{
     this.objectList.add(newObject);
   }
 
-  setNewObject(data: string) {
-    const newData = JSON.parse(data);
-    this.objectList.list.find(elem => elem.id === newData.id).fromJSON(data);
+  setNewObject(data:{id: string, health: number}) {
+    
+   
+    this.objectList.list.find(elem => elem.id === data.id).fromJSON(JSON.stringify(data));
   }
 
 }

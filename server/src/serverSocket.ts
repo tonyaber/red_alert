@@ -44,11 +44,8 @@ export class ServerSocket {
 
             if (requestMessage.type === 'sendName') {
               gameModel.addNewUser({ name: requestMessage.content, connection });
-              
-              gameModel.users.forEach(user => {
-                user.sendUTF('sendName', JSON.stringify(requestMessage.content));
-                
-              });
+              gameModel.users.find(item => item.connection.connection === connection).sendUTF('sendName', JSON.stringify(requestMessage.content));
+
               
               if (gameModel.users.length >= 2) {
                 gameModel.startGame();
@@ -62,7 +59,7 @@ export class ServerSocket {
             }
             if (requestMessage.type === 'sendUpdateObject') {
               gameModel.players.forEach(player => {
-                player.user.sendUTF('getUpdateObject', JSON.stringify(requestMessage.content));
+                player.user.sendUTF('getUpdateObject', requestMessage.content);
               });
             }
 

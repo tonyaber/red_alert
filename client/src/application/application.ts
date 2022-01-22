@@ -4,87 +4,121 @@ import {ClientSocketModel} from "../common/SocketClient";
 import {IObject} from "../game/dto";
 import {Vector} from "../common/vector";
 import { GameObject } from "../game/gameModel";
+import { SocketClient } from "../common/SocketClient1";
+import { IServerResponseMessage } from "../common/socketInterface";
+import { GameSocketClient } from '../game/gameSocketClient';
 
 export class Application extends Control {
-  private clientSocketModel: ClientSocketModel
+  private clientSocketModel: SocketClient
   private game: Game;
-  name: string;
 
   constructor(parentNode: HTMLElement) {
     super(parentNode);
-    this.clientSocketModel = new ClientSocketModel()
-    this.clientSocketModel.getNewBuild=(data)=>{
-      this.game.getNewBuild(data)
-    }
-    this.clientSocketModel.getUpdateObject = (data) => {
-      this.game.setNewObject(data);
-      console.log('response from server', data)
-    }
-    this.clientSocketModel.getName = (data) => {
-      this.name = data;
-      console.log(this.name)
-    }
-    this.clientSocketModel.startGame = (data) => {
-      const players = JSON.parse(JSON.stringify(data));
-      this.game = new Game(this.node, players, this.name, this.clientSocketModel);
+    this.clientSocketModel = new SocketClient('ws://localhost:3000/');
+
+    const startPageModel = new StartPageSocketModel(this.clientSocketModel)
+    const startPage = new StartPage(this.node, startPageModel)
+    startPage.onStartPageClick = async (name) => {
+      //this.send()
+      startPage.destroy();
+      const settingPage = new Setting(this.node, this.clientSocketModel);
+      
+      settingPage.onStartPage = (data) => {
+        settingPage.destroy();
+        console.log(data)
+        const players = data;
+        const gameSocketModel = new GameSocketClient(this.clientSocketModel)
+        this.game = new Game(this.node, players, name, gameSocketModel);
         this.game.sendBuildData = (obj, position) => {
-          this.sendNewBuild(obj, position)
+          //this.sendNewBuild(obj, position)
         }
         this.game.updateObject = (data: string) => {
-          this.sendUpdateObject(data);
+         // this.sendUpdateObject(data);
         }
-    }
-
-    const startPage = new StartPage(this.node)
-    startPage.onStartPageClick = async (name) => {
-      this.send()
-      startPage.destroy();
-      const settingPage = new Setting(this.node);
+      }
       
-      //рисуем страницу с настройками
-      //когда подключается 2 игрока - открываем страницу с игрой
-      //передать все имена и имя нашего игрока в гейм
-      //создать по списку модели плееров
     }
 
   }
-  sendUpdateObject(data: string) {
-    this.clientSocketModel.sendUpdateObject(data)
-  }
-
-  sendNewBuild(obj: IObject, position: Vector) {
-    this.clientSocketModel.addNewBuild(obj, position)
-  }
-
-  send() {
-    this.clientSocketModel.setPlayerName()
-  }
-
   
 }
 
+
+class StartPageSocketModel {
+  socket: SocketClient;
+  private messageHandler: (message: IServerResponseMessage) => void;
+  onAuth: (name: string)=>void;
+
+  constructor(socket: SocketClient) {
+    this.messageHandler = (message:IServerResponseMessage) => {
+      if (message.type = 'sendName') {
+        this.onAuth(JSON.parse(message.content));
+      }
+    }
+    socket.onMessage.add(this.messageHandler)
+    this.socket = socket;
+  }
+
+  sendName(){
+    this.socket.sendRequest('sendName', (Math.floor(Math.random() * 100))+'Player');
+  }
+  destroy() {
+    this.socket.onMessage.remove(this.messageHandler);
+
+  }
+}
 class StartPage extends Control {
   public onStartPageClick: (name: string) => void
+  socket: StartPageSocketModel;
 
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, socket: StartPageSocketModel) {
     super(parentNode);
+    
+    this.socket = socket;
     const input = new Control<HTMLInputElement>(this.node, 'input')
     const button = new Control(this.node, 'button', '', 'Start')
     button.node.onclick = () => {
-      //this.clientSocketModel.setPlayerName()
-      this.onStartPageClick(input.node.value)
+      this.socket.sendName();
+      
     }
+    socket.onAuth = (name) => {
+      this.onStartPageClick(name);
+    }
+  } 
+
+  destroy(): void {
+    this.socket.destroy();
+    super.destroy();
+
   }
 
 }
+
 
 class Setting extends Control {
   public onSettingPageClick: () => void
+  socket: SocketClient;
+  messageHandler: (message: IServerResponseMessage) => void;
+  onStartPage: (message: string[]) => void;
 
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, socket: SocketClient) {
     super(parentNode);
-    const setting = new Control(this.node, 'button', '', 'Setting')
+    const setting = new Control(this.node, 'button', '', 'Setting');
+    this.socket = socket;
+    this.messageHandler = (message:IServerResponseMessage) => {
+      if (message.type === 'startGame') {
+        this.onStartPage(JSON.parse(message.content));
+      }
+    }
+    socket.onMessage.add(this.messageHandler)
+
     
+  }
+  destroy() {
+    this.socket.onMessage.remove(this.messageHandler);
+    super.destroy();
   }
 
 }
+
+

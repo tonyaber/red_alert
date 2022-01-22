@@ -9,13 +9,16 @@ import { Vector } from "../common/vector";
 import { createIdGenerator } from './idGenerator';
 import { globalGameInfo } from './globalIdGenerator';
 import { GamePlayerServer } from '../../../server/src/gameModelServer';
-import {TestListView, TestListModel, TestListClientModel, TestListLocalModel} from './testListView';
+import {TestListView} from './testListView';
 import { ClientSocketModel } from "../common/SocketClient";
+import { ListModel, ListSocketClient } from "./list";
+import { SocketClient } from "../common/SocketClient1";
+import { GameSocketClient } from "./gameSocketClient";
 export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
   private model: GameModel;
-  constructor(parentNode: HTMLElement, players: string[], name: string, socket:ClientSocketModel) {
+  constructor(parentNode: HTMLElement, players: string[], name: string, socket:GameSocketClient) {
     super(parentNode);
     this.model = new GameModel(players, name);
     const canvas = new GameCanvas(this.node, this.model);
@@ -27,29 +30,29 @@ export class Game extends Control{
       canvas.onClick = (position) => {
         canvas.onClick = null;
         //this.model.addBuild(obj, position.clone());
-        this.sendBuildData(obj, position.clone())
+        socket.sendNewBuild(obj, position.clone());
       }
     }
 
     this.model.updateModel = (data: string) => {
-      this.updateObject(data)
+      socket.updateObject(data)
     }
     const idGenerator =  createIdGenerator('playerId')
     globalGameInfo.nextId = () => {
       return idGenerator();
     }
 
-    const testListModel = new TestListModel();
-    const testListAnyModel = new TestListClientModel(socket, testListModel);
+    const testListModel = new ListModel(createIdGenerator('itemId'));
+    const testListAnyModel = new ListSocketClient(socket.socket, testListModel);
     //const testListAnyModel = new TestListLocalModel(testListModel);
     const testListView = new TestListView(this.node, testListAnyModel);
-  }
 
-  getNewBuild(data: {  object: IObject, name: string, position: Vector }) {
-    this.model.addBuild(data)
-  }
-  setNewObject(data: string) {
-    this.model.setNewObject(data)
+    socket.onAddNewBuild = (data: string) => {
+      this.model.addBuild(JSON.parse(data));
+    }
+    socket.onGetUpdateObject = (data: string) => {
+      this.model.setNewObject(JSON.parse(data))
+    }
   }
 }
 

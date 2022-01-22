@@ -1,7 +1,12 @@
 import Control from '../common/control';
 import { ClientSocketModel } from '../common/SocketClient';
 import {createIdGenerator} from './idGenerator';
+import { ListSocketClient,IListClient,ListModel,IListData } from './list';
 
+interface IListItem{
+  name: string;
+  content: string;
+}
 class ItemView extends Control{
   name: Control<HTMLElement>;
   content: Control<HTMLElement>;
@@ -25,10 +30,10 @@ class ItemView extends Control{
 }
 
 export class TestListView extends Control{
-  model: ITestListModel;
+  model: IListClient<IListItem>;
   list: Control<HTMLElement>;
   items: Record<string, ItemView> = {};
-  constructor(parentNode: HTMLElement, model:ITestListModel) {
+  constructor(parentNode: HTMLElement, model:IListClient<IListItem>) {
     super(parentNode);
     this.model = model;
     const controls = new Control(this.node);
@@ -38,13 +43,13 @@ export class TestListView extends Control{
     }
     this.list = new Control(this.node);
     //this.update();
-    model.onChange = (listData)=>{
+    model.onChange = (listData: IListData<IListItem>)=>{
       this.update(listData);
     }
     model.getList();
   }
 
-  update(listData: IListData){
+  update(listData: IListData<IListItem>){
     //const listData = this.model.model.getList(); 
     Object.keys(listData).forEach(itemId=>{
       const itemData = listData[itemId];
@@ -68,156 +73,156 @@ export class TestListView extends Control{
   }
 }
 
-interface IListItem{
-  name:string;
-  content:string;
-}
+// interface IListItem{
+//   name:string;
+//   content:string;
+// }
 
-type IListData = Record<string, IListItem>;
+// type IListData = Record<string, IListItem>;
 
-export class TestListModel{ //cache
-  private data:IListData = {};
-  private nextId = createIdGenerator('testlist');
-  public onChange:()=>void;
+// export class TestListModel{ //cache
+//   private data:IListData = {};
+//   private nextId = createIdGenerator('testlist');
+//   public onChange:()=>void;
 
-  constructor() {
+//   constructor() {
     
-  }
+//   }
 
-  addItem(item:IListItem){
-    this.data[this.nextId()] = item;
-    this.onChange?.();
-  }
+//   addItem(item:IListItem){
+//     this.data[this.nextId()] = item;
+//     this.onChange?.();
+//   }
 
-  removeItem(id:string){
-    delete this.data[id];
-    this.onChange?.();
-  }
+//   removeItem(id:string){
+//     delete this.data[id];
+//     this.onChange?.();
+//   }
 
-  updateItem(id:string, data:IListItem){
-    this.data[id] = data;
-    this.onChange?.();
-  }
+//   updateItem(id:string, data:IListItem){
+//     this.data[id] = data;
+//     this.onChange?.();
+//   }
 
-  getItem(id:string){
-    return this.data[id];
-  }
+//   getItem(id:string){
+//     return this.data[id];
+//   }
 
-  getList(){
-    return {...this.data};
-  }
+//   getList(){
+//     return {...this.data};
+//   }
 
-  setList(list:IListData){
-    this.data = list;
-    this.onChange?.();
-  }
-}
+//   setList(list:IListData){
+//     this.data = list;
+//     this.onChange?.();
+//   }
+// }
 
-interface ITestListModel{
-  onChange:(listData:IListData)=>void;
+// interface ITestListModel{
+//   onChange:(listData:IListData)=>void;
 
-  addItem:(item:IListItem)=>void;
-  removeItem: (id:string)=>void;
-  getList:()=>void;
+//   addItem:(item:IListItem)=>void;
+//   removeItem: (id:string)=>void;
+//   getList:()=>void;
 
-}
+// }
 
-export class TestListLocalModel implements ITestListModel{
-  public onChange:(listData:IListData)=>void;
-  private model: TestListModel;
+// export class TestListLocalModel implements ITestListModel{
+//   public onChange:(listData:IListData)=>void;
+//   private model: TestListModel;
 
-  constructor(listModel:TestListModel) {
-    this.model = listModel;
-    this.model.onChange = ()=>{
-      this.onChange(this.model.getList());
-    }
-  }
+//   constructor(listModel:TestListModel) {
+//     this.model = listModel;
+//     this.model.onChange = ()=>{
+//       this.onChange(this.model.getList());
+//     }
+//   }
 
-  addItem(item:IListItem){
-    this.model.addItem(item);
-    //this.data[this.nextId()] = item;
-    //this.socket.sendRequest('addItem', JSON.stringify(item));
-    //this.onChange?.();
-  }
+//   addItem(item:IListItem){
+//     this.model.addItem(item);
+//     //this.data[this.nextId()] = item;
+//     //this.socket.sendRequest('addItem', JSON.stringify(item));
+//     //this.onChange?.();
+//   }
 
-  removeItem(id:string){
-    this.model.removeItem(id);
-    //delete this.data[id];
-    //this.onChange?.();
-  }
+//   removeItem(id:string){
+//     this.model.removeItem(id);
+//     //delete this.data[id];
+//     //this.onChange?.();
+//   }
 
-  /*updateItem(id:string, data:IListItem){
-    this.data[id] = data;
-    //this.onChange?.();
-  }
+//   /*updateItem(id:string, data:IListItem){
+//     this.data[id] = data;
+//     //this.onChange?.();
+//   }
 
-  getItem(id:string){
-    return this.data[id];
-  }*/
+//   getItem(id:string){
+//     return this.data[id];
+//   }*/
 
-  getList(){
-    let list = this.model.getList();
-    this.onChange(list);
-    //return {...this.data};
-  }
-}
+//   getList(){
+//     let list = this.model.getList();
+//     this.onChange(list);
+//     //return {...this.data};
+//   }
+// }
 
-export class TestListClientModel implements ITestListModel{
-  //private data:IListData = {};
-  //private nextId = createIdGenerator('testlist');
-  //public onChange:()=>void;
-  private socket: ClientSocketModel;
-  private model: TestListModel;
-  public onChange:(listData:IListData)=>void;
+// export class TestListClientModel implements ITestListModel{
+//   //private data:IListData = {};
+//   //private nextId = createIdGenerator('testlist');
+//   //public onChange:()=>void;
+//   private socket: ClientSocketModel;
+//   private model: TestListModel;
+//   public onChange:(listData:IListData)=>void;
 
-  constructor(socket: ClientSocketModel, listModel:TestListModel) {
-    this.socket = socket;
-    this.model = listModel;
-    this.model.onChange = ()=>{
-      this.onChange(this.model.getList());
-    }
-    this.socket.onMessage.add((response)=>{
-      if (response.type == 'getList'){
-        const responseData:IListData = JSON.parse(response.content);
-        this.model.setList(responseData);
-        //this.model.setList(responseData);
-      }
+//   constructor(socket: ClientSocketModel, listModel:TestListModel) {
+//     this.socket = socket;
+//     this.model = listModel;
+//     this.model.onChange = ()=>{
+//       this.onChange(this.model.getList());
+//     }
+//     this.socket.onMessage.add((response)=>{
+//       if (response.type == 'getList'){
+//         const responseData:IListData = JSON.parse(response.content);
+//         this.model.setList(responseData);
+//         //this.model.setList(responseData);
+//       }
 
-      if (response.type == 'addItem'){
-        const responseData:{id:string, item:IListItem} = JSON.parse(response.content);
-        this.model.updateItem(responseData.id, responseData.item);
-      }
+//       if (response.type == 'addItem'){
+//         const responseData:{id:string, item:IListItem} = JSON.parse(response.content);
+//         this.model.updateItem(responseData.id, responseData.item);
+//       }
 
-      if (response.type == 'removeItem'){
-        const itemId:string = JSON.parse(response.content);
-        this.model.removeItem(itemId);
-      }
-    });
-  }
+//       if (response.type == 'removeItem'){
+//         const itemId:string = JSON.parse(response.content);
+//         this.model.removeItem(itemId);
+//       }
+//     });
+//   }
 
-  addItem(item:IListItem){
-    //this.data[this.nextId()] = item;
-    this.socket.sendRequest('addItem', JSON.stringify(item));
-    //this.onChange?.();
-  }
+//   addItem(item:IListItem){
+//     //this.data[this.nextId()] = item;
+//     this.socket.sendRequest('addItem', JSON.stringify(item));
+//     //this.onChange?.();
+//   }
 
-  removeItem(id:string){
-    this.socket.sendRequest('removeItem', id);
-    //delete this.data[id];
-    //this.onChange?.();
-  }
+//   removeItem(id:string){
+//     this.socket.sendRequest('removeItem', id);
+//     //delete this.data[id];
+//     //this.onChange?.();
+//   }
 
-  /*updateItem(id:string, data:IListItem){
-    this.data[id] = data;
-    //this.onChange?.();
-  }
+//   /*updateItem(id:string, data:IListItem){
+//     this.data[id] = data;
+//     //this.onChange?.();
+//   }
 
-  getItem(id:string){
-    return this.data[id];
-  }*/
+//   getItem(id:string){
+//     return this.data[id];
+//   }*/
 
-  getList(){
-    this.socket.sendRequest('getList', JSON.stringify({}));
-    //return {...this.data};
-  }
-}
+//   getList(){
+//     this.socket.sendRequest('getList', JSON.stringify({}));
+//     //return {...this.data};
+//   }
+// }

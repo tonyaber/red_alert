@@ -71,6 +71,14 @@ export class TestListSocket{
         content: JSON.stringify({id, item:requestData})
       });
     }
+    if (message.type == 'updateItem'){
+      const requestData:{id: string, item: IListItem} = JSON.parse(message.content);
+      this.model.updateItem(requestData.id, requestData.item);
+      this.sendResponse({
+        type: 'updateItem',
+        content: JSON.stringify({id: requestData.id, item:requestData.item})
+      });
+    }
 
     if (message.type == 'removeItem'){
       const requestData: string = message.content;
