@@ -13,7 +13,7 @@ export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
   private model: GameModel;
-  constructor(parentNode: HTMLElement, players: GamePlayerServer[], name: string) {
+  constructor(parentNode: HTMLElement, players: string[], name: string) {
     super(parentNode);
     this.model = new GameModel(players, name);
     const canvas = new GameCanvas(this.node, this.model);

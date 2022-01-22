@@ -1,5 +1,11 @@
 import {RequestListener, Server} from "http";
-import {ServerSocket} from "./serverSocket";
+import { ServerSocket } from "./serverSocket";
+// import mongodb, {MongoClient} from 'mongodb';
+// const mongo = new MongoClient('mongodb://localhost:27017/red_alert');
+// mongo.connect().then(() => {
+//   mongo.db('red_alert').collection('users').insertOne({ name: 'ffff' });
+// })
+
 const http = require('http');
 const port = 3000;
 const requestHandler: RequestListener = (request, response) => {
