@@ -16,12 +16,12 @@ export class GameModel implements ITickable{
   updateModel: (data: string) => void;
   players: GamePlayer[]=[];
   //onBuild: (build: IObjectInfo) => void;
-  constructor(players: GamePlayerServer[], name: string) {
+  constructor(players: string[], name: string) {
     
     this.objectList = new GameObjectList();
     this.mapInfo = new MapInfo();
     players.forEach((item) => {
-      const player = new GamePlayer(item.id); 
+      const player = new GamePlayer(item); 
       this.players.push(player);
     })
     this.player = this.players.find(item => item.id === name);
