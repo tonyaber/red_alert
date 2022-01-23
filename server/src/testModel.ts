@@ -1,4 +1,4 @@
-import { IServerRequestMessage, IServerResponseMessage } from "./serverInterfaces";
+import { IConnection, IServerRequestMessage, IServerResponseMessage } from "./serverInterfaces";
 import {connection} from "websocket";
 
 interface IListItem{
@@ -19,15 +19,30 @@ export class TestListModel{
   private data:IListData = {};
   private nextId = createIdGenerator('testlist');
   public onChange:()=>void;
+  users: {connection:{sendUTF:(msg:string)=>void}}[];
 
   constructor() {
     
   }
 
-  addItem(item:IListItem):string{
+  addUser(user: {connection:{sendUTF:(msg:string)=>void}}){
+    this.users.push(user);
+  }
+
+  sendPublic(msg){
+    this.users.forEach(user=>user.connection.sendUTF(msg));
+  }
+
+  sendPrivate(user, msg){
+    user.sendUTF(msg);
+  }
+
+  addItem(/*user*/item:IListItem):string{
     const id = this.nextId();
     this.data[id] = item;
     this.onChange?.();
+    //this.sendPrivate(user, )
+    //this.sendPublic();
     return id;
   }
 
