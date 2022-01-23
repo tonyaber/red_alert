@@ -109,6 +109,7 @@ export class ItemView {
 export class GameObjectView extends ItemView {
   node: InteractiveTile;
   data: IListItem;
+  
 
   //onObjectUpdate: () => void;
   constructor(/*object: IObjectInfo, player: GamePlayer, position: Vector*/) {

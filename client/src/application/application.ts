@@ -1,9 +1,5 @@
 import Control from "../common/control";
 import {Game} from '../game/game';
-import {ClientSocketModel} from "../common/SocketClient";
-import {IObject} from "../game/dto";
-import {Vector} from "../common/vector";
-import { GameObject } from "../game/gameModel";
 import { SocketClient } from "../common/SocketClient1";
 import { IServerResponseMessage } from "../common/socketInterface";
 import { GameSocketClient } from '../game/gameSocketClient';
@@ -19,7 +15,6 @@ export class Application extends Control {
     const startPageModel = new StartPageSocketModel(this.clientSocketModel)
     const startPage = new StartPage(this.node, startPageModel)
     startPage.onStartPageClick = async (name) => {
-      //this.send()
       startPage.destroy();
       const settingPage = new Setting(this.node, this.clientSocketModel);
       
@@ -29,12 +24,6 @@ export class Application extends Control {
         const players = data;
         const gameSocketModel = new GameSocketClient(this.clientSocketModel)
         this.game = new Game(this.node, players, name, gameSocketModel);
-        this.game.sendBuildData = (obj, position) => {
-          //this.sendNewBuild(obj, position)
-        }
-        this.game.updateObject = (data: string) => {
-         // this.sendUpdateObject(data);
-        }
       }
       
     }

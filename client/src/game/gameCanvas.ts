@@ -38,20 +38,28 @@ export class GameCanvas extends Control {
       this.hoveredObjects = currentTarget;
     }
 
-    
-    
     this.canvas.node.onclick = (e: MouseEvent) => {
       if (this.hoveredObjects === null) {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
-        console.log('canvas-click', this.hoveredObjects)
-        //this.hoveredObjects.gameObject.health--;
-        //this.hoveredObjects.gameObject.onObjectUpdate();
         this.onObjectClick(this.hoveredObjects.id);
       }
-     
-
+  
     }
+    
+    this.startRender();
+  }
+
+  renderMap(ctx: CanvasRenderingContext2D, canvasSize: any) {
+    
+  }
+
+  destroy() {
+    this.model.onUpdateCanvas.remove(this.updateHandler);
+  
+  }
+
+  startRender(){
     let lastTime: number = null;
     this.fps = 60;
     const render = () => {
@@ -75,14 +83,6 @@ export class GameCanvas extends Control {
     render();
   }
 
-  renderMap(ctx: CanvasRenderingContext2D, canvasSize: any) {
-    
-  }
-
-  destroy() {
-    this.model.onUpdateCanvas.remove(this.updateHandler);
-  
-  }
   render(ctx: CanvasRenderingContext2D, delta: number) {
     ctx.fillStyle = "#000";
    

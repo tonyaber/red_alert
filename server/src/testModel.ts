@@ -71,12 +71,11 @@ export class TestListSocket{
         requestId: message.requestId,
         content: JSON.stringify({id, item:requestData})
       });
-
-      connection.sendUTF(JSON.stringify({
+      this.sendPrivate(connection, {
         type: 'addItemPrivate',
         requestId: message.requestId,
         content: JSON.stringify({id, item:requestData})
-      }));
+      });
     }
     if (message.type == 'updateItem'){
       const requestData:{id: string, item: IListItem} = JSON.parse(message.content);
@@ -86,12 +85,11 @@ export class TestListSocket{
         requestId: message.requestId,
         content: JSON.stringify({id: requestData.id, item:requestData.item})
       });
-
-      connection.sendUTF(JSON.stringify({
+      this.sendPrivate(connection, {
         type: 'updateItemPrivate',
         requestId: message.requestId,
         content: JSON.stringify({id: requestData.id, item:requestData.item})
-      }));
+      });
     }
 
     if (message.type == 'removeItem'){
@@ -102,20 +100,24 @@ export class TestListSocket{
         requestId: message.requestId,
         content: JSON.stringify(requestData)
       });
-      connection.sendUTF(JSON.stringify({
+      this.sendPrivate(connection, {
         type: 'removeItemPrivate',
         requestId: message.requestId,
         content: JSON.stringify(requestData)
-      }));
+      });
     }
 
     if (message.type == 'getList'){
       const list = this.model.getList();
-      connection.sendUTF(JSON.stringify({
+      this.sendPrivate(connection, {
         type: 'getListPrivate',
         requestId: message.requestId,
         content: JSON.stringify(list)
-      }));
+      });
     }
+  }
+
+  sendPrivate(connection, response:IServerResponseMessage){
+    connection.sendUTF(JSON.stringify(response));
   }
 }

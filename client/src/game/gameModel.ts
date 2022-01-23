@@ -144,11 +144,11 @@ export class GameModel{
   }
 
   damageBuild(id:string){
-    //const currentBuild = this.objectList.items[id];
+    const currentBuild = this.objectList.items[id];
     //currentBuild.
-    const currentData = this.listModel.getList()[id]
+    //const currentData = this.listModel.getList()[id]
     //currentData.
-    this.listSocketModelClient.updateItem(id, {...currentData, health: currentData.health - 10} )
+    this.listSocketModelClient.updateItem(id, {...currentBuild.data, health: currentBuild.data.health - 10} )
   }
 }
 
@@ -265,7 +265,7 @@ export class GamePlayer{
         progress: 0,
       }
     })
-    this.shitAvailableObject();
+    this.updateAvailableObject();
   }
 
   pauseBuildProgress(object: IObject) {
@@ -300,7 +300,7 @@ export class GamePlayer{
     this.onUpdatePlayer();
   }
 
-  shitAvailableObject() {
+  updateAvailableObject() {
     const availableObject = Array.from(new Set(this.buildsInGame.map(item => {
       return item.name;
     })));
@@ -327,7 +327,7 @@ export class GamePlayer{
         this.buildsInGame.push(info.object);
       }
     })
-    this.shitAvailableObject();
+    this.updateAvailableObject();
     this.onUpdatePlayer();
   }
 }

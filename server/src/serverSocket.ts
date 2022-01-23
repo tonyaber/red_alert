@@ -28,6 +28,9 @@ export class ServerSocket {
         })
       }
     );
+    listModel.onChange = ()=>{
+      //listModel.getList()
+    }
     
     wsServer.on('request', (request: request) => {
         console.log("^^^")
@@ -54,14 +57,14 @@ export class ServerSocket {
                 })
               }
             }
-            if (requestMessage.type === 'sendNewBuild') {
+            /*if (requestMessage.type === 'sendNewBuild') {
               gameModel.addNewBuild(JSON.parse(requestMessage.content), connection);
             }
             if (requestMessage.type === 'sendUpdateObject') {
               gameModel.players.forEach(player => {
                 player.user.sendUTF('getUpdateObject', requestMessage.content);
               });
-            }
+            }*/
 
           }
           else {
