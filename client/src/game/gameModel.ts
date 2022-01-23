@@ -86,12 +86,12 @@ export class GameModel{
 
     //this.objectList = new GameObjectList();
 
-    this.listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
-    this.listSocketModelClient = new ListSocketClient<IListItem>(socket, this.listModel);
-    this.objectList = new GameObjectList(this.listSocketModelClient);
-    this.objectList.onUpdate = (items=>{
-      this.player.update(items);
-    });
+    //this.listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
+    //this.listSocketModelClient = new ListSocketClient<IListItem>(socket, this.listModel);
+    //this.objectList = new GameObjectList(this.listSocketModelClient);
+    // this.objectList.onUpdate = (items=>{
+    //   this.player.update(items);
+    // });
 
     this.mapInfo = new MapInfo();
     players.forEach((item) => {
