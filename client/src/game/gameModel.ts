@@ -145,7 +145,7 @@ class GameObject1 extends GameObject{
 }
 
 
-class MapInfo{
+export class MapInfo{
 
 }
 

@@ -46,7 +46,7 @@ export class GameCanvas extends Control {
       } else {
         console.log('canvas-click', this.hoveredObjects)
         //this.hoveredObjects.gameObject.health--;
-        this.hoveredObjects.gameObject.onObjectUpdate();
+        //this.hoveredObjects.gameObject.onObjectUpdate();
         this.onObjectClick(this.hoveredObjects.id);
       }
      

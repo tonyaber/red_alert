@@ -1,115 +1,110 @@
-import { GamePlayer } from './gameModel';
-import { InteractiveObject } from './interactiveObject';
-import { IObjectInfo } from './dto';
-import { IVector, Vector } from '../common/vector';
-import { InteractiveTile } from './interactiveTile';
-import { IListClient, IListData} from './list';
+import {IVector, Vector} from '../common/vector';
+import {InteractiveTile} from './interactiveTile';
+import {IListClient, IListData, ListModel, ListSocketClient} from './list';
+import {IObject, ITickable} from "./dto";
+import Signal from "../common/signal";
+import {GamePlayer, MapInfo} from "./gameModel";
+import {createIdGenerator} from "./idGenerator";
+import {SocketClient} from "../common/SocketClient1";
 
-class GameObjectList{
-  list: GameObject[] = [];
-
-  add(object:GameObject) {   
-    this.list.push(object);
-  }
-
-  tick(delta: number) {
-    this.list.forEach(item => item.tick(delta));
-  }
-}
-
-export class GameObject{
-  name: string;
-  health: number;
-  type: "unit" | "build";
-  bullet?: number;
+export class GameModel{
+  //objectList: GameObjectList;
+  mapInfo: MapInfo;
   player: GamePlayer;
-  position: Vector;
-  node: InteractiveObject;
-  id: string;
-  onObjectUpdate: () => void;
-  constructor(object: IObjectInfo, player: GamePlayer, position:Vector) {
-    this.name = object.name;
-    this.health= 100;
-    this.type = object.type;
-    this.bullet = 10;
-    this.player = player;
-    this.position = position.clone();
-    //this.id = globalGameInfo.nextId();
-    //this.node = new InteractiveObject();   
-    //this.node.position = position.clone();
+  onUpdateSidePanel: Signal<void> = new Signal();
+  onUpdateCanvas: Signal<void> = new Signal();
+  updateModel: (data: string) => void;
+  players: GamePlayer[] = [];
+
+  //onBuild: (build: IObjectInfo) => void;
+  private listSocketModelClient: ListSocketClient<IListItem>;
+  private listModel: ListModel<IListItem>;
+  constructor(players: string[], name: string, socket: SocketClient) {
+
+    //this.objectList = new GameObjectList();
+
+    this.listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
+
+    this.listSocketModelClient = new ListSocketClient<IListItem>(socket, this.listModel)
+    this.listSocketModelClient.
+    const testListView1 = new TestListView1(this.listSocketModelClient);
+
+    this.mapInfo = new MapInfo();
+    players.forEach((item) => {
+      const player = new GamePlayer(item);
+      this.players.push(player);
+    })
+    console.log(this.players, name);
+    this.player = this.players.find(item => item.id === name);
+    //this.player = new GamePlayer();
+    this.player.onUpdatePlayer = () => {
+      this.onUpdateSidePanel.emit();
+    }
   }
 
-  tick(delta: number) {
-    
-  }
+  // tick(delta: number) {
+  //   this.player.tick(delta);
+  //   this.objectList.tick(delta);
+  // }
 
-  toJSON() {
-    
+  //создать массив вскх игроков GamePlayer, наш игрок будет в this.player
+  addBuild(data: { object: IObject, playerName: string, position: Vector }) {
+    this.listSocketModelClient.addItem({
+      position: data.position,
+      health: 100,
+      type: data.object.object.name,
+      player: data.playerName,
+    });
+    // if (data.playerName === this.player.id) {
+    //   this.player.buildsInGame.push(data.object.object);
+    //   this.player.getAvailableObject();
+    //   const obj = this.player.allObject.find(item => item.object.name === data.object.object.name);
+    //   obj.status = 'Available';
+    //   obj.progress = 0;
+    //   this.onUpdateSidePanel.emit();
+    // }
+    //
+    // //obj.status = 'Available';
+    // //obj.progress = 0;
+    // console.log(data)
+    // const player = this.players.find(item => item.id === data.playerName);
+    // const newObject = new GameObject1(data.object.object, player, new Vector(data.position.x, data.position.y));
+    // newObject.onObjectUpdate = () => {
+    //   this.updateModel(newObject.toJSON())
+    // }
+    // this.objectList.add(newObject);
   }
-
-  fromJSON(data: string) {
-    
-  }
-  
 }
 
-class GameObject1 extends GameObject{
-  node: InteractiveTile;
-  
-  constructor(object: IObjectInfo, player: GamePlayer, position:Vector) {
-    super(object, player, position);
-    this.node = new InteractiveTile();  
-    this.node.gameObject = this;
-    this.node.position = position.clone();
-    this.node.health = this.health;
-  }
-
-  tick(delta: number) {
-   // this.health -= delta * 0.001;
-    //this.node.health = this.health;
-    //this.onObjectUpdate()
-  }
-
-
-  
-  toJSON() {
-    return JSON.stringify({ position: this.position, health: this.health, id: this.id});
-  }
-
-  fromJSON(data: string) {
-    const newData = JSON.parse(data);
-    this.health = newData.health;
-    this.node.health = this.health;
-  }
-}
-
-export interface IListItem{
+export interface IListItem {
   player: string;
   position: IVector;
   type: string;
   //content: string; 
   health: number;
-  
+
 }
 
-export class ItemView{
+export class ItemView {
   onDelete: () => void;
+
   constructor() {
-    
+
   }
 
   update(data: IListItem, id: string) {
-    
+
   }
+
   destroy() {
-    
+
   }
 
 }
 
-export class GameObjectView extends ItemView{ 
+export class GameObjectView extends ItemView {
   node: InteractiveTile;
-  
+
   //onObjectUpdate: () => void;
   constructor(/*object: IObjectInfo, player: GamePlayer, position: Vector*/) {
     super()
@@ -119,58 +114,54 @@ export class GameObjectView extends ItemView{
     // this.bullet = 10;
     // this.player = player;
     // this.position = position.clone();
-     this.node = new InteractiveTile();  
+    this.node = new InteractiveTile();
     //this.node.gameObject = this;
     //this.node.position = position.clone();
     //this.node.health = this.health;
   }
-  update(data: IListItem, id: string ) {
+
+  update(data: IListItem, id: string) {
     //this.node.gameObject = this;
     this.node.position = Vector.fromIVector(data.position);
     //this.health = data.health;
     this.node.health = data.health;
-    this.node.id = id; 
+    this.node.id = id;
   }
 }
 
 export class TestListView1 {
   model: IListClient<IListItem>;
   items: Record<string, ItemView> = {};
-  constructor( model:IListClient<IListItem>) {
+
+  constructor(model: IListClient<IListItem>) {
     this.model = model;
-    
-    //const controls = new Control(this.node);
-    //const addButton = new Control(controls.node, 'button', '', 'add');
-    // addButton.node.onclick = ()=>{
-    //   this.model.addItem({name:Math.random().toString(), content:'content '+Math.random().toString()})
-    // }
-    // this.list = new Control(this.node);
-    //this.update();
-    model.onChange = (listData: IListData<IListItem>)=>{
+
+    model.onChange = (listData: IListData<IListItem>) => {
       this.update(listData);
     }
     model.getList();
   }
 
-  update(listData: IListData<IListItem>){
+  update(listData: IListData<IListItem>) {
     //const listData = this.model.model.getList(); 
-    Object.keys(listData).forEach(itemId=>{
+    Object.keys(listData).forEach(itemId => {
       const itemData = listData[itemId];
       const itemView = this.items[itemId]
-      if (itemView){
+      if (itemView) {
         itemView.update(itemData, itemId);
-      } else {
+      }
+      else {
         //const newView = new ItemView();
         const newView = new GameObjectView();
-        newView.onDelete = ()=>{
+        newView.onDelete = () => {
           this.model.removeItem(itemId);
         }
         newView.update(itemData, itemId);
         this.items[itemId] = newView;
       }
     });
-    Object.keys(this.items).forEach(viewId=>{
-      if (!listData[viewId]){
+    Object.keys(this.items).forEach(viewId => {
+      if (!listData[viewId]) {
         this.items[viewId].destroy();
       }
     })

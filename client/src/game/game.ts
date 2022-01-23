@@ -33,12 +33,12 @@ export class Game extends Control{
         canvas.onClick = null;
         //this.model.addBuild(obj, position.clone());
         //
-        listSocketModelClient.addItem({
-          position: position,
-          health: 100,
-          type: obj.object.name,
-          player: name,
-        });
+        // listSocketModelClient.addItem({
+        //   position: position,
+        //   health: 100,
+        //   type: obj.object.name,
+        //   player: name,
+        // });
         //socket.sendNewBuild(obj, position.clone());
       }
     }
@@ -46,25 +46,24 @@ export class Game extends Control{
       listSocketModelClient.updateItem(id, {...listModel.getList()[id], health: 50} )
     }
 
-    this.model.updateModel = (data: string) => {
-      socket.updateObject(data)
-    }
+    // this.model.updateModel = (data: string) => {
+    //   socket.updateObject(data)
+    // }
     const idGenerator =  createIdGenerator('playerId')
     globalGameInfo.nextId = () => {
       return idGenerator();
     }
-
     // const testListModel = new ListModel(createIdGenerator('itemId'));
     // const testListAnyModel = new ListSocketClient(socket.socket, testListModel);
     // //const testListAnyModel = new TestListLocalModel(testListModel);
     // const testListView = new TestListView(this.node, testListAnyModel);
 
-    socket.onAddNewBuild = (data: string) => {
-      this.model.addBuild(JSON.parse(data));
-    }
-    socket.onGetUpdateObject = (data: string) => {
-      this.model.setNewObject(JSON.parse(data))
-    }
+    // socket.onAddNewBuild = (data: string) => {
+    //   this.model.addBuild(JSON.parse(data));
+    // }
+    // socket.onGetUpdateObject = (data: string) => {
+    //   this.model.setNewObject(JSON.parse(data))
+    // }
 
     const listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
     const listSocketModelClient = new ListSocketClient<IListItem>(socket.socket, listModel) 
