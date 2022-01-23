@@ -13,6 +13,7 @@ export class GameCanvas extends Control {
   interactiveList: InteractiveList;
   fps: number;
   hoveredObjects: InteractiveObject = null;
+  onObjectClick: (id: string)=>void;
 
   constructor(parentNode: HTMLElement, model: GameModel) {
     super(parentNode);
@@ -44,8 +45,9 @@ export class GameCanvas extends Control {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
         console.log('canvas-click', this.hoveredObjects)
-        this.hoveredObjects.gameObject.health--;
+        //this.hoveredObjects.gameObject.health--;
         this.hoveredObjects.gameObject.onObjectUpdate();
+        this.onObjectClick(this.hoveredObjects.id);
       }
      
 

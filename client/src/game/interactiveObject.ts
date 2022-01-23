@@ -15,7 +15,7 @@ export class InteractiveObject{
   //position: {x:number, y:number};
   //name:string;
   //type: string = 'interactive';
-  id: number;
+  id: string;
   position: Vector;
   gameObject:GameObject;
   // get position(){

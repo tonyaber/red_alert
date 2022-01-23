@@ -232,7 +232,7 @@ export class GamePlayer{
   }
 }
 
-class BuildingProgress{
+export class BuildingProgress{
   object: IObjectInfo;
   progress: number = 0;
 

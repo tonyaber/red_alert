@@ -14,6 +14,8 @@ import { ClientSocketModel } from "../common/SocketClient";
 import { ListModel, ListSocketClient } from "./list";
 import { SocketClient } from "../common/SocketClient1";
 import { GameSocketClient } from "./gameSocketClient";
+import { TestListView1 } from "./gameModel1";
+import { IListItem } from './gameModel1';
 export class Game extends Control{
   sendBuildData: (obj: IObject, position: Vector) => void;
   updateObject: (data: string) => void;
@@ -30,8 +32,18 @@ export class Game extends Control{
       canvas.onClick = (position) => {
         canvas.onClick = null;
         //this.model.addBuild(obj, position.clone());
-        socket.sendNewBuild(obj, position.clone());
+        //
+        listSocketModelClient.addItem({
+          position: position,
+          health: 100,
+          type: obj.object.name,
+          player: name,
+        });
+        //socket.sendNewBuild(obj, position.clone());
       }
+    }
+    canvas.onObjectClick = (id) => {
+      listSocketModelClient.updateItem(id, {...listModel.getList()[id], health: 50} )
     }
 
     this.model.updateModel = (data: string) => {
@@ -42,10 +54,10 @@ export class Game extends Control{
       return idGenerator();
     }
 
-    const testListModel = new ListModel(createIdGenerator('itemId'));
-    const testListAnyModel = new ListSocketClient(socket.socket, testListModel);
-    //const testListAnyModel = new TestListLocalModel(testListModel);
-    const testListView = new TestListView(this.node, testListAnyModel);
+    // const testListModel = new ListModel(createIdGenerator('itemId'));
+    // const testListAnyModel = new ListSocketClient(socket.socket, testListModel);
+    // //const testListAnyModel = new TestListLocalModel(testListModel);
+    // const testListView = new TestListView(this.node, testListAnyModel);
 
     socket.onAddNewBuild = (data: string) => {
       this.model.addBuild(JSON.parse(data));
@@ -53,7 +65,12 @@ export class Game extends Control{
     socket.onGetUpdateObject = (data: string) => {
       this.model.setNewObject(JSON.parse(data))
     }
+
+    const listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
+    const listSocketModelClient = new ListSocketClient<IListItem>(socket.socket, listModel) 
+    const testListView1 = new TestListView1(listSocketModelClient);
   }
+
 }
 
 class TickList {
