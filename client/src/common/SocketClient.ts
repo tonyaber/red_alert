@@ -3,6 +3,7 @@ import {IObject, IObjectInfo} from "../game/dto";
 import {Vector} from "./vector";
 import { GameObject } from "../game/gameModel";
 import Signal from "./signal";
+import { createIdGenerator } from "../game/idGenerator";
 
 export class ClientSocketModel {
 
@@ -13,8 +14,10 @@ export class ClientSocketModel {
   startGame: (data: string) => void;
   getName: (data: string) => void;
   onMessage: Signal<IServerResponseMessage> = new Signal();
+  nextId: () => string;
 
   constructor() {
+    this.nextId = createIdGenerator('socketRequest');
     this._websocket = new WebSocket('ws://localhost:3000/');
     this._websocket.onopen = () => {
       console.log("OPEN")
@@ -75,6 +78,7 @@ export class ClientSocketModel {
     const requestMessage = {
       type: type,
       content: data,
+      requestId: this.nextId()
     }
     this._websocket.send(JSON.stringify(requestMessage))
   }

@@ -1,5 +1,6 @@
 import {IServerResponseMessage} from "./socketInterface";
 import Signal from "./signal";
+import { createIdGenerator } from "../game/idGenerator";
 //'ws://localhost:3000/'
 export class SocketClient {
   private _websocket: WebSocket;
@@ -7,7 +8,10 @@ export class SocketClient {
   onOpen: Signal<void> = new Signal();
   onError: Signal<void> = new Signal();
   onClose:  Signal<void> = new Signal();
+  nextId: () => string;
+
   constructor(url: string) {
+    this.nextId = createIdGenerator('socketRequest');
     this._websocket = new WebSocket(url);
     this._websocket.onopen = () => {
       this.onOpen.emit();
@@ -28,7 +32,20 @@ export class SocketClient {
     const requestMessage = {
       type: type,
       content: data,
+      requestId: this.nextId()
     }
-    this._websocket.send(JSON.stringify(requestMessage))
+    const result = new Promise<IServerResponseMessage>((resolve)=>{
+      const privateMessageHandler = (message:IServerResponseMessage)=>{
+        console.log('private checker', message);
+        if (message.requestId == requestMessage.requestId && type+'Private' == message.type){
+          this.onMessage.remove(privateMessageHandler);
+          resolve(message);
+        }
+      }
+      this.onMessage.add(privateMessageHandler);
+    })
+    
+    this._websocket.send(JSON.stringify(requestMessage));
+    return result;
   }
 }

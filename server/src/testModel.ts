@@ -68,16 +68,30 @@ export class TestListSocket{
       const id = this.model.addItem(requestData);
       this.sendResponse({
         type: 'addItem',
+        requestId: message.requestId,
         content: JSON.stringify({id, item:requestData})
       });
+
+      connection.sendUTF(JSON.stringify({
+        type: 'addItemPrivate',
+        requestId: message.requestId,
+        content: JSON.stringify({id, item:requestData})
+      }));
     }
     if (message.type == 'updateItem'){
       const requestData:{id: string, item: IListItem} = JSON.parse(message.content);
       this.model.updateItem(requestData.id, requestData.item);
       this.sendResponse({
         type: 'updateItem',
+        requestId: message.requestId,
         content: JSON.stringify({id: requestData.id, item:requestData.item})
       });
+
+      connection.sendUTF(JSON.stringify({
+        type: 'updateItemPrivate',
+        requestId: message.requestId,
+        content: JSON.stringify({id: requestData.id, item:requestData.item})
+      }));
     }
 
     if (message.type == 'removeItem'){
@@ -85,14 +99,21 @@ export class TestListSocket{
       this.model.removeItem(requestData);
       this.sendResponse({
         type: 'removeItem',
+        requestId: message.requestId,
         content: JSON.stringify(requestData)
       });
+      connection.sendUTF(JSON.stringify({
+        type: 'removeItemPrivate',
+        requestId: message.requestId,
+        content: JSON.stringify(requestData)
+      }));
     }
 
     if (message.type == 'getList'){
       const list = this.model.getList();
       connection.sendUTF(JSON.stringify({
-        type: 'getList',
+        type: 'getListPrivate',
+        requestId: message.requestId,
         content: JSON.stringify(list)
       }));
     }

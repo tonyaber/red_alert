@@ -2,6 +2,7 @@
 export interface IServerResponseMessage {
   type: string;
   content: string;
+  requestId: string;
 }
 export interface IStartGameData {
   usersInGame: string[],

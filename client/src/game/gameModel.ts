@@ -7,7 +7,11 @@ import { InteractiveObject } from './interactiveObject';
 import { InteractiveTile } from './interactiveTile';
 import { globalGameInfo } from './globalIdGenerator';
 import { GamePlayerServer } from '../../../server/src/gameModelServer';
-export class GameModel implements ITickable{
+import { GameObjectList, IListItem, ItemView } from './gameModel1';
+import { ListModel, ListSocketClient } from './list';
+import { createIdGenerator } from './idGenerator';
+import { SocketClient } from '../common/SocketClient1';
+/*export class GameModel implements ITickable{
   objectList: GameObjectList;
   mapInfo: MapInfo;
   player: GamePlayer;
@@ -39,8 +43,8 @@ export class GameModel implements ITickable{
   //создать массив вскх игроков GamePlayer, наш игрок будет в this.player
   addBuild(data: {  object: IObject, name: string, position: Vector }) {
     if (data.name === this.player.id) {
-      this.player.buildsInGame.push(data.object.object);
-      this.player.getAvailableObject();
+      //this.player.buildsInGame.push(data.object.object);
+      //this.player.getAvailableObject();
       const obj = this.player.allObject.find(item=>item.object.name===data.object.object.name);
       obj.status = 'Available';
       obj.progress = 0;
@@ -64,9 +68,92 @@ export class GameModel implements ITickable{
     this.objectList.list.find(elem => elem.id === data.id).fromJSON(JSON.stringify(data));
   }
 
+}*/
+
+export class GameModel{
+  objectList: GameObjectList;
+  mapInfo: MapInfo;
+  player: GamePlayer;
+  onUpdateSidePanel: Signal<void> = new Signal();
+  onUpdateCanvas: Signal<void> = new Signal();
+  updateModel: (data: string) => void;
+  players: GamePlayer[] = [];
+
+  //onBuild: (build: IObjectInfo) => void;
+  private listSocketModelClient: ListSocketClient<IListItem>;
+  private listModel: ListModel<IListItem>;
+  constructor(players: string[], name: string, socket: SocketClient) {
+
+    //this.objectList = new GameObjectList();
+
+    this.listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
+    this.listSocketModelClient = new ListSocketClient<IListItem>(socket, this.listModel);
+    this.objectList = new GameObjectList(this.listSocketModelClient);
+    this.objectList.onUpdate = (items=>{
+      this.player.update(items);
+    });
+
+    this.mapInfo = new MapInfo();
+    players.forEach((item) => {
+      const player = new GamePlayer(item);
+      this.players.push(player);
+    })
+    console.log(this.players, name);
+    this.player = this.players.find(item => item.id === name);
+    //this.player = new GamePlayer();
+    this.player.onUpdatePlayer = () => {
+      this.onUpdateSidePanel.emit();
+    }
+  }
+
+  tick(delta: number) {
+    this.player.tick(delta);
+    //this.objectList.tick(delta);
+  }
+
+  //создать массив вскх игроков GamePlayer, наш игрок будет в this.player
+  addBuild(data: { object: IObject, playerName: string, position: Vector }) {
+    this.listSocketModelClient.addItem({
+      position: data.position,
+      health: 100,
+      type: data.object.object.name,
+      player: data.playerName,
+    }).then(res=>{
+      data.object.status = "Available"
+      data.object.progress = 0;
+    });
+    // if (data.playerName === this.player.id) {
+    //   this.player.buildsInGame.push(data.object.object);
+    //   this.player.getAvailableObject();
+    //   const obj = this.player.allObject.find(item => item.object.name === data.object.object.name);
+    //   obj.status = 'Available';
+    //   obj.progress = 0;
+    //   this.onUpdateSidePanel.emit();
+    // }
+    //
+    // //obj.status = 'Available';
+    // //obj.progress = 0;
+    // console.log(data)
+    // const player = this.players.find(item => item.id === data.playerName);
+    // const newObject = new GameObject1(data.object.object, player, new Vector(data.position.x, data.position.y));
+    // newObject.onObjectUpdate = () => {
+    //   this.updateModel(newObject.toJSON())
+    // }
+    // this.objectList.add(newObject);
+    this.listSocketModelClient.getList();
+  }
+
+  damageBuild(id:string){
+    //const currentBuild = this.objectList.items[id];
+    //currentBuild.
+    const currentData = this.listModel.getList()[id]
+    //currentData.
+    this.listSocketModelClient.updateItem(id, {...currentData, health: currentData.health - 10} )
+  }
 }
 
-class GameObjectList{
+
+/*class GameObjectList{
   list: GameObject[] = [];
 
   add(object:GameObject) {   
@@ -76,7 +163,7 @@ class GameObjectList{
   tick(delta: number) {
     this.list.forEach(item => item.tick(delta));
   }
-}
+}*/
 
 export class GameObject{
   name: string;
@@ -178,7 +265,7 @@ export class GamePlayer{
         progress: 0,
       }
     })
-    this.getAvailableObject();
+    this.shitAvailableObject();
   }
 
   pauseBuildProgress(object: IObject) {
@@ -213,7 +300,7 @@ export class GamePlayer{
     this.onUpdatePlayer();
   }
 
-  getAvailableObject() {
+  shitAvailableObject() {
     const availableObject = Array.from(new Set(this.buildsInGame.map(item => {
       return item.name;
     })));
@@ -229,6 +316,19 @@ export class GamePlayer{
       this.availableObject.push(item.object)
     })
    
+  }
+
+  update(items:Record<string, ItemView>){
+    this.buildsInGame = [];
+    Object.values(items).forEach(item=>{
+      if (item.data.player == this.id){
+        let info = this.allObject.find(it=>it.object.name == item.data.type)
+        
+        this.buildsInGame.push(info.object);
+      }
+    })
+    this.shitAvailableObject();
+    this.onUpdatePlayer();
   }
 }
 

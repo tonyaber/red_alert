@@ -1,10 +1,11 @@
+import { IServerRequestMessage } from "../../../server/src/serverInterfaces";
 import { SocketClient } from "../common/SocketClient1";
 export type IListData<ItemType> = Record<string, ItemType>;
 
 
 export interface IListClient<ItemType>{
   onChange:(listData:IListData<ItemType>)=>void;
-  addItem:(item:ItemType)=>void;
+  addItem:(item:ItemType)=>Promise<IServerRequestMessage>;
   removeItem: (id:string)=>void;
   getList:()=>void;
 
@@ -81,22 +82,19 @@ export class ListSocketClient<ItemType> implements IListClient<ItemType>{
   }
 
   addItem(item:ItemType){
-    this.socket.sendRequest('addItem', JSON.stringify(item));
+    return this.socket.sendRequest('addItem', JSON.stringify(item));
   }
 
   removeItem(id:string){
-    this.socket.sendRequest('removeItem', id);
+    return this.socket.sendRequest('removeItem', id);
   }
 
   updateItem(id:string, data:ItemType){
-    this.socket.sendRequest('updateItem', JSON.stringify({ item: data, id }));
+    return this.socket.sendRequest('updateItem', JSON.stringify({ item: data, id }));
   }
 
   getList(){
-    this.socket.sendRequest('getList', JSON.stringify({}));
+    return this.socket.sendRequest('getList', JSON.stringify({}));
   }
 }
 
-function createIdGenerator(arg0: string) {
-  throw new Error("Function not implemented.");
-}

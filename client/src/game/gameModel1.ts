@@ -6,9 +6,10 @@ import Signal from "../common/signal";
 import {GamePlayer, MapInfo} from "./gameModel";
 import {createIdGenerator} from "./idGenerator";
 import {SocketClient} from "../common/SocketClient1";
+import { GameCanvas } from './gameCanvas';
 
-export class GameModel{
-  //objectList: GameObjectList;
+export class GameModel implements ITickable{
+  objectList: GameObjectList;
   mapInfo: MapInfo;
   player: GamePlayer;
   onUpdateSidePanel: Signal<void> = new Signal();
@@ -24,10 +25,11 @@ export class GameModel{
     //this.objectList = new GameObjectList();
 
     this.listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
-
     this.listSocketModelClient = new ListSocketClient<IListItem>(socket, this.listModel)
-    this.listSocketModelClient.
-    const testListView1 = new TestListView1(this.listSocketModelClient);
+    this.objectList = new GameObjectList(this.listSocketModelClient);
+    this.objectList.onUpdate = (items=>{
+      this.player.update(items);
+    });
 
     this.mapInfo = new MapInfo();
     players.forEach((item) => {
@@ -42,10 +44,10 @@ export class GameModel{
     }
   }
 
-  // tick(delta: number) {
-  //   this.player.tick(delta);
-  //   this.objectList.tick(delta);
-  // }
+ tick(delta: number) {
+     this.player.tick(delta);
+   // this.objectList.tick(delta);
+   }
 
   //создать массив вскх игроков GamePlayer, наш игрок будет в this.player
   addBuild(data: { object: IObject, playerName: string, position: Vector }) {
@@ -86,6 +88,8 @@ export interface IListItem {
 }
 
 export class ItemView {
+  node: InteractiveTile;
+  data: IListItem;
   onDelete: () => void;
 
   constructor() {
@@ -104,6 +108,7 @@ export class ItemView {
 
 export class GameObjectView extends ItemView {
   node: InteractiveTile;
+  data: IListItem;
 
   //onObjectUpdate: () => void;
   constructor(/*object: IObjectInfo, player: GamePlayer, position: Vector*/) {
@@ -121,6 +126,7 @@ export class GameObjectView extends ItemView {
   }
 
   update(data: IListItem, id: string) {
+    this.data = data;
     //this.node.gameObject = this;
     this.node.position = Vector.fromIVector(data.position);
     //this.health = data.health;
@@ -129,9 +135,10 @@ export class GameObjectView extends ItemView {
   }
 }
 
-export class TestListView1 {
-  model: IListClient<IListItem>;
+export class GameObjectList {
+  private model: IListClient<IListItem>;
   items: Record<string, ItemView> = {};
+  onUpdate: (items: Record<string, ItemView>)=>void;
 
   constructor(model: IListClient<IListItem>) {
     this.model = model;
@@ -142,7 +149,7 @@ export class TestListView1 {
     model.getList();
   }
 
-  update(listData: IListData<IListItem>) {
+  private update(listData: IListData<IListItem>) {
     //const listData = this.model.model.getList(); 
     Object.keys(listData).forEach(itemId => {
       const itemData = listData[itemId];
@@ -164,6 +171,7 @@ export class TestListView1 {
       if (!listData[viewId]) {
         this.items[viewId].destroy();
       }
-    })
+    });
+    this.onUpdate(this.items);
   }
 }
