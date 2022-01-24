@@ -291,7 +291,8 @@ class ClientSocket{
   }
 }
 
-class LocalModel{
+class LocalModel //implements IClientModel
+{
   onSideUpdate: any;
   onCanvasObjectUpdate: (response:IGameUpdateRespone)=>void;
   myPlayer: PlayerController;
@@ -354,7 +355,8 @@ class LocalModel{
 
 }
 
-class SocketModel{
+class SocketModel //implements IClientModel
+{
   onSideUpdate: any;
   onCanvasObjectUpdate: (response:IGameUpdateRespone)=>void;
   private client: ClientSocket;
