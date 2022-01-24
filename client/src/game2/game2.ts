@@ -291,54 +291,201 @@ class ClientSocket{
   }
 }
 
+class LocalModel{
+  onSideUpdate: any;
+  onCanvasObjectUpdate: (response:IGameUpdateRespone)=>void;
+  myPlayer: PlayerController;
+
+  constructor(){
+
+  }
+
+  startGame(playersInfo){
+    
+    const gamePlayersInfo = playersInfo.map(it=>it);
+    const game = new GameModel(gamePlayersInfo);
+    const myPlayerController: PlayerController = new PlayerController('dfsdf', game);
+    this.myPlayer = myPlayerController;
+    const bots = playersInfo.map(it=> {
+      const playerController = new PlayerController(it.id, game);
+      return new BotCommander(playerController);
+    });
+
+    game.onUpdate = (id, data)=>{
+      bots.forEach(player=> player.sendMessage({}));
+      //this.onCanvasObjectUpdate();
+    }
+    game.onSideUpdate = (id, data)=>{
+      bots.find(it=>it).sendMessage(data);
+      this.onSideUpdate();
+    }
+  }
+
+  //side
+
+  startBuild(){
+    //this.myPlayer.startBuilding();
+  }
+
+  pauseBuild(){
+
+  }
+
+  cancelBuild(){
+
+  }
+
+  //to map
+  addBuild(){
+
+  }
+
+  setPrimary(){
+
+  }
+
+  moveUnit(){
+
+  }
+
+  setAttackTarget(){
+
+  }
+
+}
+
 class SocketModel{
   onSideUpdate: any;
-  onCanvasObjectUpdate: any;
+  onCanvasObjectUpdate: (response:IGameUpdateRespone)=>void;
+  private client: ClientSocket;
 
   constructor(client:ClientSocket){
+    this.client = client;
     client.onMessage = (message)=>{
       if(message){
         this.onSideUpdate()  
       }
 
       if (message){
-        this.onCanvasObjectUpdate()
+        this.onCanvasObjectUpdate(message)
       }
     }
   }
 
+  //side
+
   startBuild(){
+    this.client.sendMessage('');
+  }
+
+  pauseBuild(){
 
   }
 
+  cancelBuild(){
+
+  }
+
+  //to map
   addBuild(){
+
+  }
+
+  setPrimary(){
+
+  }
+
+  moveUnit(){
+
+  }
+
+  setAttackTarget(){
 
   }
 
   //all game player methods
 }
 
+interface IGameObjectData{
+  id: string;
+  type: string;
+  content: string; // or all fields
+}
+
+interface IGameUpdateRespone{
+  type: 'update' | 'delete' | 'create';
+  data: IGameObjectData;
+}
+
 class InteractiveObject{
 
 }
 
-class GameView{
-  sidePanel
+class Canvas{
+  interactives: Record<string, InteractiveObject> = {}
+
   canvas
+  onGameMove:()=>void;
+
+  constructor(){
+    this.canvas.onmousemove =()=>{
+
+    }
+  }
+
+  updateObject(data:IGameObjectData){
+
+  }
+
+  deleteObject(data:IGameObjectData){
+
+  }
+}
+
+class SidePanel{
+  money: any;//Control;
+  buildsButtons: any[];
+
+  onSelect:(selected)=>void;
+
+  constructor(){
+
+  }
+
+  update(){
+
+  };
+}
+
+class GameView{
+  sidePanel: SidePanel;
+  canvas: Canvas;
   //objects: InteractiveObject[]
   //use cach model or not
 
   constructor(model:SocketModel){
-    this.sidePanel.onSelect = ()=>{
-      model.addBuild()
+    this.sidePanel.onSelect = (selected)=>{
+      if (selected.status == 'ready'){
+        ///this.canvas.... get vector
+        model.addBuild();
+      } else if (selected.status == 'available') {
+        model.startBuild()
+      }
+      
+      
     }
 
-    this.canvas.onMove = ()=>{
+    this.canvas.onGameMove = ()=>{
       model.startBuild();
     }
 
-    model.onCanvasObjectUpdate = ()=>{
-      this.canvas.update();
+    model.onCanvasObjectUpdate = (response)=>{
+      if (response.type == 'update'){
+        this.canvas.updateObject(response.data);
+      } else if(response.type == 'delete'){
+        this.canvas.deleteObject(response.data);
+      }
+      
     }
   }
 }
