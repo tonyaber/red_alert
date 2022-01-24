@@ -9,13 +9,13 @@ import { Vector } from "../common/vector";
 import { createIdGenerator } from './idGenerator';
 import { globalGameInfo } from './globalIdGenerator';
 import { GamePlayerServer } from '../../../server/src/gameModelServer';
-import {TestListView} from './testListView';
+import {TestListView,IListItem} from './testListView';
 import { ClientSocketModel } from "../common/SocketClient";
 import { ListModel, ListSocketClient } from "./list";
 import { SocketClient } from "../common/SocketClient1";
 import { GameSocketClient } from "./gameSocketClient";
 //import { TestListView1 } from "./gameModel1";
-import { IListItem } from './gameModel1';
+//import { IListItem } from './gameModel1';
 
 import { TickList } from './tickList';
 export class Game extends Control{
@@ -48,5 +48,8 @@ export class Game extends Control{
     globalGameInfo.nextId = () => {
       return idGenerator();
     }
+    const listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
+    const listSocketModelClient = new ListSocketClient<IListItem>(socket.socket, listModel);
+    const objectList = new TestListView(this.node, listSocketModelClient);
   }
 }

@@ -1,9 +1,11 @@
 import { IConnection, IServerRequestMessage, IServerResponseMessage } from "./serverInterfaces";
-import {connection} from "websocket";
+import { connection } from "websocket";
+import { TickList } from './tickList';
 
 interface IListItem{
   name:string;
   content:string;
+  type: string;
 }
 
 type IListData = Record<string, IListItem>;
@@ -15,14 +17,58 @@ function createIdGenerator(prefix: string) {
   }
 }
 
+class AbstractClass {
+ update(data:IListItem) {
+    
+  }
+
+  tick(delta: number) {
+    
+  }
+}
+class class1 extends AbstractClass{
+  data: IListItem;
+  constructor(data: IListItem) {
+    super();
+    this.data = data;
+  }
+}
+
+class class2 extends AbstractClass{
+ data: IListItem;
+  constructor(data: IListItem) {
+    super();
+    this.data = data;
+  }
+
+  tick(delta: number) {
+      
+  }
+}
+
+class class3 extends AbstractClass{
+ data: IListItem;
+  constructor(data: IListItem) {
+    super();
+    this.data = data;
+  }
+ 
+}
+
+
+const map = new Map([['add1',  class1],['add2', class2], ['add3', class3]]);
+
+
 export class TestListModel{
-  private data:IListData = {};
+  private data:Record<string, AbstractClass> = {};
   private nextId = createIdGenerator('testlist');
-  public onChange:()=>void;
+  public onChange: () => void;
+  
   users: {connection:{sendUTF:(msg:string)=>void}}[];
+  tickList: TickList;
 
   constructor() {
-    
+    this.tickList = new TickList()
   }
 
   addUser(user: {connection:{sendUTF:(msg:string)=>void}}){
@@ -39,20 +85,34 @@ export class TestListModel{
 
   addItem(/*user*/item:IListItem):string{
     const id = this.nextId();
-    this.data[id] = item;
+    const newClass = map.get(item.type);
+    this.data[id] = new newClass(item);
+    this.tickList.add(this.data[id]);
     this.onChange?.();
+
+    //  this.sendResponse({
+    //     type: 'addItem',
+    //     requestId: message.requestId,
+    //     content: JSON.stringify({id, item:requestData})
+    //   });
+    //   this.sendPrivate(connection, {
+    //     type: 'addItemPrivate',
+    //     requestId: message.requestId,
+    //     content: JSON.stringify({id, item:requestData})
+    //   });
     //this.sendPrivate(user, )
     //this.sendPublic();
     return id;
   }
 
-  removeItem(id:string){
+  removeItem(id: string) {
+    this.tickList.remove(this.data[id]);
     delete this.data[id];
     this.onChange?.();
   }
 
   updateItem(id:string, data:IListItem){
-    this.data[id] = data;
+    this.data[id].update(data);
     this.onChange?.();
   }
 

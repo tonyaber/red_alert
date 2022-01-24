@@ -3,9 +3,10 @@ import { ClientSocketModel } from '../common/SocketClient';
 import {createIdGenerator} from './idGenerator';
 import { ListSocketClient,IListClient,ListModel,IListData } from './list';
 
-interface IListItem{
+export interface IListItem{
   name: string;
   content: string;
+  type: string;
 }
 class ItemView extends Control{
   name: Control<HTMLElement>;
@@ -39,8 +40,17 @@ export class TestListView extends Control{
     const controls = new Control(this.node);
     const addButton = new Control(controls.node, 'button', '', 'add');
     addButton.node.onclick = ()=>{
-      this.model.addItem({name:Math.random().toString(), content:'content '+Math.random().toString()})
+      this.model.addItem({name:Math.random().toString(), content:'content '+Math.random().toString(), type: 'add1'})
     }
+    const addButton2 = new Control(controls.node, 'button', '', 'add');
+    addButton2.node.onclick = ()=>{
+      this.model.addItem({name:Math.random().toString(), content:'content '+Math.random().toString(), type: 'add2'})
+    }
+    const addButton3 = new Control(controls.node, 'button', '', 'add');
+    addButton3.node.onclick = ()=>{
+      this.model.addItem({name:Math.random().toString(), content:'content '+Math.random().toString(), type: 'add3'})
+    }
+
     this.list = new Control(this.node);
     //this.update();
     model.onChange = (listData: IListData<IListItem>)=>{
