@@ -18,14 +18,13 @@ export class buildSidePanel extends Control{
     this.progress = new Control(this.node, 'div');
     this.node.onclick = () => {
       if (this.data) {
-        if (this.data.status === 'Available') {
+        if (this.data.status === 'available') {
           this.onAvailableClick(this.data);
         } else if (this.data.status === 'InProcess') {
           this.onInprogressClick(this.data);
         } else if (this.data.status === 'isPause') {
           this.onIsPauseClick(this.data);
-        }
-        else if (this.data.status === 'isReady') {
+        } else if (this.data.status === 'isReady') {
           this.onIsReadyClick(this.data);
         }
       }

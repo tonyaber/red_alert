@@ -1,4 +1,4 @@
-import { IObjectInfo, IRegisteredPlayerInfo } from "./dto";
+import { IObjectInfo, IRegisteredPlayerInfo, IServerRequestMessage } from "./dto";
 import { GameModel } from "./gameModel";
 import { connection } from "websocket";
 import { BotCommander } from './botCommander';
@@ -27,20 +27,25 @@ export class GameServer{
       const playerController = new PlayerController(it.id, this.gameModel);
       return new (it.type == 'bot'? BotCommander : HumanCommander)(playerController, it.connection );
     });
+  
     this.gameModel.onUpdate = (id, data)=>{
       this.players.forEach(player => player.sendMessage('update', data));
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       this.players.find(it=>it.playerController.playerId === id).sendMessage('updateSidePanel', data);
     }
+    
     ///start to game, fix it later
-    this.registeredPlayersInfo.forEach(item => {
-      const allPlayers = this.registeredPlayersInfo.map(it => it.id)
-      this.sendMessage(item.connection, 'startGame', JSON.stringify(allPlayers));
+    const allPlayers = JSON.stringify(this.registeredPlayersInfo.map(it => it.id))
+    this.players.forEach(item => {
+      const sidePanelData = this.gameModel.getState(item.playerController.playerId);
+      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanelData}));
+      
     })
   }
-  startBuilding(data: {name:string, playerId: string}) {
-    this.gameModel.startBuilding(data.playerId, data.name)
+ 
+  handleMessage(ms: IServerRequestMessage, id) {
+    (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
   }
 
   sendMessage(connection: connection, msg: string, date: string) {

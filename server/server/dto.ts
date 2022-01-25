@@ -20,9 +20,14 @@ export interface IObject {
   deps: string[],
   name: string,
   cost: number,
+  time: number,
  }
 export interface IObjectInfo {
   object: IObject,
   status: string,
   progress: number,
+}
+
+export interface ITickable{
+  tick: (deltaTime: number) => void;
 }

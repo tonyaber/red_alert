@@ -13,9 +13,9 @@ export class Application extends Control{
     startPage.onAuth = (name) => {
       startPage.destroy();
       const settingPage = new SettingPage(this.node, this.socket);
-      settingPage.onStartGame = (players) => {
+      settingPage.onStartGame = (data) => {
         settingPage.destroy();
-        const game = new Game(this.node, this.socket, name) ///players, name?
+        const game = new Game(this.node, this.socket, name, data) ///players, name?
       }
     }
   }
@@ -29,7 +29,7 @@ class StartPage extends Control{
     button.node.onclick = () => {
       socket.addUser();
     }
-    socket.auth = (name) => {
+    socket.onAuth = (name) => {
       this.onAuth(name);
     }
   }
@@ -40,8 +40,12 @@ class SettingPage extends Control{
   constructor(parentNode: HTMLElement,socket: SocketModel) {
     super(parentNode);
     const Setting = new Control(this.node, 'div', '', 'Setting');
-    socket.onStartGame = (players: string) => {
-      this.onStartGame(players);
+    const button = new Control(this.node, 'button', '', 'Register');
+    button.node.onclick = () => {
+      socket.registerGamePlayer()
+    }
+    socket.onStartGame = (data: string) => {
+      this.onStartGame(data);
     }
 
   }

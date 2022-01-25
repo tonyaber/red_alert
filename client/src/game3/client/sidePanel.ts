@@ -4,9 +4,7 @@ import { buildSidePanel } from './buildSidePanel';
 
 export class SidePanel extends Control{
   money: Control;
-  buildsButtons: any[];
-
-  buildButtons: any;
+  buildButtons: any = [];
   onSidePanelClick: (selected: string, object: IObjectInfo)=>void;
 
   constructor(parentNode: HTMLElement) {
@@ -15,9 +13,10 @@ export class SidePanel extends Control{
 
   }
 
-  update(data: { data: IObjectInfo[], money: number }) {
+  update(data: { sidePanelData: IObjectInfo[], money: number }) {
+   
     this.money.node.textContent = data.money.toFixed(2).toString();
-    data.data.map(item => {
+    data.sidePanelData.map(item => {
       if (this.buildButtons[item.object.name]) {
         this.buildButtons[item.object.name].update(item)
       } else {
@@ -41,9 +40,9 @@ export class SidePanel extends Control{
       }      
     })
     const keys = Object.keys(this.buildButtons)
-    if (data.data.length !== keys.length) {
+    if (data.sidePanelData.length !== keys.length) {
       keys.map(item => {
-        if (!data.data.find(it => it.object.name === item)) {
+        if (!data.sidePanelData.find(it => it.object.name === item)) {
           this.buildButtons[item].destroy();
         }
       })

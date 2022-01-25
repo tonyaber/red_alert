@@ -1,4 +1,5 @@
-import { IVector } from "../../common/vector";
+import { IVector } from "../../client/src/common/vector";
+import { IObjectInfo } from "./dto";
 import { GameModel } from "./gameModel";
 
 export class PlayerController{
@@ -10,12 +11,12 @@ export class PlayerController{
     this.playerId = playerId;
   }
 
-  startBuilding(objectType:string){
-    return this.gameModel.startBuilding(this.playerId, objectType);
+  startBuilding(objectType: string) {
+   return this.gameModel.startBuilding(this.playerId, objectType);
   }
 
   addGameObject(objectType:string, position:IVector){
-    return this.gameModel.addGameObject(this.playerId, objectType, position)
+    return this.gameModel.addGameObject(this.playerId, objectType, position, objectType)
   }
 
   moveUnits(unitIds:string[], target:IVector){
