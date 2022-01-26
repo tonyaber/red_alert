@@ -9,7 +9,8 @@ export class GameModel{
   players: IRegisteredPlayerInfo[] = [];
   objects: Record<string, GameObject> = {};
   playersSides: Array<PlayerSide> =[];
-  onUpdate: (state: IGameObjectData, action: string)=>void;
+  onUpdate: (state: IGameObjectData, action: string) => void;
+  onUpdatePrimary: ( oldPrimary: string, newPrimary: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
   tickList: TickList;
@@ -66,6 +67,9 @@ export class GameModel{
       this.onUpdate(state, 'update');
     }
     gameObject.onCreate = (state) => {
+      if (!this._getPrimary(playerId, objectType)) {
+        gameObject.data.primary = true;
+      }
       this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
       this.onUpdate(state, 'create');     
     }
@@ -90,8 +94,21 @@ export class GameModel{
 
   }
 
-  setPrimary(playerId:string, buildId:string){
+  setPrimary(playerId: string, buildId: string, name: string) {
+    if (this._getPrimary(playerId, name)) {
+      const oldPrimary = this._getPrimary(playerId, name);
+      oldPrimary.data.primary = false;
+      const newPrimary = this.gameObjects.find(item => item.objectId === buildId);
+      newPrimary.data.primary = true;
+      this.onUpdatePrimary(oldPrimary.objectId, newPrimary.objectId);
+    }
+    
 
+    //this.gameObjects.find(item => item.objectId === buildId);
+  }
+
+  _getPrimary(playerId: string, name: string) {
+    return this.gameObjects.find(item => item.type === name && item.data.primary && item.data.playerId === playerId);
   }
 
   //

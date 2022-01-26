@@ -37,13 +37,17 @@ export class GameServer{
       }
       if(action === 'delete'){
 
-
       }
      
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       this.players.find(it=>it.playerController.playerId === id).sendMessage('updateSidePanel', data);
     }
+
+    this.gameModel.onUpdatePrimary = (oldPrimary, newPrimary) => {
+      this.players.forEach(player => player.sendMessage('updatePrimary', JSON.stringify({oldPrimary, newPrimary})));
+    }
+
     
     ///start to game, fix it later
     const allPlayers = JSON.stringify(this.registeredPlayersInfo.map(it => it.id))

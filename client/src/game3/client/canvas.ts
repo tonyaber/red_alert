@@ -9,7 +9,7 @@ export class Canvas extends Control{
   
   onGameMove: () => void;
   onClick: (position: Vector) => void;
-  onObjectClick: (id: string) => void;
+  onObjectClick: (id: string, name: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   hoveredObjects: InteractiveObject = null;
@@ -37,7 +37,7 @@ export class Canvas extends Control{
       if (this.hoveredObjects === null) {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
-        this.onObjectClick(this.hoveredObjects.id);
+        this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
       }
   
     }
@@ -55,6 +55,11 @@ export class Canvas extends Control{
 
   addObject(data: IGameObjectData) {
     const interactiveObject = new InteractiveObject(data);
+  }
+
+  updatePrimary(oldPrimary: string, newPrimary: string) {
+    this.interactiveList.list.find(item => item.id === oldPrimary).primary = false;
+    this.interactiveList.list.find(item => item.id === newPrimary).primary = true;
   }
   startRender(){
     let lastTime: number = null;

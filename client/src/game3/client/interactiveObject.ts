@@ -20,6 +20,7 @@ export class InteractiveObject{
   playerId: string;
   position: Vector;
   type: string;
+  primary: boolean;
   // gameObject:GameObject;
   // get position(){
   //   return new Vector(0,0);
@@ -33,6 +34,7 @@ export class InteractiveObject{
     this.id = data.objectId;
     this.playerId = data.content.playerId;
     this.type = data.type;
+    this.primary = data.content.primary;
     
     interactiveList.add(this);
   }
@@ -77,7 +79,11 @@ export class InteractiveObject{
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#fff';
-    ctx.fillText(this.type, this.position.x+20, this.position.y+20)
+    ctx.fillText(this.type, this.position.x + 20, this.position.y + 20);
+    if (this.primary) {
+      ctx.fillText("Primary", this.position.x + 20, this.position.y);
+    }
+    
   }
 
   getAction(hovered:InteractiveObject, mapTile?:number) {

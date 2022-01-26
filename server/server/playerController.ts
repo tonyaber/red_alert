@@ -16,7 +16,7 @@ export class PlayerController{
   }
 
   addGameObject(objectType:string, position:IVector){
-    return this.gameModel.addGameObject(this.playerId, objectType, position)
+    return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
   moveUnits(unitIds:string[], target:IVector){
@@ -27,7 +27,7 @@ export class PlayerController{
 
   }
 
-  setPrimary(buildId:string){
-
+  setPrimary(buildId: string, name: string) {    
+    this.gameModel.setPrimary(this.playerId, buildId, name);
   }
 }

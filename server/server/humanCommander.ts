@@ -21,6 +21,9 @@ export class HumanCommander{
     if (message.type === 'addBuild') {
       this.playerController.addGameObject(message.content.name, message.content.position);
     }
+    if(message.type ==='setPrimary'){
+      this.playerController.setPrimary(message.content.id, message.content.name);
+    }
   }
 
   sendMessage(type: string, message:string){ //send to client

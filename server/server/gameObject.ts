@@ -7,6 +7,7 @@ export class GameObject {
     position: null,
     health: null,
     playerId: null,
+    primary: false,
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData) => void;

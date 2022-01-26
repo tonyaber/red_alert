@@ -45,7 +45,10 @@ export class PlayerSide{
   }
 
   removeBuilding(name: string) {
-    ///delete
+    const index = this.buildsInGame.findIndex(item=>item===name);
+    this.buildsInGame.splice(index, 1);
+    this.updateAvailableObject();
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 
   setBuilding(name: string) {
@@ -86,9 +89,12 @@ export class PlayerSide{
         if (item.isReady) {
           this.buildings.find(it => it.object === item.object).status = 'isReady';
           this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
+          this.onReady(item.object.name);
         }
       })
       this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
     }
   }
 }
+
+
