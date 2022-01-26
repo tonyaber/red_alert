@@ -7,7 +7,8 @@ export class PlayerSide{
   buildings: IObjectInfo[] = [];
   buildsInGame: string[] = [];
   onUpdate:(data: string)=>void;
-  onReady:(objectType:string)=>void;
+  onReady: (objectType: string) => void;
+  
   id: string;
   buildsInProgress: BuildingProgress[] = [];
   constructor(id: string){
@@ -23,22 +24,28 @@ export class PlayerSide{
     }).map(item => {
       return {
         object: item,
-        status: 'available',
+        status: 'notAvailable',
         progress: 0,
       }
     });
-    //this.getAvailableObject();
-    //this.onUpdate(JSON.stringify({ sidePanelData: this.getAvailableObject(), money: this.money }));
+    this.updateAvailableObject();
   }
 
-
-  getAvailableObject() {
-
-    return this.buildings;
+  updateAvailableObject() {
+    const availableObject = Array.from(new Set(this.buildsInGame));
+       
+    this.buildings.filter(item => item.object.deps.includes('rootAccess'))
+      .concat(this.buildings.filter(item => item.object.deps.every(el=>availableObject.includes(el))))
+      .filter(item => item.status === 'notAvailable')
+      .map(item => item.status = 'available'); 
   }
 
-  getState() {
+  getState() {    
     return {sidePanelData: this.buildings, money: this.money};
+  }
+
+  removeBuilding(name: string) {
+    ///delete
   }
 
   setBuilding(name: string) {
@@ -46,7 +53,8 @@ export class PlayerSide{
     build.status = 'available';
     build.progress = 0;
     this.buildsInGame.push(name);
-    this.onUpdate(JSON.stringify({ sidePanelData: this.getAvailableObject(), money: this.money }));
+    this.updateAvailableObject()
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 
   setMoney(){
@@ -59,8 +67,7 @@ export class PlayerSide{
     build.status = 'inProgress';
     const progress = new BuildingProgress(build.object);    
     this.buildsInProgress.push(progress);
-
-    this.onUpdate(JSON.stringify({ sidePanelData: this.getAvailableObject(), money: this.money }));
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
     //return 'private'
     //???
     return {content: 'ok'}
@@ -81,7 +88,7 @@ export class PlayerSide{
           this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
         }
       })
-      this.onUpdate(JSON.stringify({ sidePanelData: this.getAvailableObject(), money: this.money }));
+      this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
     }
   }
 }

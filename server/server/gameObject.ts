@@ -9,7 +9,8 @@ export class GameObject {
     playerId: null,
   };
   onUpdate: ( state: IGameObjectData) => void;
-  onCreate:  ( state: IGameObjectData) => void;
+  onCreate: (state: IGameObjectData) => void;
+  onDelete:(state: IGameObjectData) => void;
   objectId: string;
 
   objects: [] = [];

@@ -33,6 +33,10 @@ export class Game extends Control{
       }
     }
 
+    canvas.onObjectClick = (id: string) => {
+      console.log('set primary',)
+    }
+
     
 
   }

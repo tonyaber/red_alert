@@ -65,14 +65,19 @@ export class GameModel{
     gameObject.onUpdate = (state)=>{
       this.onUpdate(state, 'update');
     }
-    gameObject.onCreate = (state)=>{
-      this.onUpdate(state, 'create');
+    gameObject.onCreate = (state) => {
+      this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
+      this.onUpdate(state, 'create');     
+    }
+    gameObject.onDelete = (state) => {
+       this.playersSides.find(item => item.id === playerId).removeBuilding(objectType);
+      this.onUpdate(state, 'delete'); 
     }
     gameObject.create();
     this.gameObjects.push(gameObject);
     //
     //
-    this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
+    //.playersSides.find(item => item.id === playerId).setBuilding(objectType);
 
     return true;
   }
