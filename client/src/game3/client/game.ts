@@ -1,5 +1,6 @@
 import Control from "../../common/control";
 import { Canvas } from "./canvas";
+import { IObjectContent } from "./dto";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 
@@ -14,12 +15,19 @@ export class Game extends Control{
     socket.onSideUpdate = (data) => {
       sidePanel.update(data);
     }
+    socket.onUpdate = (data)=> {
+      canvas.updateObject(data)
+    }
+    socket.onAddObject = (data) => {
+      canvas.addObject(data);
+    }
 
     sidePanel.onSidePanelClick = (selected, object)=> {
       if (selected === 'onAvailableClick') {
         socket.startBuild(object.object.name, id);
       } else if (selected === 'onIsReadyClick') {
         canvas.onClick = (position) => {
+           canvas.onClick = null;
           socket.addBuild(object.object.name, position, id);
         }
       }

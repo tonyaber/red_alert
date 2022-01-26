@@ -16,7 +16,7 @@ export class PlayerController{
   }
 
   addGameObject(objectType:string, position:IVector){
-    return this.gameModel.addGameObject(this.playerId, objectType, position, objectType)
+    return this.gameModel.addGameObject(this.playerId, objectType, position)
   }
 
   moveUnits(unitIds:string[], target:IVector){

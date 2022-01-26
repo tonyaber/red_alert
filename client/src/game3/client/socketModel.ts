@@ -1,7 +1,7 @@
 import { Vector } from "../../common/vector";
 import { IGameUpdateRespone } from "../dto";
 import { ClientSocket } from "./clientSocket";
-import { IObjectInfo } from "./dto";
+import { IGameObjectData, IObjectInfo } from "./dto";
 
 export class SocketModel //implements IClientModel
 {
@@ -9,11 +9,19 @@ export class SocketModel //implements IClientModel
   onCanvasObjectUpdate: (response: IGameUpdateRespone) => void;
   onStartGame: (data: string) => void;
   onAuth: (data: string) => void;
+  onUpdate: (data: IGameObjectData) => void;
+  onAddObject:(data: IGameObjectData) => void;
   private client: ClientSocket;
 
   constructor(client:ClientSocket){
     this.client = client;
     client.onMessage = (message) => {
+      if (message.type === 'update') {
+        this.onUpdate(JSON.parse(message.content));
+      }
+      if (message.type === 'create') {
+        this.onAddObject(JSON.parse(message.content));
+      }
 
       if (message.type === 'updateSidePanel') {
         this.onSideUpdate(JSON.parse(message.content));

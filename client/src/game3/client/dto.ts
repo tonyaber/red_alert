@@ -1,7 +1,16 @@
-export interface IGameObjectData{
-  id: string;
-  type: string;
-  content: string; // or all fields
+import { Vector } from "../../common/vector";
+
+//action: add/delete/atack/move
+
+export interface IGameObjectContent{
+  position: Vector;
+  health: number;
+  playerId: string;
+}
+export interface IGameObjectData{  
+  type: string;//name
+  objectId: string; 
+  content: IGameObjectContent;
 }
 
 export interface IObject {
@@ -23,4 +32,12 @@ export interface IServerResponseMessage {
   type: string;
   content: string;
   requestId: string;
+}
+export interface IObjectContent{
+   position: Vector,
+      name: string,
+      id: string,
+      data: {
+        health: number
+      },
 }

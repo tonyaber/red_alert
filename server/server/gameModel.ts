@@ -1,6 +1,6 @@
 import { IVector, Vector } from "../../client/src/common/vector";
 import { createIdGenerator } from "../../client/src/game/idGenerator";
-import { IRegisteredPlayerInfo } from "./dto";
+import { IGameObjectContent, IGameObjectData, IRegisteredPlayerInfo } from "./dto";
 import { GameObject } from "./gameObject";
 import { PlayerSide } from "./playerSide";
 import { TickList } from "./tickList";
@@ -9,11 +9,11 @@ export class GameModel{
   players: IRegisteredPlayerInfo[] = [];
   objects: Record<string, GameObject> = {};
   playersSides: Array<PlayerSide> =[];
-  onUpdate: (id: string, data: string)=>void;
+  onUpdate: (state: IGameObjectData, action: string)=>void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
   tickList: TickList;
-  gameObjects: any;
+  gameObjects: GameObject[] = [];
   nextId: () => string;
   
   constructor(players: IRegisteredPlayerInfo[]) {
@@ -57,18 +57,24 @@ export class GameModel{
   }
 
   //player methods
-  addGameObject(playerId:string, objectType:string, position:IVector, name: string){
+  addGameObject(playerId:string, objectType:string, position:IVector){
     //mapObject
     //проверка, можно ли его добавлять
-   
-    const gameObject = new GameObject(this.objects, this.playersSides, position, name, this.nextId());
-    gameObject.onUpdate = (id, state)=>{
-      this.onUpdate(id, state);
+    const state = {position, playerId }
+    const gameObject = new GameObject(this.objects, this.playersSides, this.nextId(), objectType, state);
+    gameObject.onUpdate = (state)=>{
+      this.onUpdate(state, 'update');
     }
-    gameObject.update();
+    gameObject.onCreate = (state)=>{
+      this.onUpdate(state, 'create');
+    }
+    gameObject.create();
     this.gameObjects.push(gameObject);
     //
-    return 'private';
+    //
+    this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
+
+    return true;
   }
 
   moveUnits(playerId:string, unitIds:string[], target:IVector){

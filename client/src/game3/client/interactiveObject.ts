@@ -1,4 +1,5 @@
 import { Vector } from '../../common/vector';
+import { IGameObjectData } from './dto';
 //import { GameObject } from './gameModel';
 import { InteractiveList } from './interactiveList';
 
@@ -16,7 +17,9 @@ export class InteractiveObject{
   //name:string;
   //type: string = 'interactive';
   id: string;
+  playerId: string;
   position: Vector;
+  type: string;
   // gameObject:GameObject;
   // get position(){
   //   return new Vector(0,0);
@@ -25,7 +28,12 @@ export class InteractiveObject{
     
   // }
 
-  constructor() {
+  constructor(data: IGameObjectData) {
+    this.position = data.content.position;
+    this.id = data.objectId;
+    this.playerId = data.content.playerId;
+    this.type = data.type;
+    
     interactiveList.add(this);
   }
 
@@ -50,11 +58,26 @@ export class InteractiveObject{
     }
   }
 
-  inShape(tile:Vector, cursor:Vector){
+ inShape(tile: Vector, cursor: Vector): boolean {
+      let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
+    if (pos.abs()<15){
+      return true;
+    }
     return false;
   }
 
-  render(ctx:CanvasRenderingContext2D, camera:Vector, ...props:any){
+  render(ctx: CanvasRenderingContext2D, camera: Vector, ...props: any): void {
+    const sz = 10;
+    ctx.fillStyle = "#9999"
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(camera.x + this.position.x /*+ (55-10)/2*/, camera.y+ this.position.y /*+ (55-10)/2*/, sz, sz, 0, 0, Math.PI*2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.fillText(this.type, this.position.x+20, this.position.y+20)
   }
 
   getAction(hovered:InteractiveObject, mapTile?:number) {

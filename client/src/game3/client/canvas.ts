@@ -1,7 +1,7 @@
 import Control from "../../common/control";
 import { IGameObjectData } from "./dto";
-import { InteractiveList } from "./interactiveList";
 import { InteractiveObject,interactiveList } from "./interactiveObject";
+import { InteractiveList } from "./interactiveList";
 import { Vector } from '../../common/vector';
 export class Canvas extends Control{
   //interactiveList: Record<string, InteractiveObject> = {}
@@ -12,7 +12,7 @@ export class Canvas extends Control{
   onObjectClick: (id: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
-  hoveredObjects: InteractiveObject;
+  hoveredObjects: InteractiveObject = null;
   fps: number;
 
 
@@ -23,7 +23,7 @@ export class Canvas extends Control{
     this.canvas.node.height = 500;
     this.canvas.node.style.background = 'green';
     this.ctx = this.canvas.node.getContext('2d');
-    
+    this.interactiveList = interactiveList;
     this.canvas.node.onmousemove = (e)=>{
       this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY))
     }
@@ -51,6 +51,10 @@ export class Canvas extends Control{
 
   deleteObject(data:IGameObjectData){
 
+  }
+
+  addObject(data: IGameObjectData) {
+    const interactiveObject = new InteractiveObject(data);
   }
   startRender(){
     let lastTime: number = null;

@@ -1,3 +1,4 @@
+import { Vector } from "../../client/src/common/vector";
 
 export interface IServerResponseMessage {
   type: string;
@@ -30,4 +31,14 @@ export interface IObjectInfo {
 
 export interface ITickable{
   tick: (deltaTime: number) => void;
+}
+export interface IGameObjectContent{
+  position: Vector;
+  health: number;
+  playerId: string;
+}
+export interface IGameObjectData{  
+  type: string;//name
+  objectId: string; 
+  content: IGameObjectContent;
 }

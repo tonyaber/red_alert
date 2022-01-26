@@ -5,6 +5,7 @@ import { tech } from "./techTree";
 export class PlayerSide{
   money:number = 5000;
   buildings: IObjectInfo[] = [];
+  buildsInGame: string[] = [];
   onUpdate:(data: string)=>void;
   onReady:(objectType:string)=>void;
   id: string;
@@ -32,11 +33,20 @@ export class PlayerSide{
 
 
   getAvailableObject() {
+
     return this.buildings;
   }
 
   getState() {
     return {sidePanelData: this.buildings, money: this.money};
+  }
+
+  setBuilding(name: string) {
+    const build = this.buildings.find(item => item.object.name === name);
+    build.status = 'available';
+    build.progress = 0;
+    this.buildsInGame.push(name);
+    this.onUpdate(JSON.stringify({ sidePanelData: this.getAvailableObject(), money: this.money }));
   }
 
   setMoney(){

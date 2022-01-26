@@ -27,9 +27,19 @@ export class GameServer{
       const playerController = new PlayerController(it.id, this.gameModel);
       return new (it.type == 'bot'? BotCommander : HumanCommander)(playerController, it.connection );
     });
-  
-    this.gameModel.onUpdate = (id, data)=>{
-      this.players.forEach(player => player.sendMessage('update', data));
+  //create, delete
+    this.gameModel.onUpdate = (data, action)=>{
+      if (action === 'update') {
+         this.players.forEach(player => player.sendMessage('update', JSON.stringify(data)));
+      }
+      if (action === 'create') {
+        this.players.forEach(player => player.sendMessage('create', JSON.stringify(data)));
+      }
+      if(action === 'delete'){
+
+
+      }
+     
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       this.players.find(it=>it.playerController.playerId === id).sendMessage('updateSidePanel', data);

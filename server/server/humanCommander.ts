@@ -16,7 +16,7 @@ export class HumanCommander{
       this.sendMessage('', privateResponse);
     }
     if (message.type === 'startBuild') {
-      this.playerController.startBuilding(message.content.name)
+      this.playerController.startBuilding(message.content.name);
     }
     if (message.type === 'addBuild') {
       this.playerController.addGameObject(message.content.name, message.content.position);
