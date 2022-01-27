@@ -8,12 +8,24 @@ export class Application extends Control{
   socket: IClientModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
-    const clientSocket = new ClientSocket('ws://localhost:3000/');
-    //this.socket = new SocketModel(clientSocket);
-    this.socket = new LocalModel();
-    const startPage = new StartPage(this.node, this.socket);
-    startPage.onAuth = (name) => {
+    const startPage = new StartPage(this.node);
+    startPage.onSinglePlay = () => {
       startPage.destroy();
+      this.socket = new LocalModel();
+      this.startGame();
+    }
+    startPage.onMultiPlay = () => {
+      startPage.destroy();
+      const clientSocket = new ClientSocket('ws://localhost:3000/');
+      this.socket = new SocketModel(clientSocket);
+      this.startGame();      
+    }
+  }
+
+  startGame() {
+    const authorization = new Authorization(this.node, this.socket);
+    authorization.onAuth = (name) => {
+      authorization.destroy();
       const settingPage = new SettingPage(this.node, this.socket);
       settingPage.onStartGame = (data) => {
         settingPage.destroy();
@@ -24,6 +36,21 @@ export class Application extends Control{
 }
 
 class StartPage extends Control{
+  onSinglePlay: () => void;
+  onMultiPlay: () => void;
+  constructor(parentNode: HTMLElement) {
+    super(parentNode);
+    const singlePlay = new Control(this.node, 'button', '', 'Single Play');
+    singlePlay.node.onclick = () => {
+      this.onSinglePlay();
+    }
+    const multiPlay = new Control(this.node, 'button', '', 'Multi Play');
+    multiPlay.node.onclick = () => {
+      this.onMultiPlay();
+    }
+  }
+}
+class Authorization extends Control{
   onAuth: (name: string) => void;
   constructor(parentNode: HTMLElement, socket: IClientModel) {
     super(parentNode);
