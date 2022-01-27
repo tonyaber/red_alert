@@ -1,6 +1,7 @@
 import { IVector, Vector } from "../../client/src/common/vector";
 import { createIdGenerator } from "../../client/src/game/idGenerator";
 import { IGameObjectContent,IGameObjectData } from "./dto";
+import { PlayerSide } from "./playerSide";
 
 export class GameObject {
   data: IGameObjectContent = {
@@ -18,7 +19,7 @@ export class GameObject {
 
   type: string;
 
-  constructor(objects, playerSides, objectId: string, type: string, state: { position: IVector, playerId: string }) {
+  constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     this.data.position = Vector.fromIVector(state.position);
     this.data.playerId = state.playerId;
     this.data.health = 100;
@@ -26,7 +27,7 @@ export class GameObject {
     this.objectId = objectId;
   }
 
-  tick(delta) {
+  tick(delta: number) {
     //logic
     this.objects.forEach(it => {
       if (it) {

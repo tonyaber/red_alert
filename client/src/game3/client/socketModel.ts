@@ -2,8 +2,8 @@ import { Vector } from "../../common/vector";
 import { IGameUpdateRespone } from "../dto";
 import { ClientSocket } from "./clientSocket";
 import { IGameObjectData, IObjectInfo } from "./dto";
-
-export class SocketModel //implements IClientModel
+import { IClientModel } from './IClientModel';
+export class SocketModel implements IClientModel
 {
   onSideUpdate: (data: {sidePanelData: IObjectInfo[], money: number})=>void;
   onCanvasObjectUpdate: (response: IGameUpdateRespone) => void;

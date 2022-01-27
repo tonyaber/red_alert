@@ -7,13 +7,13 @@ export class BotCommander{
     this.playerController = playerController;
   }
 
-  private tick(delta){
+  private tick(delta: number){
     //logic
     const privateMessage=0;//this.playerController.addGameObject()
     //
   }
 
-  sendMessage(message){ // self receive
+  sendMessage(type: string, message:string){ // self receive
     // can read response;
   }
 }

@@ -1,39 +1,83 @@
+import { BotCommander } from "../../../../server/server/botCommander";
+import { IRegisteredPlayerInfo } from "../../../../server/server/dto";
+import { GameModel } from "../../../../server/server/gameModel";
+import { PlayerController } from "../../../../server/server/playerController";
+import { IGameUpdateRespone } from '../dto';
+import { IGameObjectData, IObjectInfo } from "./dto";
+import { IClientModel } from './IClientModel'
+import {Vector} from '../../common/vector'
 
-class LocalModel //implements IClientModel
+export class LocalModel implements IClientModel
 {
-  onSideUpdate: any;
-  onCanvasObjectUpdate: (response:IGameUpdateRespone)=>void;
+  onSideUpdate: (data: {sidePanelData: IObjectInfo[], money: number})=>void;
+  onCanvasObjectUpdate: (response: IGameUpdateRespone) => void;
+  onStartGame: (data: string) => void;
+  onAuth: (data: string) => void;
+  onUpdate: (data: IGameObjectData) => void;
+  onAddObject: (data: IGameObjectData) => void;
   myPlayer: PlayerController;
+  player: string;
 
   constructor(){
 
   }
 
-  startGame(playersInfo){
+  addUser() {
+    this.player = 'user' + Math.floor(Math.random() * 100);
+    const bots: IRegisteredPlayerInfo[] = new Array(2).fill(null).map(item => {
+      return {
+        id: 'bot' + Math.floor(Math.random() * 100),
+        type: 'bot'
+      }
+    });
+    this.onAuth(this.player);
+    this.startGame(bots);
+  }
+
+  startGame(playersInfo: IRegisteredPlayerInfo[]){
     
-    const gamePlayersInfo = playersInfo.map(it=>it);
+    const gamePlayersInfo = playersInfo;
+    gamePlayersInfo.push({
+      id: this.player,
+      type: 'human'
+    });
     const game = new GameModel(gamePlayersInfo);
-    const myPlayerController: PlayerController = new PlayerController('dfsdf', game);
+    const myPlayerController: PlayerController = new PlayerController(this.player, game);
     this.myPlayer = myPlayerController;
     const bots = playersInfo.map(it=> {
       const playerController = new PlayerController(it.id, game);
       return new BotCommander(playerController);
     });
+    game.onUpdate = (data, action) => {
+    //   bots.forEach(player=> player.sendMessage({}));
+      if (action === 'update') {
+        this.onUpdate(data);
+      }
+      if (action === 'create') {
+        this.onAddObject(data);
+      }
+      if(action === 'delete'){
+      }
+    }
 
-    game.onUpdate = (id, data)=>{
-      bots.forEach(player=> player.sendMessage({}));
-      //this.onCanvasObjectUpdate();
-    }
+    // game.onUpdate = (id, data)=>{
+    //   bots.forEach(player=> player.sendMessage({}));
+    //   //this.onCanvasObjectUpdate();
+    // }
     game.onSideUpdate = (id, data)=>{
-      bots.find(it=>it).sendMessage(data);
-      this.onSideUpdate();
+     // bots.find(it=>it).sendMessage(data);
+      this.onSideUpdate(JSON.parse(data));
     }
+
+    const allPlayers = JSON.stringify(playersInfo.map(it => it.id).push(this.player))
+    const sidePanelData = game.getState(myPlayerController.playerId);
+    this.onStartGame( JSON.stringify({ players: allPlayers, sidePanelData}));
   }
 
   //side
 
-  startBuild(){
-    //this.myPlayer.startBuilding();
+  startBuild(name: string, playerId: string) {
+    this.myPlayer.startBuilding(name)
   }
 
   pauseBuild(){
@@ -43,14 +87,16 @@ class LocalModel //implements IClientModel
   cancelBuild(){
 
   }
-
-  //to map
-  addBuild(){
-
+  registerGamePlayer() {
   }
 
-  setPrimary(){
+  //to map
+  addBuild(name: string, position: Vector, playerId: string){
+    this.myPlayer.addGameObject(name, position);
+  }
 
+  setPrimary(id: string, name: string){
+    this.myPlayer.setPrimary(id, name);
   }
 
   moveUnit(){

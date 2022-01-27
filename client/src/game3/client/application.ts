@@ -2,13 +2,15 @@ import Control from '../../common/control';
 import { SocketModel } from './socketModel';
 import { ClientSocket } from './clientSocket';
 import { Game } from './game';
-
+import { LocalModel } from './localSocketModel';
+import { IClientModel } from './IClientModel';
 export class Application extends Control{
-  socket: SocketModel;
+  socket: IClientModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
     const clientSocket = new ClientSocket('ws://localhost:3000/');
-    this.socket = new SocketModel(clientSocket);
+    //this.socket = new SocketModel(clientSocket);
+    this.socket = new LocalModel();
     const startPage = new StartPage(this.node, this.socket);
     startPage.onAuth = (name) => {
       startPage.destroy();
@@ -23,7 +25,7 @@ export class Application extends Control{
 
 class StartPage extends Control{
   onAuth: (name: string) => void;
-  constructor(parentNode: HTMLElement, socket: SocketModel) {
+  constructor(parentNode: HTMLElement, socket: IClientModel) {
     super(parentNode);
     const button = new Control(this.node, 'button', '', 'Start');
     button.node.onclick = () => {
@@ -37,7 +39,7 @@ class StartPage extends Control{
 
 class SettingPage extends Control{
   onStartGame: (players: string) => void;
-  constructor(parentNode: HTMLElement,socket: SocketModel) {
+  constructor(parentNode: HTMLElement,socket: IClientModel) {
     super(parentNode);
     const Setting = new Control(this.node, 'div', '', 'Setting');
     const button = new Control(this.node, 'button', '', 'Register');
