@@ -44,11 +44,21 @@ export class GameObject {
       content: this.data,
     }); 
   }
-  update() {
+
+  setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {
+    this.data = callback(this.getState());
+    this.update();
+  }
+
+  getState() {
+    return this.data;
+  }
+  
+  private update() {
     this.onUpdate({
       type: this.type,
       objectId: this.objectId,
-      content: this.data,
+      content: this.getState(),
     });    
   }
 }

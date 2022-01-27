@@ -67,11 +67,16 @@ export class GameModel{
       this.onUpdate(state, 'update');
     }
     gameObject.onCreate = (state) => {
-      if (!this._getPrimary(playerId, objectType)) {
-        gameObject.data.primary = true;
-      }
       this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
       this.onUpdate(state, 'create');     
+      if (!this._getPrimary(playerId, objectType)) {
+        gameObject.setState((lastState) => {
+          return {
+            ...lastState,
+          primary: true,
+          }
+        })
+      }
     }
     gameObject.onDelete = (state) => {
        this.playersSides.find(item => item.id === playerId).removeBuilding(objectType);
@@ -95,16 +100,22 @@ export class GameModel{
   }
 
   setPrimary(playerId: string, buildId: string, name: string) {
-    if (this._getPrimary(playerId, name)) {
+    const newPrimary = this.gameObjects.find(item => item.objectId === buildId && item.data.playerId === playerId);
+    if (newPrimary&&this._getPrimary(playerId, name)) {
       const oldPrimary = this._getPrimary(playerId, name);
-      oldPrimary.data.primary = false;
-      const newPrimary = this.gameObjects.find(item => item.objectId === buildId);
-      newPrimary.data.primary = true;
-      this.onUpdatePrimary(oldPrimary.objectId, newPrimary.objectId);
+      oldPrimary.setState((lastState) => {
+        return {
+          ...lastState,
+          primary: false,
+        }
+      })
+      newPrimary.setState((lastState) => {
+        return {
+          ...lastState,
+          primary: true,
+        }
+      })
     }
-    
-
-    //this.gameObjects.find(item => item.objectId === buildId);
   }
 
   _getPrimary(playerId: string, name: string) {

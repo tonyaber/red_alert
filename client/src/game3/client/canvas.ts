@@ -46,7 +46,7 @@ export class Canvas extends Control{
   }
 
   updateObject(data:IGameObjectData){
-
+    this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
   }
 
   deleteObject(data:IGameObjectData){

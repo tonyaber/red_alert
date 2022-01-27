@@ -1,5 +1,5 @@
 import { Vector } from '../../common/vector';
-import { IGameObjectData } from './dto';
+import { IGameObjectData, IGameObjectContent } from './dto';
 //import { GameObject } from './gameModel';
 import { InteractiveList } from './interactiveList';
 
@@ -30,13 +30,17 @@ export class InteractiveObject{
   // }
 
   constructor(data: IGameObjectData) {
-    this.position = data.content.position;
     this.id = data.objectId;
-    this.playerId = data.content.playerId;
     this.type = data.type;
-    this.primary = data.content.primary;
+    this.updateObject(data.content);
     
     interactiveList.add(this);
+  }
+
+  updateObject(data: IGameObjectContent) {
+    this.position = data.position;
+    this.playerId = data.playerId;
+    this.primary = data.primary;
   }
 
   handleMove(tile:Vector, cursor:Vector){
