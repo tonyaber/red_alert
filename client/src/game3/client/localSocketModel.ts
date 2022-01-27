@@ -68,9 +68,9 @@ export class LocalModel implements IClientModel
      // bots.find(it=>it).sendMessage(data);
       if (id === this.player) {
         this.onSideUpdate(JSON.parse(data));
-      } else {
-        bots.find(item => item.playerController.playerId === id).sendMessage('updateSidePanel',data);
-      }
+      }// else {
+        // bots.find(item => item.playerController.playerId === id).sendMessage('updateSidePanel',data);
+      // }
       
     }
 

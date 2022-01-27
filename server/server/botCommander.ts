@@ -21,22 +21,27 @@ export class BotCommander{
       const data:IStartGameResponse = JSON.parse(message);      
       const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');         
       this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name);
-    }
-    if (type === 'updateSidePanel') {     
-      const data: IUpdateSidePanel = JSON.parse(message);
+    }   
+  }
+
+  tick(delta: number) {
+    const random = Math.random();
+    if (random < 0.4) {
+      const data = this.playerController.getSidePanelState();
       const buildsIsReady = data.sidePanelData.filter(item => item.status === 'isReady');
-      const availableBuild = data.sidePanelData.filter(item => item.status === 'available');
       if (buildsIsReady.length) {
         this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random()*buildsIsReady.length)].object.name, new Vector(Math.floor(Math.random()*500), Math.floor(Math.random()*500)))
       }
+    
+      const availableBuild = data.sidePanelData.filter(item => item.status === 'available');    
       if (availableBuild.length) {
         this.playerController.startBuilding(availableBuild[Math.floor(Math.random() * availableBuild.length)].object.name);
       }
-    }    
-  }
+     } else if (random < 0.6) {
+      //add to attack or some 
+      //console.log(this.playerController.getObjects())
+    }
 
-   tick(delta: number){
-    
     const privateMessage=0;//this.playerController.addGameObject()
     //
   }

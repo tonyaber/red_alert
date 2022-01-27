@@ -56,6 +56,10 @@ export class GameModel{
   getState(playerId: string) {
     return this.playersSides.find(item => item.id === playerId).getState();
   }
+//TODO: СПРОСИТЬ ЖАНА, МОЖНО ЛИ ТАК ДЕЛАТЬ
+  getObjects() {
+    return this.gameObjects.map(item=>item.getState());
+  }
 
   //player methods
   addGameObject(playerId:string, objectType:string, position:IVector){
