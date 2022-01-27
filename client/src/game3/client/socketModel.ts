@@ -11,7 +11,6 @@ export class SocketModel //implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
-  onUpdatePrimary: (data: { oldPrimary: string, newPrimary: string })=> void;
   private client: ClientSocket;
 
   constructor(client:ClientSocket){
@@ -32,9 +31,6 @@ export class SocketModel //implements IClientModel
       }
       if (message.type === 'auth') {
         this.onAuth(message.content);
-      }
-      if (message.type === 'updatePrimary') {
-        this.onUpdatePrimary(JSON.parse(message.content));
       }
     }
   }

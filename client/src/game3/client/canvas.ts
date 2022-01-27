@@ -57,10 +57,6 @@ export class Canvas extends Control{
     const interactiveObject = new InteractiveObject(data);
   }
 
-  updatePrimary(oldPrimary: string, newPrimary: string) {
-    this.interactiveList.list.find(item => item.id === oldPrimary).primary = false;
-    this.interactiveList.list.find(item => item.id === newPrimary).primary = true;
-  }
   startRender(){
     let lastTime: number = null;
     this.fps = 60;

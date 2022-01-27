@@ -21,9 +21,6 @@ export class Game extends Control{
     socket.onAddObject = (data) => {
       canvas.addObject(data);
     }
-    socket.onUpdatePrimary = (data:{ oldPrimary: string, newPrimary: string }) => {
-      canvas.updatePrimary(data.oldPrimary, data.newPrimary);
-    }
 
     sidePanel.onSidePanelClick = (selected, object)=> {
       if (selected === 'onAvailableClick') {

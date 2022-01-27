@@ -10,7 +10,6 @@ export class GameModel{
   objects: Record<string, GameObject> = {};
   playersSides: Array<PlayerSide> =[];
   onUpdate: (state: IGameObjectData, action: string) => void;
-  onUpdatePrimary: ( oldPrimary: string, newPrimary: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
   tickList: TickList;
@@ -84,9 +83,6 @@ export class GameModel{
     }
     gameObject.create();
     this.gameObjects.push(gameObject);
-    //
-    //
-    //.playersSides.find(item => item.id === playerId).setBuilding(objectType);
 
     return true;
   }

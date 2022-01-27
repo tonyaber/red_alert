@@ -19,7 +19,6 @@ export class GameObject {
   type: string;
 
   constructor(objects, playerSides, objectId: string, type: string, state: { position: IVector, playerId: string }) {
-    console.log(state.position);
     this.data.position = Vector.fromIVector(state.position);
     this.data.playerId = state.playerId;
     this.data.health = 100;
@@ -41,7 +40,7 @@ export class GameObject {
      this.onCreate({
       type: this.type,
       objectId: this.objectId,
-      content: this.data,
+      content: this.getState(),
     }); 
   }
 
