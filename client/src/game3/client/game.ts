@@ -11,9 +11,9 @@ export class Game extends Control{
     const canvas = new Canvas(this.node);
     const sidePanel = new SidePanel(this.node);
     const sidePanelInfo = JSON.parse(sidePanelData);
-    sidePanel.update(sidePanelInfo.sidePanelData);
+    sidePanel.update(sidePanelInfo.sidePanelDataPlayer);
     
-    socket.onSideUpdate = (data) => {
+    socket.onSideUpdate = (data) => {      
       sidePanel.update(data);
     }
     socket.onUpdate = (data)=> {

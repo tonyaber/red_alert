@@ -1,4 +1,4 @@
-import { IObjectInfo, IRegisteredPlayerInfo, IServerRequestMessage } from "./dto";
+import { IObjectInfo, IRegisteredPlayerInfo, IServerRequestMessage, IStartGameResponse } from "./dto";
 import { GameModel } from "./gameModel";
 import { connection } from "websocket";
 import { BotCommander } from './botCommander';
@@ -45,10 +45,11 @@ export class GameServer{
     }
     
     ///start to game, fix it later
-    const allPlayers = JSON.stringify(this.registeredPlayersInfo.map(it => it.id))
+    const allPlayers = this.registeredPlayersInfo.map(it => it.id);
     this.players.forEach(item => {
-      const sidePanelData = this.gameModel.getState(item.playerController.playerId);
-      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanelData}));
+      const sidePanel = this.gameModel.getState(item.playerController.playerId);
+      const response:IStartGameResponse = { players: allPlayers, sidePanel}
+      item.sendMessage('startGame', JSON.stringify(response));
       
     })
   }

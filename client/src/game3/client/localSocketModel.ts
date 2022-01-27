@@ -36,7 +36,7 @@ export class LocalModel implements IClientModel
 
   startGame(playersInfo: IRegisteredPlayerInfo[]){
     
-    const gamePlayersInfo = playersInfo;
+    const gamePlayersInfo = playersInfo.slice();
     gamePlayersInfo.push({
       id: this.player,
       type: 'human'
@@ -66,12 +66,22 @@ export class LocalModel implements IClientModel
     // }
     game.onSideUpdate = (id, data)=>{
      // bots.find(it=>it).sendMessage(data);
-      this.onSideUpdate(JSON.parse(data));
+      if (id === this.player) {
+        this.onSideUpdate(JSON.parse(data));
+      } else {
+        bots.find(item => item.playerController.playerId === id).sendMessage('updateSidePanel',data);
+      }
+      
     }
 
-    const allPlayers = JSON.stringify(playersInfo.map(it => it.id).push(this.player))
-    const sidePanelData = game.getState(myPlayerController.playerId);
-    this.onStartGame( JSON.stringify({ players: allPlayers, sidePanelData}));
+    const allPlayers =playersInfo.map(it => it.id);
+    allPlayers.push(this.player);
+    const sidePanelDataPlayer = game.getState(myPlayerController.playerId);
+    this.onStartGame(JSON.stringify({ players: allPlayers, sidePanelDataPlayer }));
+    bots.forEach(item => {       
+      const sidePanel = game.getState(item.playerController.playerId);      
+      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel }))
+    })
   }
 
   //side

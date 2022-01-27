@@ -43,3 +43,18 @@ export interface IGameObjectData{
   objectId: string; 
   content: IGameObjectContent;
 }
+
+export interface ISidePanelData{
+    sidePanelData: IObjectInfo[];
+    money: number;
+}
+
+export interface IStartGameResponse {
+  sidePanel: ISidePanelData;
+  players: string[];
+}
+
+export interface IUpdateSidePanel{
+  sidePanelData: IObjectInfo[];
+  money: number;
+}

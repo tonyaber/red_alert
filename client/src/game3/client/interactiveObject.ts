@@ -21,6 +21,7 @@ export class InteractiveObject{
   position: Vector;
   type: string;
   primary: boolean;
+  color: string;
   // gameObject:GameObject;
   // get position(){
   //   return new Vector(0,0);
@@ -33,7 +34,8 @@ export class InteractiveObject{
     this.id = data.objectId;
     this.type = data.type;
     this.updateObject(data.content);
-    
+    const colors = ['#f00', '#ff0', '#00f', '#0f0', '#ffa500'];
+    this.color = this.playerId.includes('bot') ? colors[Math.floor(Math.random()*5)] : '#999';
     interactiveList.add(this);
   }
 
@@ -74,7 +76,7 @@ export class InteractiveObject{
 
   render(ctx: CanvasRenderingContext2D, camera: Vector, ...props: any): void {
     const sz = 10;
-    ctx.fillStyle = "#9999"
+    ctx.fillStyle = this.color;
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -82,8 +84,9 @@ export class InteractiveObject{
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = this.color;
     ctx.fillText(this.type, this.position.x + 20, this.position.y + 20);
+    ctx.fillText(this.playerId, this.position.x + 20, this.position.y + 10);
     if (this.primary) {
       ctx.fillText("Primary", this.position.x + 20, this.position.y);
     }

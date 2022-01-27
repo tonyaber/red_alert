@@ -28,6 +28,7 @@ export class GameModel{
       }
       playerSide.onReady=(type)=>{
         this._addUnit();
+        //send response onReady to player
       }     
       this.playersSides.push(playerSide);
     })
