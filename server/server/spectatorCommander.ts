@@ -24,6 +24,11 @@ export class SpectatorCommander{
       this.sendMessage('setPrimary', message.content)
       //this.playerController.setPrimary(message.content.id, message.content.name);
     }
+    if (message.type === 'setTargetSpectator') {
+      console.log(message.content, this.targetId)
+      this.targetId = message.content;
+      this.playerController.updateSidePanel(this.targetId);
+    }
   }
 
   sendMessage(type: string, message:string){ //send to client

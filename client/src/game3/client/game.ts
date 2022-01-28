@@ -11,9 +11,11 @@ export class Game extends Control{
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
     if (socket instanceof SocketModel&& sidePanelInfo.type === 'spectator') {
       sidePanelInfo.players.forEach(item => {
-        const buttonPlayer = new Control(this.node, 'button', '', item);
-        buttonPlayer.node.onclick = () => {
-          
+        if (item != id) {
+          const buttonPlayer = new Control(this.node, 'button', '', item);
+          buttonPlayer.node.onclick = () => {
+            socket.setTargetSpectator(item);
+          }         
         }
       })
     }

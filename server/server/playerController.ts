@@ -23,6 +23,11 @@ export class PlayerController{
 
   }
 
+  updateSidePanel(targetId: string) {
+    const state = this.gameModel.getState(targetId);
+    this.gameModel.onSideUpdate(this.playerId, JSON.stringify(state));
+  }
+
   getSidePanelState() {
     return this.gameModel.getState(this.playerId)
   }
@@ -39,4 +44,5 @@ export class PlayerController{
   setPrimary(buildId: string, name: string) {    
     this.gameModel.setPrimary(this.playerId, buildId, name);
   }
+
 }
