@@ -52,6 +52,7 @@ export interface ISidePanelData{
 export interface IStartGameResponse {
   sidePanel: ISidePanelData;
   players: string[];
+  type?: 'bot'|'human'|'spectator'
 }
 
 export interface IUpdateSidePanel{

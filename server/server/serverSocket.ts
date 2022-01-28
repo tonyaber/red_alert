@@ -44,7 +44,8 @@ export class ServerSocket{
               const playerId = this.connections.get(connection);
               //const gameId = 1//msg.gameId;
               //find game by id
-              game.registerPlayer('human', playerId, connection)
+              const content = JSON.parse(msg.content);
+              game.registerPlayer(content.playerType, playerId, connection)
             }
             // if (requestMessage.type === 'senName') {
             //   this.connections.connection = requestMessage.content;

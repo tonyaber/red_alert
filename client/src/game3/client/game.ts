@@ -1,6 +1,6 @@
 import Control from "../../common/control";
 import { Canvas } from "./canvas";
-import { IObjectContent } from "./dto";
+import { IObjectContent, IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
@@ -8,10 +8,20 @@ import { SocketModel } from "./socketModel";
 export class Game extends Control{
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string) {
     super(parentNode);
+    const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
+    if (socket instanceof SocketModel&& sidePanelInfo.type === 'spectator') {
+      sidePanelInfo.players.forEach(item => {
+        const buttonPlayer = new Control(this.node, 'button', '', item);
+        buttonPlayer.node.onclick = () => {
+          
+        }
+      })
+    }
+   
     const canvas = new Canvas(this.node);
     const sidePanel = new SidePanel(this.node);
-    const sidePanelInfo = JSON.parse(sidePanelData);
-    sidePanel.update(sidePanelInfo.sidePanelDataPlayer);
+    
+    sidePanel.update(sidePanelInfo.sidePanel);
     
     socket.onSideUpdate = (data) => {      
       sidePanel.update(data);

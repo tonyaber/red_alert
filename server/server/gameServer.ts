@@ -4,11 +4,12 @@ import { connection } from "websocket";
 import { BotCommander } from './botCommander';
 import { HumanCommander } from "./humanCommander";
 import { PlayerController } from "./playerController";
+import { SpectatorCommander } from "./spectatorCommander";
 
-export class GameServer{
+export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
 
-  players: (HumanCommander|BotCommander)[] = [];
+  players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
   constructor(){
     
@@ -16,7 +17,7 @@ export class GameServer{
 
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:connection){
     this.registeredPlayersInfo.push({ type, id: userId, connection });
-    if (this.registeredPlayersInfo.length >= 2) {
+    if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
       this.startGame();
     }
   }
@@ -25,7 +26,16 @@ export class GameServer{
     this.gameModel = new GameModel(this.registeredPlayersInfo);
     this.players = this.registeredPlayersInfo.map(it=> {
       const playerController = new PlayerController(it.id, this.gameModel);
-      return new (it.type == 'bot'? BotCommander : HumanCommander)(playerController, it.connection );
+      if (it.type === 'bot') {
+        return new BotCommander(playerController );
+      } else if (it.type === 'human') {
+        return new HumanCommander(playerController, it.connection);
+      } else if (it.type === 'spectator') {
+        const targetId = this.registeredPlayersInfo.find(it => it.type === 'human'||it.type === 'bot').id;
+        return new SpectatorCommander(playerController, it.connection, targetId);
+      } else {
+        throw new Error('Invalid type');
+      }
     });
   //create, delete
     this.gameModel.onUpdate = (data, action)=>{
@@ -41,14 +51,21 @@ export class GameServer{
      
     }
     this.gameModel.onSideUpdate = (id, data)=>{
-      this.players.find(it=>it.playerController.playerId === id).sendMessage('updateSidePanel', data);
+      (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])
+        .filter(it => it.targetId === id)
+        .forEach(item=>item.sendMessage('updateSidePanel', data))
+      this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
+      
     }
+
+
     
     ///start to game, fix it later
     const allPlayers = this.registeredPlayersInfo.map(it => it.id);
     this.players.forEach(item => {
       const sidePanel = this.gameModel.getState(item.playerController.playerId);
-      const response:IStartGameResponse = { players: allPlayers, sidePanel}
+      const type = item instanceof BotCommander ? 'bot' : item instanceof HumanCommander ? 'human' : 'spectator';
+      const response:IStartGameResponse = { players: allPlayers, sidePanel, type}
       item.sendMessage('startGame', JSON.stringify(response));
       
     })

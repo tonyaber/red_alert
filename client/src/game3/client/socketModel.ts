@@ -37,12 +37,16 @@ export class SocketModel implements IClientModel
 
   //side
 
+  registerSpectator() {
+    this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'spectator'}));
+  }
+  
   addUser() {
-    this.client.sendMessage('auth', 'user'+Math.floor(Math.random()*100))
+    this.client.sendMessage('auth', 'user'+ Math.floor(Math.random()*100))
   }
 
   registerGamePlayer() {
-    this.client.sendMessage('registerGamePlayer', '');
+    this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'human'}));
   }
 
   startBuild(name: string, playerId: string) {

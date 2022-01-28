@@ -49,14 +49,15 @@ export class GameModel{
 
   }
 
-  private _addUnit(){
-
+  private _addUnit() {
+    //position for primary
+    //this.addGameObject()
   }
 
   getState(playerId: string) {
     return this.playersSides.find(item => item.id === playerId).getState();
   }
-//TODO: СПРОСИТЬ ЖАНА, МОЖНО ЛИ ТАК ДЕЛАТЬ
+
   getObjects() {
     return this.gameObjects.map(item=>item.getState());
   }

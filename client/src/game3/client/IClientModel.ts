@@ -36,6 +36,6 @@ export class IClientModel
   moveUnit: () => void;
 
   setAttackTarget: () => void;
-
+  registerSpectator: () => void;
   //all game player methods
 }

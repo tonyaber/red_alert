@@ -8,6 +8,8 @@ export class BotCommander{
   playerController: PlayerController;
   tickList: TickList;
   //sidePanel:PlayerSide;
+
+  panelInfo: IUpdateSidePanel;
   
 
   constructor(playerController:PlayerController){
@@ -22,22 +24,24 @@ export class BotCommander{
       const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');         
       this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name);
     }   
+    if (type === 'updateSidePanel') {
+      this.panelInfo = JSON.parse(message);
+      const buildsIsReady =  this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');      
+      if (buildsIsReady.length) {
+        this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, new Vector(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500)))
+      }
+    }
   }
 
   tick(delta: number) {
     const random = Math.random();
-    if (random < 0.4) {
-      const data = this.playerController.getSidePanelState();
-      const buildsIsReady = data.sidePanelData.filter(item => item.status === 'isReady');
-      if (buildsIsReady.length) {
-        this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random()*buildsIsReady.length)].object.name, new Vector(Math.floor(Math.random()*500), Math.floor(Math.random()*500)))
-      }
     
-      const availableBuild = data.sidePanelData.filter(item => item.status === 'available');    
+    if (random < 0.3) { 
+      const availableBuild =  this.panelInfo.sidePanelData.filter(item => item.status === 'available');     
       if (availableBuild.length) {
         this.playerController.startBuilding(availableBuild[Math.floor(Math.random() * availableBuild.length)].object.name);
       }
-     } else if (random < 0.6) {
+     } else if (random < 1) {
       //add to attack or some 
       //console.log(this.playerController.getObjects())
     }

@@ -68,19 +68,18 @@ export class LocalModel implements IClientModel
      // bots.find(it=>it).sendMessage(data);
       if (id === this.player) {
         this.onSideUpdate(JSON.parse(data));
-      }// else {
-        // bots.find(item => item.playerController.playerId === id).sendMessage('updateSidePanel',data);
-      // }
-      
+      } else {
+        bots.find(item => item.playerController.playerId === id).sendMessage('updateSidePanel',data);
+      }
     }
 
     const allPlayers =playersInfo.map(it => it.id);
     allPlayers.push(this.player);
-    const sidePanelDataPlayer = game.getState(myPlayerController.playerId);
-    this.onStartGame(JSON.stringify({ players: allPlayers, sidePanelDataPlayer }));
+    const sidePanel = game.getState(myPlayerController.playerId);
+    this.onStartGame(JSON.stringify({ players: allPlayers, sidePanel, type:'human' }));
     bots.forEach(item => {       
       const sidePanel = game.getState(item.playerController.playerId);      
-      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel }))
+      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type:'bot' }))
     })
   }
 
@@ -98,6 +97,9 @@ export class LocalModel implements IClientModel
 
   }
   registerGamePlayer() {
+  }
+  registerSpectator() {
+    
   }
 
   //to map

@@ -42,3 +42,19 @@ export interface IObjectContent{
         health: number
       },
 }
+
+export interface IStartGameResponse {
+  sidePanel: IUpdateSidePanel;
+  players: string[];
+  type?: 'bot'|'human'|'spectator'
+}
+
+export interface IUpdateSidePanel{
+  sidePanelData: IObjectInfo[];
+  money: number;
+
+}
+
+export interface IRegisterGamePlayerRequest{
+ type: 'bot'|'human'|'spectator'
+}
