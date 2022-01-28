@@ -7,7 +7,7 @@ export class PlayerSide{
   buildings: IObjectInfo[] = [];
   buildsInGame: string[] = [];
   onUpdate:(data: string)=>void;
-  onReady: (objectType: string) => void;
+  onReady: (objectType: string, objectSubType: string, spawn: string) => void;
   
   id: string;
   buildsInProgress: BuildingProgress[] = [];
@@ -18,7 +18,9 @@ export class PlayerSide{
         deps: item.deps,
         name: item.name,
         cost: item.cost,
-        time: item.time
+        time: item.time,
+        subType: item.subType,
+        spawn: item.spawn[0],
       }
       return newItem;
     }).map(item => {
@@ -89,7 +91,7 @@ export class PlayerSide{
         if (item.isReady) {
           this.buildings.find(it => it.object === item.object).status = 'isReady';
           this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
-          this.onReady(item.object.name);
+          this.onReady(item.object.name, item.object.subType, item.object.spawn)
         }
       })
       this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));

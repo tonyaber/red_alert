@@ -18,6 +18,7 @@ export interface IObject {
   deps: string[],
   name: string,
   cost: number,
+  subType: string,
  }
 export interface IObjectInfo {
   object: IObject,

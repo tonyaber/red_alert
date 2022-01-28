@@ -22,6 +22,8 @@ export interface IObject {
   name: string,
   cost: number,
   time: number,
+  subType: string,
+  spawn?: string,
  }
 export interface IObjectInfo {
   object: IObject,

@@ -26,8 +26,11 @@ export class GameModel{
       playerSide.onUpdate = (data)=>{
         this.onSideUpdate(item.id, data)
       }
-      playerSide.onReady=(type)=>{
-        this._addUnit();
+      playerSide.onReady = (type, subType, spawn) => {
+        if (subType === 'unit') {
+          this._addUnit(type, spawn, item.id);
+        }
+        
         //send response onReady to player
       }     
       this.playersSides.push(playerSide);
@@ -49,7 +52,10 @@ export class GameModel{
 
   }
 
-  private _addUnit() {
+  private _addUnit(type: string, spawn: string, playerId: string) {
+    const position = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary).data.position;
+    const newPosition = position.clone().add(new Vector(25,25));
+    this.addGameObject(playerId, type, newPosition);
     //position for primary
     //this.addGameObject()
   }
@@ -63,18 +69,18 @@ export class GameModel{
   }
 
   //player methods
-  addGameObject(playerId:string, objectType:string, position:IVector){
+  addGameObject(playerId:string, objectName:string, position:IVector){
     //mapObject
     //проверка, можно ли его добавлять
     const state = {position, playerId }
-    const gameObject = new GameObject(this.objects, this.playersSides, this.nextId(), objectType, state);
+    const gameObject = new GameObject(this.objects, this.playersSides, this.nextId(), objectName, state);
     gameObject.onUpdate = (state)=>{
       this.onUpdate(state, 'update');
     }
     gameObject.onCreate = (state) => {
-      this.playersSides.find(item => item.id === playerId).setBuilding(objectType);
+      this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
       this.onUpdate(state, 'create');     
-      if (!this._getPrimary(playerId, objectType)) {
+      if (!this._getPrimary(playerId, objectName)) {
         gameObject.setState((lastState) => {
           return {
             ...lastState,
@@ -84,7 +90,7 @@ export class GameModel{
       }
     }
     gameObject.onDelete = (state) => {
-       this.playersSides.find(item => item.id === playerId).removeBuilding(objectType);
+       this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
       this.onUpdate(state, 'delete'); 
     }
     gameObject.create();

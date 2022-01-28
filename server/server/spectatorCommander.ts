@@ -25,7 +25,7 @@ export class SpectatorCommander{
       //this.playerController.setPrimary(message.content.id, message.content.name);
     }
     if (message.type === 'setTargetSpectator') {
-      console.log(message.content, this.targetId)
+    
       this.targetId = message.content;
       this.playerController.updateSidePanel(this.targetId);
     }

@@ -17,6 +17,7 @@ export class GameObject {
 
   objects: [] = [];
 
+  subType: string;
   type: string;
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {

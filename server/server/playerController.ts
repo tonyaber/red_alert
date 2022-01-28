@@ -32,7 +32,6 @@ export class PlayerController{
     return this.gameModel.getState(this.playerId)
   }
 
-  //TODO: СПРОСИТЬ ЖАНА, МОЖНО ЛИ ТАК ДЕЛАТЬ
   getObjects() {
     return this.gameModel.getObjects();
   }

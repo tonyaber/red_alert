@@ -6,10 +6,15 @@ export class SidePanel extends Control{
   money: Control;
   buildButtons: any = [];
   onSidePanelClick: (selected: string, object: IObjectInfo)=>void;
+  unitNode: Control<HTMLElement>;
+  buildNode: Control<HTMLElement>;
 
   constructor(parentNode: HTMLElement) {
     super(parentNode);
     this.money = new Control(this.node);
+
+    this.buildNode = new Control(this.node, 'div', '', 'Builds');
+    this.unitNode = new Control(this.node, 'div', '', 'Units');
 
   }
 
@@ -20,7 +25,8 @@ export class SidePanel extends Control{
       if (this.buildButtons[item.object.name]) {
         this.buildButtons[item.object.name].update(item)
       } else {
-        const obj = new buildSidePanel(this.node);
+        const nodeParent = item.object.subType === 'build' ? this.buildNode : this.unitNode;
+        const obj = new buildSidePanel(nodeParent.node);
         obj.onAvailableClick = (data) => {
           this.onSidePanelClick('onAvailableClick', data)
         }
