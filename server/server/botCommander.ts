@@ -8,7 +8,8 @@ export class BotCommander{
   playerController: PlayerController;
   tickList: TickList;
   //sidePanel:PlayerSide;
-
+  reloadingTime: number = 5000;
+  loading: number = 5000;
   panelInfo: IUpdateSidePanel;
   
 
@@ -34,18 +35,21 @@ export class BotCommander{
   }
 
   tick(delta: number) {
-    const random = Math.random();
     
-    if (random < 0.3) { 
-      const availableBuild =  this.panelInfo.sidePanelData.filter(item => item.status === 'available');     
-      if (availableBuild.length) {
-        this.playerController.startBuilding(availableBuild[Math.floor(Math.random() * availableBuild.length)].object.name);
-      }
-     } else if (random < 1) {
+    this.loading -= delta;
+    if (this.loading <= 0) {
+      this.loading = this.reloadingTime;
+      const random = Math.random();
+      if (random < 0.3) { 
+        const availableBuild =  this.panelInfo.sidePanelData.filter(item => item.status === 'available');     
+        if (availableBuild.length) {
+          this.playerController.startBuilding(availableBuild[Math.floor(Math.random() * availableBuild.length)].object.name);
+        }
+      } else if (random < 1) {
       //add to attack or some 
       //console.log(this.playerController.getObjects())
+      }
     }
-
     const privateMessage=0;//this.playerController.addGameObject()
     //
   }
