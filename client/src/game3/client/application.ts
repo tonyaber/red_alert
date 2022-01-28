@@ -4,6 +4,7 @@ import { ClientSocket } from './clientSocket';
 import { Game } from './game';
 import { LocalModel } from './localSocketModel';
 import { IClientModel } from './IClientModel';
+import { TestView } from './testView';
 export class Application extends Control{
   socket: IClientModel;
   constructor(parentNode: HTMLElement) {
@@ -19,6 +20,10 @@ export class Application extends Control{
       const clientSocket = new ClientSocket('ws://localhost:3000/');
       this.socket = new SocketModel(clientSocket);
       this.startGame();      
+    }
+    startPage.testCanvas = () => {
+      startPage.destroy();
+      const testView = new TestView(this.node);
     }
   }
 
@@ -38,6 +43,7 @@ export class Application extends Control{
 class StartPage extends Control{
   onSinglePlay: () => void;
   onMultiPlay: () => void;
+  testCanvas: () => void;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
     const singlePlay = new Control(this.node, 'button', '', 'Single Play');
@@ -48,6 +54,10 @@ class StartPage extends Control{
     multiPlay.node.onclick = () => {
       this.onMultiPlay();
     }
+     const testCanvas = new Control(this.node, 'button', '', 'Test');
+      testCanvas.node.onclick = () => {
+        this.testCanvas();
+      }
   }
 }
 class Authorization extends Control{
