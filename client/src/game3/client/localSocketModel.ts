@@ -86,7 +86,8 @@ export class LocalModel implements IClientModel
   //side
 
   startBuild(name: string, playerId: string) {
-    this.myPlayer.startBuilding(name)
+    const result = this.myPlayer.startBuilding(name);
+    return new Promise(resolve => resolve(result));
   }
 
   pauseBuilding(name: string, playerId: string){

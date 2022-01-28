@@ -8,7 +8,7 @@ export interface IServerResponseMessage {
 export interface IServerRequestMessage {
   type: string;
   content: string;
-  requestId: string
+  requestId: string;
 }
 
 export interface IRegisteredPlayerInfo{
@@ -54,7 +54,7 @@ export interface ISidePanelData{
 export interface IStartGameResponse {
   sidePanel: ISidePanelData;
   players: string[];
-  type?: 'bot'|'human'|'spectator'
+  type?: 'bot' | 'human' | 'spectator',
 }
 
 export interface IUpdateSidePanel{

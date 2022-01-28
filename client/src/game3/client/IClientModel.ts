@@ -23,7 +23,7 @@ export class IClientModel
 
   registerGamePlayer: () => void;
 
-  startBuild: (name: string, playerId: string) => void;
+  startBuild: (name: string, playerId: string) => Promise<any>;
 
   pauseBuilding: (name: string, playerId: string) => void;
   playBuilding: (name: string, playerId: string) => void;

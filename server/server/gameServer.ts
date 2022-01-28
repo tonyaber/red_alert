@@ -47,8 +47,7 @@ export class GameServer {
       }
       if(action === 'delete'){
 
-      }
-     
+      }     
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])
@@ -57,9 +56,6 @@ export class GameServer {
       this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
       
     }
-
-
-    
     ///start to game, fix it later
     const allPlayers = this.registeredPlayersInfo.map(it => it.id);
     this.players.forEach(item => {
@@ -72,7 +68,7 @@ export class GameServer {
   }
  
   handleMessage(ms: IServerRequestMessage, id) {
-    (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
+    return (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
   }
 
   sendMessage(connection: connection, msg: string, date: string) {

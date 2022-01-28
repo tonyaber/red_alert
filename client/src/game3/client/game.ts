@@ -36,9 +36,10 @@ export class Game extends Control{
     }
 
     sidePanel.onSidePanelClick = (selected, object) => {
-      console.log(selected)
       if (selected === 'onAvailableClick') {
-        socket.startBuild(object.object.name, id);
+        socket.startBuild(object.object.name, id).then((result) => {
+          console.log(result);
+        })
       } else if (selected === 'onIsReadyClick') {
         canvas.onClick = (position) => {
            canvas.onClick = null;

@@ -42,6 +42,7 @@ export class GameModel{
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
    // return 'private'
+    return 'ok'
   }
 
   pauseBuilding(playerId:string, objectType:string){

@@ -16,19 +16,19 @@ export class HumanCommander{
       this.sendMessage('', privateResponse);
     }
     if (message.type === 'startBuild') {
-      this.playerController.startBuilding(message.content.name);
+      return this.playerController.startBuilding(message.content.name);
     }
     if (message.type === 'addBuild') {
-      this.playerController.addGameObject(message.content.name, message.content.position);
+      return this.playerController.addGameObject(message.content.name, message.content.position);
     }
     if(message.type ==='setPrimary'){
-      this.playerController.setPrimary(message.content.id, message.content.name);
+      return this.playerController.setPrimary(message.content.id, message.content.name);
     }
     if (message.type === 'pauseBuild') {
-      this.playerController.pauseBuilding(message.content.name)
+      return this.playerController.pauseBuilding(message.content.name)
     }
     if (message.type === 'playBuild') {
-      this.playerController.playBuilding(message.content.name)
+      return this.playerController.playBuilding(message.content.name)
     }
   }
 

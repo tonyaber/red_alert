@@ -1,7 +1,7 @@
 import { Vector } from "../../common/vector";
 import { IGameUpdateRespone } from "../dto";
 import { ClientSocket } from "./clientSocket";
-import { IGameObjectData, IObjectInfo } from "./dto";
+import { IGameObjectData, IObjectInfo, IServerResponseMessage } from "./dto";
 import { IClientModel } from './IClientModel';
 export class SocketModel implements IClientModel
 {
@@ -11,11 +11,12 @@ export class SocketModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
+  private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
   constructor(client:ClientSocket){
     this.client = client;
-    client.onMessage = (message) => {
+    this.messageHandler = (message:IServerResponseMessage) => {
       if (message.type === 'update') {
         this.onUpdate(JSON.parse(message.content));
       }
@@ -31,8 +32,9 @@ export class SocketModel implements IClientModel
       }
       if (message.type === 'auth') {
         this.onAuth(message.content);
-      }
+      }      
     }
+    this.client.onMessage.add(this.messageHandler)
   }
 
   //side
@@ -49,10 +51,15 @@ export class SocketModel implements IClientModel
     this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'human'}));
   }
 
-  startBuild(name: string, playerId: string) {
+  startBuild(name: string, playerId: string) :Promise<string>{
     const content = JSON.stringify({ type: 'startBuild', content: { name, playerId } });
-    
-    this.client.sendMessage('gameMove', content);
+   //если будет объект, то
+    // const result = this.client.sendMessage('gameMove', content).then((r)=>{
+    //  const data:ТИП = JSON.stringify(r);
+    // return data;
+    // })
+   //  return result;
+    return this.client.sendMessage('gameMove', content);
   }
 
   pauseBuilding(name: string, playerId: string){
@@ -94,6 +101,9 @@ export class SocketModel implements IClientModel
   setAttackTarget(){
 
   }
+  destroy() {
+    this.client.onMessage.remove(this.messageHandler);
+   }
 
   //all game player methods
 }
