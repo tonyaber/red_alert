@@ -70,7 +70,7 @@ export class PlayerSide{
   startBuilding(objectType: string) {
     const build = this.buildings.find(item => item.object.name === objectType);
     build.status = 'inProgress';
-    const progress = new BuildingProgress(build.object);    
+    const progress = new BuildingProgress(build);    
     this.buildsInProgress.push(progress);
     this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
     //return 'private'
@@ -79,20 +79,30 @@ export class PlayerSide{
   }
 
   pauseBuilding(objectType:string){
+    const build = this.buildings.find(item => item.object.name === objectType);
+    build.status = 'isPause';
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
+  }
 
+  playBuilding(objectType:string){
+    const build = this.buildings.find(item => item.object.name === objectType);
+    build.status = 'inProgress';    
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 
   tick(delta: number) {
     if (this.buildsInProgress.length) {
       this.buildsInProgress.forEach(item => {
-        const nextMoney = item.updateProgress(delta, this.money);
-        this.money = nextMoney;
-        this.buildings.find(it => it.object.name == item.object.name).progress = item.progress;
-        if (item.isReady) {
-          this.buildings.find(it => it.object === item.object).status = 'isReady';
-          this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
-          this.onReady(item.object.name, item.object.subType, item.object.spawn)
-        }
+        if (item.object.status === 'inProgress') {
+          const nextMoney = item.updateProgress(delta, this.money);
+          this.money = nextMoney;
+          this.buildings.find(it => it.object.name == item.object.object.name).progress = item.progress;
+          if (item.isReady) {
+            this.buildings.find(it => it.object === item.object.object).status = 'isReady';
+            this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
+            this.onReady(item.object.object.name, item.object.object.subType, item.object.object.spawn)
+          }
+        }        
       })
       this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
     }

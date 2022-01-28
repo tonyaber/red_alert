@@ -15,6 +15,14 @@ export class PlayerController{
    return this.gameModel.startBuilding(this.playerId, objectType);
   }
 
+  pauseBuilding(objectType: string) {
+    return this.gameModel.pauseBuilding(this.playerId, objectType);
+  }
+
+  playBuilding(objectType: string) {
+    return this.gameModel.playBuilding(this.playerId, objectType);
+  }
+
   addGameObject(objectType:string, position:IVector){
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }

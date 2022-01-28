@@ -89,8 +89,12 @@ export class LocalModel implements IClientModel
     this.myPlayer.startBuilding(name)
   }
 
-  pauseBuild(){
+  pauseBuilding(name: string, playerId: string){
+    this.myPlayer.pauseBuilding(name);
+  }
 
+  playBuilding(name: string, playerId: string){
+    this.myPlayer.playBuilding(name);
   }
 
   cancelBuild(){

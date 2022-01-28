@@ -24,6 +24,12 @@ export class HumanCommander{
     if(message.type ==='setPrimary'){
       this.playerController.setPrimary(message.content.id, message.content.name);
     }
+    if (message.type === 'pauseBuild') {
+      this.playerController.pauseBuilding(message.content.name)
+    }
+    if (message.type === 'playBuild') {
+      this.playerController.playBuilding(message.content.name)
+    }
   }
 
   sendMessage(type: string, message:string){ //send to client

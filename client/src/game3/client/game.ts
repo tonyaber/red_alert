@@ -35,7 +35,8 @@ export class Game extends Control{
       canvas.addObject(data);
     }
 
-    sidePanel.onSidePanelClick = (selected, object)=> {
+    sidePanel.onSidePanelClick = (selected, object) => {
+      console.log(selected)
       if (selected === 'onAvailableClick') {
         socket.startBuild(object.object.name, id);
       } else if (selected === 'onIsReadyClick') {
@@ -43,6 +44,10 @@ export class Game extends Control{
            canvas.onClick = null;
           socket.addBuild(object.object.name, position, id);
         }
+      } else if (selected === 'onInprogressClick'){
+        socket.pauseBuilding(object.object.name, id);
+      } else if (selected === 'onIsPauseClick') {
+        socket.playBuilding(object.object.name, id)
       }
     }
 

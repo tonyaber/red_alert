@@ -25,8 +25,8 @@ export class IClientModel
 
   startBuild: (name: string, playerId: string) => void;
 
-  pauseBuild: () => void;
-
+  pauseBuilding: (name: string, playerId: string) => void;
+  playBuilding: (name: string, playerId: string) => void;
   cancelBuild: () => void;
 
   //to map

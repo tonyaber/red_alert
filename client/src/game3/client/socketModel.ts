@@ -55,8 +55,16 @@ export class SocketModel implements IClientModel
     this.client.sendMessage('gameMove', content);
   }
 
-  pauseBuild(){
+  pauseBuilding(name: string, playerId: string){
+    const content = JSON.stringify({ type: 'pauseBuild', content: { name, playerId } });
+    
+    this.client.sendMessage('gameMove', content);
+  }
 
+  playBuilding(name: string, playerId: string){
+    const content = JSON.stringify({ type: 'playBuild', content: { name, playerId } });
+    
+    this.client.sendMessage('gameMove', content);
   }
   
   setTargetSpectator(targetId: string) {

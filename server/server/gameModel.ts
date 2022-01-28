@@ -45,7 +45,11 @@ export class GameModel{
   }
 
   pauseBuilding(playerId:string, objectType:string){
+    this.playersSides.find(item => item.id === playerId).pauseBuilding(objectType);
+  }
 
+  playBuilding(playerId:string, objectType:string){
+    this.playersSides.find(item => item.id === playerId).playBuilding(objectType);
   }
 
   private _completeBuilding(){
