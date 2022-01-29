@@ -85,17 +85,19 @@ export class LocalModel implements IClientModel
 
   //side
 
-  startBuild(name: string, playerId: string) {
+  startBuild(name: string, playerId: string):Promise<string> {
     const result = this.myPlayer.startBuilding(name);
     return new Promise(resolve => resolve(result));
   }
 
-  pauseBuilding(name: string, playerId: string){
-    this.myPlayer.pauseBuilding(name);
+  pauseBuilding(name: string, playerId: string):Promise<string>{
+    const result = this.myPlayer.pauseBuilding(name);
+    return new Promise(resolve => resolve(result))
   }
 
-  playBuilding(name: string, playerId: string){
-    this.myPlayer.playBuilding(name);
+  playBuilding(name: string, playerId: string):Promise<string>{
+    const result = this.myPlayer.playBuilding(name);
+    return new Promise(resolve => resolve(result))
   }
 
   cancelBuild(){
@@ -108,12 +110,14 @@ export class LocalModel implements IClientModel
   }
 
   //to map
-  addBuild(name: string, position: Vector, playerId: string){
-    this.myPlayer.addGameObject(name, position);
+  addBuild(name: string, position: Vector, playerId: string):Promise<string>{
+    const result = this.myPlayer.addGameObject(name, position);
+    return new Promise(resolve => resolve(result))
   }
 
-  setPrimary(id: string, name: string){
-    this.myPlayer.setPrimary(id, name);
+  setPrimary(id: string, name: string):Promise<string>{
+    const result = this.myPlayer.setPrimary(id, name);
+    return new Promise(resolve => resolve(result))
   }
 
   moveUnit(){

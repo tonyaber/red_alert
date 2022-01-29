@@ -49,7 +49,7 @@ export class PlayerController{
   }
 
   setPrimary(buildId: string, name: string) {    
-    this.gameModel.setPrimary(this.playerId, buildId, name);
+    return this.gameModel.setPrimary(this.playerId, buildId, name);
   }
 
 }

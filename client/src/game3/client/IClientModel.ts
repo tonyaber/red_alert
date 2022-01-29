@@ -23,16 +23,16 @@ export class IClientModel
 
   registerGamePlayer: () => void;
 
-  startBuild: (name: string, playerId: string) => Promise<any>;
+  startBuild: (name: string, playerId: string) => Promise<string>;
 
-  pauseBuilding: (name: string, playerId: string) => void;
-  playBuilding: (name: string, playerId: string) => void;
+  pauseBuilding: (name: string, playerId: string) => Promise<string>;
+  playBuilding: (name: string, playerId: string) => Promise<string>;
   cancelBuild: () => void;
 
   //to map
-  addBuild: (name: string, position: Vector, playerId: string) => void;
+  addBuild: (name: string, position: Vector, playerId: string) => Promise<string>;
 
-  setPrimary: (id: string, name: string) => void;
+  setPrimary: (id: string, name: string) => Promise<string>;
   moveUnit: () => void;
 
   setAttackTarget: () => void;

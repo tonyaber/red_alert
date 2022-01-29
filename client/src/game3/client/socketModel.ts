@@ -62,21 +62,21 @@ export class SocketModel implements IClientModel
     return this.client.sendMessage('gameMove', content);
   }
 
-  pauseBuilding(name: string, playerId: string){
+  pauseBuilding(name: string, playerId: string):Promise<string>{
     const content = JSON.stringify({ type: 'pauseBuild', content: { name, playerId } });
     
-    this.client.sendMessage('gameMove', content);
+    return this.client.sendMessage('gameMove', content);
   }
 
-  playBuilding(name: string, playerId: string){
+  playBuilding(name: string, playerId: string):Promise<string>{
     const content = JSON.stringify({ type: 'playBuild', content: { name, playerId } });
     
-    this.client.sendMessage('gameMove', content);
+    return this.client.sendMessage('gameMove', content);
   }
   
   setTargetSpectator(targetId: string) {
     const content = JSON.stringify({type: 'setTargetSpectator', content: targetId});
-    this.client.sendMessage('gameMove', content); 
+    return this.client.sendMessage('gameMove', content); 
   }
 
   cancelBuild(){
@@ -84,14 +84,14 @@ export class SocketModel implements IClientModel
   }
 
   //to map
-  addBuild(name: string, position: Vector, playerId: string){
+  addBuild(name: string, position: Vector, playerId: string):Promise<string>{
     const content = JSON.stringify({ type: 'addBuild', content: { name,position, playerId } });
-    this.client.sendMessage('gameMove', content);
+    return this.client.sendMessage('gameMove', content);
   }
 
-  setPrimary(id: string, name: string){
+  setPrimary(id: string, name: string):Promise<string>{
     const content = JSON.stringify({ type: 'setPrimary', content: {id, name} });
-    this.client.sendMessage('gameMove', content);
+    return this.client.sendMessage('gameMove', content);
   }
 
   moveUnit(){

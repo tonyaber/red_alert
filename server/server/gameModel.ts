@@ -30,7 +30,6 @@ export class GameModel{
         if (subType === 'unit') {
           this._addUnit(type, spawn, item.id);
         }
-        
         //send response onReady to player
       }     
       this.playersSides.push(playerSide);
@@ -42,15 +41,17 @@ export class GameModel{
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
    // return 'private'
-    return 'ok'
+    return 'start building'
   }
 
   pauseBuilding(playerId:string, objectType:string){
     this.playersSides.find(item => item.id === playerId).pauseBuilding(objectType);
+    return 'pause build'
   }
 
   playBuilding(playerId:string, objectType:string){
     this.playersSides.find(item => item.id === playerId).playBuilding(objectType);
+    return 'play build'
   }
 
   private _completeBuilding(){
@@ -101,7 +102,7 @@ export class GameModel{
     gameObject.create();
     this.gameObjects.push(gameObject);
 
-    return true;
+    return 'add object';
   }
 
   moveUnits(playerId:string, unitIds:string[], target:IVector){
@@ -129,6 +130,7 @@ export class GameModel{
         }
       })
     }
+    return 'set primary'
   }
 
   _getPrimary(playerId: string, name: string) {

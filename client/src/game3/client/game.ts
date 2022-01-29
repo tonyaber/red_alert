@@ -42,18 +42,26 @@ export class Game extends Control{
         })
       } else if (selected === 'onIsReadyClick') {
         canvas.onClick = (position) => {
-           canvas.onClick = null;
-          socket.addBuild(object.object.name, position, id);
+          canvas.onClick = null;
+          socket.addBuild(object.object.name, position, id).then((result) => {
+            console.log(result);
+          });
         }
       } else if (selected === 'onInprogressClick'){
-        socket.pauseBuilding(object.object.name, id);
+        socket.pauseBuilding(object.object.name, id).then((result) => {
+          console.log(result);
+        });;
       } else if (selected === 'onIsPauseClick') {
-        socket.playBuilding(object.object.name, id)
+        socket.playBuilding(object.object.name, id).then((result) => {
+          console.log(result);
+        });
       }
     }
 
     canvas.onObjectClick = (id: string, name: string) => {
-      socket.setPrimary(id, name)
+      socket.setPrimary(id, name).then((result) => {
+        console.log(result);
+      });
     }
 
     
