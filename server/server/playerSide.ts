@@ -1,3 +1,4 @@
+import { setTimeout } from "timers/promises";
 import { BuildingProgress } from "./buildingInProgress";
 import { IObjectInfo } from "./dto";
 import { tech } from "./techTree";
@@ -31,6 +32,9 @@ export class PlayerSide{
       }
     });
     this.updateAvailableObject();
+    // window.setTimeout(()=>{
+    //   this.setMoney(4500);
+    // }, 5000)
   }
 
   updateAvailableObject() {
@@ -62,9 +66,9 @@ export class PlayerSide{
     this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 
-  setMoney(){
-    ///
-    this.onUpdate('data');
+  setMoney(money: number){
+    this.money += money;
+    this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 
   startBuilding(objectType: string) {
@@ -95,13 +99,17 @@ export class PlayerSide{
       this.buildsInProgress.forEach(item => {
         if (item.object.status === 'inProgress') {
           const nextMoney = item.updateProgress(delta, this.money);
-          this.money = nextMoney;
-          this.buildings.find(it => it.object.name == item.object.object.name).progress = item.progress;
-          if (item.isReady) {
-            this.buildings.find(it => it.object === item.object.object).status = 'isReady';
-            this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
-            this.onReady(item.object.object.name, item.object.object.subType, item.object.object.spawn)
+    
+          if (this.money - nextMoney > 0) {
+            this.money -= nextMoney;
+            this.buildings.find(it => it.object.name == item.object.object.name).progress = item.progress;
+            if (item.isReady) {
+              this.buildings.find(it => it.object === item.object.object).status = 'isReady';
+              this.buildsInProgress = this.buildsInProgress.filter(it => item != it);
+              this.onReady(item.object.object.name, item.object.object.subType, item.object.object.spawn)
+            }
           }
+         
         }        
       })
       this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
