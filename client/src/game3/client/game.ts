@@ -1,5 +1,5 @@
 import Control from "../../common/control";
-import { Canvas } from "./canvas";
+import { Canvas } from "./canvasView";
 import { IObjectContent, IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
