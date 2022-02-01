@@ -1,113 +1,39 @@
-import Control from "../common/control";
-import {Game} from '../game/game';
-import { SocketClient } from "../common/SocketClient1";
-import { IServerResponseMessage } from "../common/socketInterface";
-import { GameSocketClient } from '../game/gameSocketClient';
-
-export class Application extends Control {
-  private clientSocketModel: SocketClient
-  private game: Game;
-
+import Control from '../../../common/control';
+import { SocketModel } from '../game/socketModel';
+import { ClientSocket } from '../game/clientSocket';
+import { Game } from '../game/game';
+import { LocalModel } from '../game/localSocketModel';
+import { IClientModel } from '../game/IClientModel';
+import { StartPage } from '../game/startPage';
+import { Authorization } from '../game/authorization';
+import { SettingPage } from '../game/settingPage';
+export class Application extends Control{
+  socket: IClientModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
-    this.clientSocketModel = new SocketClient('ws://localhost:3000/');
-
-    const startPageModel = new StartPageSocketModel(this.clientSocketModel)
-    const startPage = new StartPage(this.node, startPageModel)
-    startPage.onStartPageClick = async (name) => {
+    const startPage = new StartPage(this.node);
+    startPage.onSinglePlay = () => {
       startPage.destroy();
-      const settingPage = new Setting(this.node, this.clientSocketModel);
-      
-      settingPage.onStartPage = (data) => {
+      this.socket = new LocalModel();
+      this.startGame();
+    }
+    startPage.onMultiPlay = () => {
+      startPage.destroy();
+      const clientSocket = new ClientSocket('ws://localhost:3000/');
+      this.socket = new SocketModel(clientSocket);
+      this.startGame();      
+    }
+  }
+
+  startGame() {
+    const authorization = new Authorization(this.node, this.socket);
+    authorization.onAuth = (name) => {
+      authorization.destroy();
+      const settingPage = new SettingPage(this.node, this.socket);
+      settingPage.onStartGame = (data) => {
         settingPage.destroy();
-        console.log(data)
-        const players = data;
-        const gameSocketModel = new GameSocketClient(this.clientSocketModel)
-        this.game = new Game(this.node, players, name, gameSocketModel);
-      }
-      
-    }
-
-  }
-  
-}
-
-
-class StartPageSocketModel {
-  socket: SocketClient;
-  private messageHandler: (message: IServerResponseMessage) => void;
-  onAuth: (name: string)=>void;
-
-  constructor(socket: SocketClient) {
-    this.messageHandler = (message:IServerResponseMessage) => {
-      if (message.type = 'sendName') {
-        this.onAuth(JSON.parse(message.content));
+        const game = new Game(this.node, this.socket, name, data);
       }
     }
-    socket.onMessage.add(this.messageHandler)
-    this.socket = socket;
-  }
-
-  sendName(){
-    this.socket.sendRequest('sendName', (Math.floor(Math.random() * 100))+'Player');
-  }
-  destroy() {
-    this.socket.onMessage.remove(this.messageHandler);
-
   }
 }
-class StartPage extends Control {
-  public onStartPageClick: (name: string) => void
-  socket: StartPageSocketModel;
-
-  constructor(parentNode: HTMLElement, socket: StartPageSocketModel) {
-    super(parentNode);
-    
-    this.socket = socket;
-    const input = new Control<HTMLInputElement>(this.node, 'input')
-    const button = new Control(this.node, 'button', '', 'Start')
-    button.node.onclick = () => {
-      this.socket.sendName();
-      
-    }
-    socket.onAuth = (name) => {
-      this.onStartPageClick(name);
-    }
-  } 
-
-  destroy(): void {
-    this.socket.destroy();
-    super.destroy();
-
-  }
-
-}
-
-
-class Setting extends Control {
-  public onSettingPageClick: () => void
-  socket: SocketClient;
-  messageHandler: (message: IServerResponseMessage) => void;
-  onStartPage: (message: string[]) => void;
-
-  constructor(parentNode: HTMLElement, socket: SocketClient) {
-    super(parentNode);
-    const setting = new Control(this.node, 'button', '', 'Setting');
-    this.socket = socket;
-    this.messageHandler = (message:IServerResponseMessage) => {
-      if (message.type === 'startGame') {
-        this.onStartPage(JSON.parse(message.content));
-      }
-    }
-    socket.onMessage.add(this.messageHandler)
-
-    
-  }
-  destroy() {
-    this.socket.onMessage.remove(this.messageHandler);
-    super.destroy();
-  }
-
-}
-
-

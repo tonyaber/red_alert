@@ -1,9 +1,9 @@
 import { InteractiveObject } from "./interactiveObject";
-import { Vector } from '../common/vector';
+import { Vector } from '../../../common/vector';
 
 export class InteractiveList{
-  public list:InteractiveObject[];
-  hoveredObjects: InteractiveObject[];
+  public list:InteractiveObject[] = [];
+  hoveredObjects: InteractiveObject[] = [];
 
   _hovered:InteractiveObject;
   set hovered(value:InteractiveObject){

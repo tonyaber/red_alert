@@ -1,37 +1,66 @@
-import { GamePlayer } from "./gameModel";
-import { Vector } from '../common/vector';
-export interface IObjectInfo {
-  deps: string[];
-  name: string;
-  cost: number;
-  category: string;
-  time: number;
-  type: "unit" | "build";
-}
+import { Vector } from "../../../common/vector";
 
-export interface IObject{
-  object: IObjectInfo;
-  status: string;
-  progress: number;
-}
+//action: add/delete/atack/move
 
-export interface IObjectList{
-  name: string;
+export interface IGameObjectContent{
+  position: Vector;
   health: number;
-  type: "unit" | "build";
-  radius?: number;
-  speed?: number;
-  minRadius?: number;
-  reloadingTime?: number;
-  bullet?: number;
-  player: GamePlayer;
+  playerId: string;
+  primary: boolean;
+}
+export interface IGameObjectData{  
+  type: string;//name
+  objectId: string; 
+  content: IGameObjectContent;
 }
 
-export interface IProgress {
-  progress: number;
-  name: string;
+export interface IObject {
+  deps: string[],
+  name: string,
+  cost: number,
+  subType: string,
+ }
+export interface IObjectInfo {
+  object: IObject,
+  status: string,
+  progress: number,
+}
+export interface IServerRequestMessage {
+  type: string;
+  content: string;
 }
 
-export interface ITickable{
-  tick: (deltaTime: number) => void;
+export interface IServerResponseMessage {
+  type: string;
+  content: string;
+  requestId: string;
+}
+export interface IObjectContent{
+   position: Vector,
+      name: string,
+      id: string,
+      data: {
+        health: number
+      },
+}
+
+export interface IStartGameResponse {
+  sidePanel: IUpdateSidePanel;
+  players: string[];
+  type?: 'bot'|'human'|'spectator'
+}
+
+export interface IUpdateSidePanel{
+  sidePanelData: IObjectInfo[];
+  money: number;
+
+}
+
+export interface IRegisterGamePlayerRequest{
+ type: 'bot'|'human'|'spectator'
+}
+
+export interface IGameUpdateResponse{
+  type: 'update' | 'delete' | 'create';
+  data: IGameObjectData;
 }

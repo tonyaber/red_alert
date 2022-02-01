@@ -1,55 +1,70 @@
-import Control from "../common/control";
-import { GameModel/* GameObject */} from './gameModel';
-import { GameCanvas } from './gameCanvas';
-import { GameSidePanel } from './gameSidePanel';
-import {IObject, IObjectInfo, ITickable} from "./dto";
-import { InteractiveObject } from "./interactiveObject";
-import { InteractiveTile } from './interactiveTile';
-import { Vector } from "../common/vector";
-import { createIdGenerator } from './idGenerator';
-import { globalGameInfo } from './globalIdGenerator';
-import { GamePlayerServer } from '../../../server/src/gameModelServer';
-import {TestListView,IListItem} from './testListView';
-import { ClientSocketModel } from "../common/SocketClient";
-import { ListModel, ListSocketClient } from "./list";
-import { SocketClient } from "../common/SocketClient1";
-import { GameSocketClient } from "./gameSocketClient";
-//import { TestListView1 } from "./gameModel1";
-//import { IListItem } from './gameModel1';
+import Control from "../../../common/control";
+import { Canvas } from "./canvas";
+import { IStartGameResponse } from "./dto";
+import { IClientModel } from "./IClientModel";
+import { SidePanel } from "./sidePanel";
+import { SocketModel } from "./socketModel";
 
-import { TickList } from './tickList';
 export class Game extends Control{
-  sendBuildData: (obj: IObject, position: Vector) => void;
-  updateObject: (data: string) => void;
-  private model: GameModel;
-  constructor(parentNode: HTMLElement, players: string[], name: string, socket:GameSocketClient) {
+  constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string) {
     super(parentNode);
-    this.model = new GameModel(players, name, socket.socket);
-    this.model.onUpdateSidePanel.add(()=>{
-      sidePanel.update();
-    });
+    const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
+    if (socket instanceof SocketModel&& sidePanelInfo.type === 'spectator') {
+      sidePanelInfo.players.forEach(item => {
+        if (item != id) {
+          const buttonPlayer = new Control(this.node, 'button', '', item);
+          buttonPlayer.node.onclick = () => {
+            socket.setTargetSpectator(item);
+          }         
+        }
+      })
+    }
+   
+    const canvas = new Canvas(this.node);
+    const sidePanel = new SidePanel(this.node);
     
-    const canvas = new GameCanvas(this.node, this.model);
-    const sidePanel = new GameSidePanel(this.node, this.model);
-    const tickList = new TickList();
-    tickList.add(this.model);
+    sidePanel.update(sidePanelInfo.sidePanel);
+    
+    socket.onSideUpdate = (data) => {      
+      sidePanel.update(data);
+    }
+    socket.onUpdate = (data)=> {
+      canvas.updateObject(data)
+    }
+    socket.onAddObject = (data) => {
+      canvas.addObject(data);
+    }
 
-    sidePanel.onSelectReady = (obj) => {
-      canvas.onClick = (position) => {
-        canvas.onClick = null;
-        this.model.addBuild({object: obj, playerName:name, position: position.clone()});
+    sidePanel.onSidePanelClick = (selected, object) => {
+      if (selected === 'onAvailableClick') {
+        socket.startBuild(object.object.name, id).then((result) => {
+          console.log(result);
+        })
+      } else if (selected === 'onIsReadyClick') {
+        canvas.onClick = (position) => {
+          canvas.onClick = null;
+          socket.addBuild(object.object.name, position, id).then((result) => {
+            console.log(result);
+          });
+        }
+      } else if (selected === 'onInprogressClick'){
+        socket.pauseBuilding(object.object.name, id).then((result) => {
+          console.log(result);
+        });;
+      } else if (selected === 'onIsPauseClick') {
+        socket.playBuilding(object.object.name, id).then((result) => {
+          console.log(result);
+        });
       }
     }
-    canvas.onObjectClick = (id) => {
-      this.model.damageBuild(id);
+
+    canvas.onObjectClick = (id: string, name: string) => {
+      socket.setPrimary(id, name).then((result) => {
+        console.log(result);
+      });
     }
 
-    const idGenerator =  createIdGenerator('playerId')
-    globalGameInfo.nextId = () => {
-      return idGenerator();
-    }
-    const listModel = new ListModel<IListItem>(createIdGenerator('objectId'))
-    const listSocketModelClient = new ListSocketClient<IListItem>(socket.socket, listModel);
-    const objectList = new TestListView(this.node, listSocketModelClient);
+    
+
   }
 }

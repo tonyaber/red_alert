@@ -1,82 +1,64 @@
-import {connection, IUtf8Message, request} from "websocket";
-import {Server} from "http";
-import {IConnection, IServerRequestMessage, IServerResponseMessage} from "./serverInterfaces";
-import { GameModelServer } from "./gameModelServer";
-import {TestListModel, TestListSocket} from "./testModel";
+import { Server } from "http";
+import { connection, IUtf8Message, request } from "websocket";
+import { IServerRequestMessage, IServerResponseMessage } from './dto';
+import { GameServer } from "./gameServer";
 
 const websocket = require('websocket')
 
-export class ServerSocket {
+export class ServerSocket{
+  
+  connections: Map<connection, string> = new Map()
+  //users:  Record<string, /*connection*/any> = {}
 
-  public connections: Array<connection> = []
-  private name: string;
-  private users: IConnection[]=[];
+  games: any[] = [];
 
   constructor(server: Server) {
-    this.connections = []
-    this.name = null
     const wsServer = new websocket.server({
       httpServer: server,
     });
-    const gameModel = new GameModelServer();
-
-    const listModel = new TestListModel();
-    const listSocket = new TestListSocket(listModel, 
-      response=>{
-        this.connections.forEach(it=>{
-          it.sendUTF(JSON.stringify(response));
-        })
-      }
-    );
-    listModel.onChange = ()=>{
-      //listModel.getList()
-    }
-    
+    const game = new GameServer();
     wsServer.on('request', (request: request) => {
-        console.log("^^^")
-        const connection = request.accept(undefined, request.origin);
-        this.connections.push(connection);
-        connection.on('message', (_message) => {
-          if (_message.type === 'utf8') {
-            const message = _message as IUtf8Message
-            const requestMessage: IServerRequestMessage = JSON.parse(
-              message.utf8Data
-            );
+      console.log("^^^")
+      const connection = request.accept(undefined, request.origin);
+      connection.on('message', (_message) => {
+        if (_message.type === 'utf8') {
+          const message = _message as IUtf8Message
+          const msg: IServerRequestMessage = JSON.parse(message.utf8Data);
+            if (msg.type === 'auth') {              
+              //id
+              this.connections.set(connection, msg.content);
+              connection.sendUTF(JSON.stringify({ type: 'auth', content: msg.content }))
+            }
 
-            listSocket.handleMessage(connection, requestMessage);
-
-            if (requestMessage.type === 'sendName') {
-              gameModel.addNewUser({ name: requestMessage.content, connection });
-              gameModel.users.find(item => item.connection.connection === connection).sendUTF('sendName', JSON.stringify(requestMessage.content));
-
-              
-              if (gameModel.users.length >= 2) {
-                gameModel.startGame();
-                gameModel.players.forEach(player => {
-                  player.user.sendUTF('startGame', JSON.stringify(gameModel.setAllPlayer()));
-                })
+            if (msg.type === 'gameMove') {
+              const playerId = this.connections.get(connection);
+             // const gameId = 1 //msg.gameId;
+              //find game by id
+              const result = game.handleMessage(msg, playerId);
+              const response: IServerResponseMessage = {
+                type: 'privateResponse',
+                content: JSON.stringify(result),
+                requestId: msg.requestId,
               }
+              connection.sendUTF(JSON.stringify(response));
             }
-            /*if (requestMessage.type === 'sendNewBuild') {
-              gameModel.addNewBuild(JSON.parse(requestMessage.content), connection);
-            }
-            if (requestMessage.type === 'sendUpdateObject') {
-              gameModel.players.forEach(player => {
-                player.user.sendUTF('getUpdateObject', requestMessage.content);
-              });
-            }*/
-
-          }
-          else {
-            throw new Error('Not UTF8')
-          }
-        })
-        connection.on('close', (reasonCode, description) => {
-          // this.connections = this.connections.filter(client => client.connection !== connection)
-          console.log("Disconnect")
-        })
-      }
-    )
-  }
+            if (msg.type === 'registerGamePlayer') {
+              const playerId = this.connections.get(connection);
+              //const gameId = 1//msg.gameId;
+              //find game by id
+              const content = JSON.parse(msg.content);
+              game.registerPlayer(content.playerType, playerId, connection)
+            }        
+        }
+      })
+    })
+  }  
+    
+    
+    
+    
+    
+    
+    
+    
 }
-

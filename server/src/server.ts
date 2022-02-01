@@ -1,5 +1,5 @@
 import {RequestListener, Server} from "http";
-import { ServerSocket } from "../server/serverSocket";
+import { ServerSocket } from "./serverSocket";
 // import mongodb, {MongoClient} from 'mongodb';
 // const mongo = new MongoClient('mongodb://localhost:27017/red_alert');
 // mongo.connect().then(() => {

@@ -1,7 +1,4 @@
-export interface ITickable{
-  tick: (deltaTime: number) => void;
-}
-
+import { ITickable } from './dto';
 export class TickList {
   setInt: NodeJS.Timer;
   tickable: ITickable[] = [];
@@ -21,10 +18,6 @@ export class TickList {
 
   add(item:ITickable) {
     this.tickable.push(item);
-  }
-
-  remove(item: ITickable) {
-    this.tickable = this.tickable.filter(it => it !== item);
   }
 
 }
