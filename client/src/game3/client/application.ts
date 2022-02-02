@@ -4,6 +4,7 @@ import { ClientSocket } from './clientSocket';
 import { Game } from './game';
 import { LocalModel } from './localSocketModel';
 import { IClientModel } from './IClientModel';
+import { resourceLoader, resources } from './resources';
 export class Application extends Control{
   socket: IClientModel;
   constructor(parentNode: HTMLElement) {
@@ -29,7 +30,9 @@ export class Application extends Control{
       const settingPage = new SettingPage(this.node, this.socket);
       settingPage.onStartGame = (data) => {
         settingPage.destroy();
-        const game = new Game(this.node, this.socket, name, data) ///players, name?
+        resourceLoader.load(resources).then(res=>{
+          const game = new Game(this.node, this.socket, name, data, res.textures) 
+        })///players, name?
       }
     }
   }

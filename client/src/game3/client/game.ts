@@ -6,7 +6,7 @@ import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 
 export class Game extends Control{
-  constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string) {
+  constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string, res:Record<string, HTMLImageElement>) {
     super(parentNode);
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
     if (socket instanceof SocketModel&& sidePanelInfo.type === 'spectator') {
@@ -18,7 +18,7 @@ export class Game extends Control{
       })
     }
    
-    const canvas = new Canvas(this.node);
+    const canvas = new Canvas(this.node, res);
     const sidePanel = new SidePanel(this.node);
     
     sidePanel.update(sidePanelInfo.sidePanel);
