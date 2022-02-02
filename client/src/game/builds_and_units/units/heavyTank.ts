@@ -1,7 +1,7 @@
 import { IGameObjectData } from '../../dto';
-import { InteractiveObject } from '../../interactiveObject';
+import { AbstractUnit } from './abstractUnit';
 
-export class HeavyTank extends InteractiveObject{
+export class HeavyTank extends AbstractUnit{
   constructor(data: IGameObjectData) {
     super(data);
   }

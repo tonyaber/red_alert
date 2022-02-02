@@ -1,9 +1,7 @@
-import { Vector } from '../../../../../common/vector';
 import { IGameObjectData } from '../../dto';
-import { InteractiveList } from '../../interactiveList';
-import { InteractiveObject } from '../../interactiveObject';
+import { AbstractUnit } from './abstractUnit';
 
-export class Soldier extends InteractiveObject{
+export class Soldier extends AbstractUnit{
   constructor(data: IGameObjectData) {
     super(data);
   }

@@ -1,7 +1,7 @@
 import { IGameObjectData } from '../../dto';
-import { InteractiveObject } from '../../interactiveObject';
+import { AbstractBuild } from './abstractBuild';
 
-export class BigEnergyPlant extends InteractiveObject{
+export class BigEnergyPlant extends AbstractBuild{
   constructor(data: IGameObjectData) {
     super(data);
   }

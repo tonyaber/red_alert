@@ -1,7 +1,7 @@
 import { IGameObjectData } from '../../dto';
-import { InteractiveObject } from '../../interactiveObject';
+import { AbstractBuild } from './abstractBuild';
 
-export class Radar extends InteractiveObject{
+export class Radar extends AbstractBuild{
   constructor(data: IGameObjectData) {
     super(data);
   }

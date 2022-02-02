@@ -1,7 +1,7 @@
 import { IGameObjectData } from '../../dto';
-import { InteractiveObject } from '../../interactiveObject';
+import { AbstractBuild } from './abstractBuild';
 
-export class OreBarrel extends InteractiveObject{
+export class OreBarrel extends AbstractBuild{
   constructor(data: IGameObjectData) {
     super(data);
   }
