@@ -11,7 +11,6 @@ export class BuildingCenter extends AbstractBuild{
    constructor(data: IGameObjectData) {
     super(data);
     
-  }
-  
+  } 
   
 }

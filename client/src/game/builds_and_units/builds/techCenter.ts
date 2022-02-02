@@ -10,14 +10,8 @@ export class TechCenter extends AbstractBuild{
   primary: boolean;
   constructor(data: IGameObjectData) {
     super(data);
-    this.id = data.objectId;
-    this.type = data.type;
-    this.updateObject(data.content);
+    
   }
 
-  updateObject(data: IGameObjectContent) {
-    this.position = data.position;
-    this.playerId = data.playerId;
-    this.primary = data.primary;
-  }
+
 }
