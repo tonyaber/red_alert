@@ -3,6 +3,7 @@ import { IGameObjectData } from "./dto";
 import { InteractiveObject,interactiveList } from "./interactiveObject";
 import { InteractiveList } from "./interactiveList";
 import { Vector } from '../../../common/vector';
+import { builds } from './builds_and_units/buildMap';
 export class Canvas extends Control{
   //interactiveList: Record<string, InteractiveObject> = {}
   interactiveList: InteractiveList;
@@ -38,8 +39,7 @@ export class Canvas extends Control{
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
-      }
-  
+      }  
     }
     
     this.startRender();
@@ -54,7 +54,8 @@ export class Canvas extends Control{
   }
 
   addObject(data: IGameObjectData) {
-    const interactiveObject = new InteractiveObject(data);
+    const BuildConstructor = builds[data.type] || InteractiveObject;
+    const interactiveObject = new BuildConstructor(data);
   }
 
   startRender(){

@@ -12,22 +12,12 @@ export class InteractiveObject{
   onClick: any;
   onDestroyed: () => void;
   getList: () => InteractiveList;
-  //position: {x:number, y:number};
-  //name:string;
-  //type: string = 'interactive';
   id: string;
   playerId: string;
   position: Vector;
   type: string;
   primary: boolean;
   color: string;
-  // gameObject:GameObject;
-  // get position(){
-  //   return new Vector(0,0);
-  // }
-  // set position(val:Vector){
-    
-  // }
 
   constructor(data: IGameObjectData) {
     this.id = data.objectId;
@@ -83,7 +73,6 @@ export class InteractiveObject{
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = this.color;
     ctx.fillText(this.type, this.position.x + 20, this.position.y + 20);
     ctx.fillText(this.playerId, this.position.x + 20, this.position.y + 10);
     if (this.primary) {
