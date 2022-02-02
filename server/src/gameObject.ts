@@ -10,7 +10,7 @@ export class GameObject {
     primary: false,
   };
   onUpdate: ( state: IGameObjectData) => void;
-  onCreate: (state: IGameObjectData) => void;
+  onCreate: (state: IGameObjectData, subType: string) => void;
   onDelete:(state: IGameObjectData) => void;
   objectId: string;
 
@@ -42,7 +42,7 @@ export class GameObject {
       type: this.type,
       objectId: this.objectId,
       content: this.getState(),
-    }); 
+    }, this.subType); 
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {

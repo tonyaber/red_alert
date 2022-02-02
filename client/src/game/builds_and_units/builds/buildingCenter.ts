@@ -1,9 +1,17 @@
-import { IGameObjectData } from '../../dto';
-import { InteractiveObject } from '../../interactiveObject';
+import { Vector } from '../../../../../common/vector';
+import { IGameObjectContent, IGameObjectData } from '../../dto';
+import { AbstractBuild } from './abstractBuild';
 
-export class BuildingCenter extends InteractiveObject{
-  constructor(data: IGameObjectData) {
+export class BuildingCenter extends AbstractBuild{
+  id: string;
+  playerId: string;
+  position: Vector;
+  type: string;
+  primary: boolean;
+   constructor(data: IGameObjectData) {
     super(data);
+    
   }
-
+  
+  
 }

@@ -1,6 +1,7 @@
 import { IGameObjectData } from "../dto";
-import { InteractiveObject } from "../interactiveObject";
+import { AbstractBuild } from "./builds/abstractBuild";
+import { AbstractUnit } from "./units/abstractUnit";
 
 export interface IBuildConstructor{
-  new (data: IGameObjectData):InteractiveObject
+  new (data: IGameObjectData):AbstractUnit|AbstractBuild
 }

@@ -10,7 +10,7 @@ export class Canvas extends Control{
   
   onGameMove: () => void;
   onClick: (position: Vector) => void;
-  onObjectClick: (id: string, name: string) => void;
+  onObjectClick: (id: string, name: string, subType: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   hoveredObjects: InteractiveObject = null;
@@ -38,7 +38,7 @@ export class Canvas extends Control{
       if (this.hoveredObjects === null) {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
-        this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
+        this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type, this.hoveredObjects.subType);
       }  
     }
     
@@ -89,8 +89,10 @@ export class Canvas extends Control{
     
     this.interactiveList.list.forEach(it => {
       it.render(ctx,
-        new Vector(0, 0),
-        delta,
+        new Vector(0, 0),        
+        it.playerId,
+        it.type,
+        it.primary, delta,
       );
     })
     
