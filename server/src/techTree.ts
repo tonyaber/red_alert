@@ -7,7 +7,7 @@ const buildingCenter = {
   energy: 0,
   cost: 1000,
   subType: 'build',
-  time: 5,
+  time: 1,
   mtx:[
     '0000'.split(''),
     '0110'.split(''),
@@ -25,7 +25,7 @@ const energyPlant = {
   energy: -5,
   cost: 200,
   subType: 'build',
-  time: 10,
+  time: 1,
   mtx: [
     '0000'.split(''),
     '1100'.split(''),
@@ -43,7 +43,7 @@ const barrack = {
   energy: 3,
   cost: 400,
   subType: 'build',
-  time: 10,
+  time: 1,
   mtx: [
     '0011'.split(''),
     '0011'.split(''),

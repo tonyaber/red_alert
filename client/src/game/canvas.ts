@@ -1,9 +1,11 @@
 import Control from "../../../common/control";
-import { IGameObjectData } from "./dto";
+import { IGameObjectData,IObject } from "./dto";
 import { InteractiveObject,interactiveList } from "./interactiveObject";
 import { InteractiveList } from "./interactiveList";
 import { Vector } from '../../../common/vector';
 import { builds } from './builds_and_units/buildMap';
+import { GameCursorStatus } from './gameCursorStatus';
+import { AbstractUnit } from "./builds_and_units/units/abstractUnit";
 export class Canvas extends Control{
   //interactiveList: Record<string, InteractiveObject> = {}
   interactiveList: InteractiveList;
@@ -15,31 +17,82 @@ export class Canvas extends Control{
   ctx: CanvasRenderingContext2D;
   hoveredObjects: InteractiveObject = null;
   fps: number;
+  cursorStatus: GameCursorStatus;
+  cursorPosition: Vector;
+  playerId: string;
 
 
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, id: string) {
     super(parentNode);
+    this.playerId = id;
     this.canvas = new Control(this.node, 'canvas');
     this.canvas.node.width = 500;
     this.canvas.node.height = 500;
     this.canvas.node.style.background = 'green';
     this.ctx = this.canvas.node.getContext('2d');
     this.interactiveList = interactiveList;
-    this.canvas.node.onmousemove = (e)=>{
-      this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY))
+    this.cursorStatus = new GameCursorStatus(this.playerId);
+    
+  
+
+    let preventSelect = false;
+    this.canvas.node.onmousedown = (e) => {
+      this.cursorPosition = new Vector(e.offsetX, e.offsetY)
+      // if (e.button == 2){
+      //   this.cursorStatus.planned = null;
+      //   this.cursorStatus.selected = [];
+      // } else if (e.button == 0){
+        if (this.cursorStatus.getAction()!='select') return;
+        this.handleMultiSelect(this.cursorPosition, ()=>{
+          preventSelect = true;
+        });
+      
+    }
+
+    this.canvas.node.onmousemove = (e) => {
+      this.cursorPosition = new Vector(e.offsetX, e.offsetY)
+      this.interactiveList.handleMove(this.cursorPosition, this.cursorPosition);
+      this.cursorStatus.pixelPosition = this.cursorPosition
     }
     
     
     this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
       this.hoveredObjects = currentTarget;
+      this.cursorStatus.hovered = currentTarget ? [currentTarget] : [];
     }
 
+    this.interactiveList.onClick = (current) => {   
+      this.interactiveList.list.forEach(item => item.selected = false);
+      current.selected = true;
+      this.cursorStatus.selected = current ? [current] : [];  
+    };
+
     this.canvas.node.onclick = (e: MouseEvent) => {
-      if (this.hoveredObjects === null) {
-         this.onClick?.(new Vector(e.offsetX, e.offsetY))
-      } else {
+      this.cursorPosition = new Vector(e.offsetX, e.offsetY);
+       if (preventSelect){
+        preventSelect = false;
+        return;
+      }     
+      const action = this.cursorStatus.getAction();
+
+      if(action === 'select'){
+        this.interactiveList.handleClick(this.cursorPosition, this.cursorPosition)
+      }
+      if (action === 'build') {
+        this.onClick?.(new Vector(e.offsetX, e.offsetY));
+        this.cursorStatus.planned = null;
+      }
+      if (action === 'primary') {
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type, this.hoveredObjects.subType);
-      }  
+      } 
+      if (action === 'move') {
+        this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
+        this.cursorStatus.selected = [];
+      }
+      if (action === 'attack') {
+        this.cursorStatus.selected.forEach(item => (item as AbstractUnit).attack(this.hoveredObjects));
+        this.cursorStatus.selected = [];
+      }
     }
     
     this.startRender();
@@ -51,6 +104,14 @@ export class Canvas extends Control{
 
   deleteObject(data:IGameObjectData){
 
+  }
+
+  setSelected(id: string) {
+    this.interactiveList.list.find(item => item.id === id).selected = true;
+  }
+
+  setPlannedBuild(object:IObject) {
+    this.cursorStatus.planned = object;
   }
 
   addObject(data: IGameObjectData) {
@@ -86,7 +147,7 @@ export class Canvas extends Control{
     ctx.fillStyle = "#000";
    
     ctx.fillRect(0, 0, this.canvas.node.width, this.canvas.node.height);
-    
+    this.cursorStatus.render(ctx, new Vector(0,0));
     this.interactiveList.list.forEach(it => {
       it.render(ctx,
         new Vector(0, 0),        
@@ -99,4 +160,32 @@ export class Canvas extends Control{
     ctx.fillStyle = "#fff";
     ctx.fillText('fps: ' + this.fps.toFixed(2), 0, 30);
   }
+
+   handleMultiSelect(start:Vector, onSelect:()=>void){
+    this.cursorStatus.multiStart = start; //new Vector(e.clientX, e.clientY);
+    let listener = ()=>{
+      
+      let selection = this.interactiveList.list.filter(it=>{
+        if ((it instanceof AbstractUnit) == false){
+          return false;
+        }
+      return it.playerId==this.playerId && inBox((it as AbstractUnit).position, this.cursorStatus.multiStart,  this.cursorPosition);
+      });
+      this.interactiveList.list.forEach(item => item.selected = false);
+      selection.forEach(item => item.selected = true);
+      
+      this.cursorStatus.multiStart = null;
+      window.removeEventListener('mouseup', listener);
+      if (selection.length){
+        this.cursorStatus.selected = selection;
+        onSelect();
+      }
+    }
+    window.addEventListener('mouseup', listener);
+  }
+}
+export function inBox(point:Vector, _start:Vector, _end:Vector){
+  const start = new Vector(Math.min(_start.x, _end.x), Math.min(_start.y, _end.y));
+  const end = new Vector(Math.max(_start.x, _end.x), Math.max(_start.y, _end.y));
+  return point.x>start.x && point.y>start.y && point.x<end.x && point.y<end.y;
 }

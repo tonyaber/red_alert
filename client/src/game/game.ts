@@ -20,7 +20,7 @@ export class Game extends Control{
       })
     }
    
-    const canvas = new Canvas(this.node);
+    const canvas = new Canvas(this.node, id);
     const sidePanel = new SidePanel(this.node);
     
     sidePanel.update(sidePanelInfo.sidePanel);
@@ -41,6 +41,7 @@ export class Game extends Control{
           console.log(result);
         })
       } else if (selected === 'onIsReadyClick') {
+        canvas.setPlannedBuild(object.object);
         canvas.onClick = (position) => {
           canvas.onClick = null;
           socket.addBuild(object.object.name, position, id).then((result) => {
@@ -63,6 +64,9 @@ export class Game extends Control{
         socket.setPrimary(id, name).then((result) => {
           console.log(result);
         });
+      }
+      if (subType === 'unit') {
+        canvas.setSelected(id);
       }
      
     }

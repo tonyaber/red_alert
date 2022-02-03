@@ -9,8 +9,10 @@ export class AbstractUnit extends InteractiveObject{
   position: Vector;
   type: string;
   primary: boolean = false;
+  selected: boolean;
+  action: string;
   constructor(data: IGameObjectData) {
-    super(data);
+    super();
     this.id = data.objectId;
     this.type = data.type;
     this.updateObject(data.content)
@@ -43,5 +45,38 @@ export class AbstractUnit extends InteractiveObject{
     ctx.stroke();
     ctx.fillText(type, this.position.x + 20, this.position.y + 20);
     ctx.fillText(playerId, this.position.x + 20, this.position.y + 10);
+    if (this.selected) {
+      ctx.fillText("Selected", this.position.x + 20, this.position.y);
+    }
+  }
+
+  moveUnit(target: Vector) {
+    this.action = 'move'
+    const direction = target.clone().sub(this.position);
+    const interval = setInterval(() => {
+      this.position.add(direction.clone().scale(0.01));
+      if (Math.round(this.position.x) == target.x && Math.round(this.position.y) == target.y) {
+        clearInterval(interval);
+        this.selected = false;
+        this.action = 'nothing'
+      }
+    })    
+  }
+
+  attack(target: InteractiveObject) {
+    this.action = 'move';
+    const newPosition = target.position.clone().add(new Vector(20,20))
+    const direction = newPosition.clone().sub(this.position);
+    const interval = setInterval(() => {
+      this.position.add(direction.clone().scale(0.01));
+      if (Math.round(this.position.x) == newPosition.x && Math.round(this.position.y) == newPosition.y) {
+        clearInterval(interval);
+        this.selected = false;
+        this.action = 'attack';
+      }
+    })
+  }
+  logic() {
+    
   }
 }
