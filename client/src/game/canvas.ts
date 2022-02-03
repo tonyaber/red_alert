@@ -86,6 +86,8 @@ export class Canvas extends Control{
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type, this.hoveredObjects.subType);
       } 
       if (action === 'move') {
+        //отправлять на сервер this.cursorPosition
+        //когда приходит ответ - запускать патч
         this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
         this.cursorStatus.selected = [];
       }
