@@ -83,10 +83,10 @@ export class GameModel{
     gameObject.onUpdate = (state)=>{
       this.onUpdate(state, 'update');
     }
-    gameObject.onCreate = (state) => {
+    gameObject.onCreate = (state, subType) => {
       this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
       this.onUpdate(state, 'create');     
-      if (!this._getPrimary(playerId, objectName)) {
+      if (!this._getPrimary(playerId, objectName) /*&& subType==='build'*/) {
         gameObject.setState((lastState) => {
           return {
             ...lastState,

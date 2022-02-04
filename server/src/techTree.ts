@@ -7,7 +7,7 @@ const buildingCenter = {
   energy: 0,
   cost: 1000,
   subType: 'build',
-  time: 5,
+  time: 1,
   mtx:[
     '0000'.split(''),
     '0110'.split(''),
@@ -25,7 +25,7 @@ const energyPlant = {
   energy: -5,
   cost: 200,
   subType: 'build',
-  time: 10,
+  time: 1,
   mtx: [
     '0000'.split(''),
     '1100'.split(''),
@@ -35,15 +35,15 @@ const energyPlant = {
 }
 
 //medium
-const barracs = {
+const barrack = {
   deps: ['buildingCenter', 'energyPlant'],
-  desc: ['barracs'],
+  desc: ['barrack'],
   spawn: [""],
-  name: 'barracs',
+  name: 'barrack',
   energy: 3,
   cost: 400,
   subType: 'build',
-  time: 10,
+  time: 1,
   mtx: [
     '0011'.split(''),
     '0011'.split(''),
@@ -53,7 +53,7 @@ const barracs = {
 }
 
 const dogHouse = {
-  deps: ['buildingCenter', 'energyPlant', 'barracs'],
+  deps: ['buildingCenter', 'energyPlant', 'barrack'],
   desc: ['dogHouse'],
   spawn: [""],
   name: 'dogHouse',
@@ -207,10 +207,10 @@ const techCenter = {
 }
 
 //units
-const solder = {
-  deps: ["barracs"],
-  spawn: ["barracs"],
-  name: 'solder',
+const soldier = {
+  deps: ["barrack"],
+  spawn: ["barrack"],
+  name: 'soldier',
   cost: 100,
   time: 5,
   radius: 10,
@@ -273,8 +273,8 @@ const heavyTank = {
 }
 
 const bomber = {
-  deps: ["barracs", "techCenter"],
-  spawn: ["barracs"],
+  deps: ["barrack", "techCenter"],
+  spawn: ["barrack"],
   name: 'bomber',
   cost: 1000,
   time: 20,
@@ -289,7 +289,7 @@ export const tech = {
   object:
   [
     buildingCenter,
-    barracs,
+    barrack,
     energyPlant,
     bigEnergyPlant,
     dogHouse,
@@ -300,7 +300,7 @@ export const tech = {
     oreBarrel,
     oreFactory,
     defendTower,
-    solder,
+    soldier,
     truck,
     bomber,
     tank,
