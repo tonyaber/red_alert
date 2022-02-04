@@ -1,4 +1,5 @@
 import Control from "../../../common/control";
+import { Vector } from "../../../common/vector";
 import { Canvas } from "./canvas";
 import { IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
@@ -68,7 +69,10 @@ export class Game extends Control{
       if (subType === 'unit') {
         canvas.setSelected(id);
       }
-     
+    }
+
+    canvas.onChangePosition = (id: string, position: Vector) => {
+      socket.moveUnit(id, position);
     }
     
 

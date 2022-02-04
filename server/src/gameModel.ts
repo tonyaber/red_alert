@@ -101,11 +101,21 @@ export class GameModel{
     }
     gameObject.create();
     this.gameObjects.push(gameObject);
+    this.tickList.add(gameObject);
 
     return 'add object';
   }
 
-  moveUnits(playerId:string, unitIds:string[], target:IVector){
+  moveUnits(playerId: string, unitIds: string, target: IVector) {
+    const unit = this.gameObjects.find(item => item.objectId === unitIds && item.data.playerId === playerId).moveUnit(target)
+    // if (unit) {
+    //     unit.setState(data => {
+    //       data.position = Vector.fromIVector(target);
+    //       return data;
+    //      })
+    
+    // }
+   return 'position'
     //objectt.. setState
   }
 

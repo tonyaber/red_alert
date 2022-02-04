@@ -212,7 +212,7 @@ const soldier = {
   spawn: ["barrack"],
   name: 'soldier',
   cost: 100,
-  time: 5,
+  time: 1,
   radius: 10,
   subType: 'unit',
   speed: 5,

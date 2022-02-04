@@ -10,6 +10,7 @@ export class Canvas extends Control{
   //interactiveList: Record<string, InteractiveObject> = {}
   interactiveList: InteractiveList;
   
+  onChangePosition: (id: string, position: Vector) => void;
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
@@ -20,6 +21,7 @@ export class Canvas extends Control{
   cursorStatus: GameCursorStatus;
   cursorPosition: Vector;
   playerId: string;
+  
 
 
   constructor(parentNode: HTMLElement, id: string) {
@@ -63,8 +65,11 @@ export class Canvas extends Control{
 
     this.interactiveList.onClick = (current) => {   
       this.interactiveList.list.forEach(item => item.selected = false);
-      current.selected = true;
-      this.cursorStatus.selected = current ? [current] : [];  
+      if (current) {
+        this.setSelected(current.id);
+        this.cursorStatus.selected = current ? [current] : [];  
+      }
+      
     };
 
     this.canvas.node.onclick = (e: MouseEvent) => {
@@ -86,9 +91,10 @@ export class Canvas extends Control{
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type, this.hoveredObjects.subType);
       } 
       if (action === 'move') {
+        this.cursorStatus.selected.forEach(item=>this.onChangePosition(item.id, this.cursorPosition))
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
-        this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
+        //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
         this.cursorStatus.selected = [];
       }
       if (action === 'attack') {

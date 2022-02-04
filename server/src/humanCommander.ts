@@ -30,6 +30,9 @@ export class HumanCommander{
     if (message.type === 'playBuild') {
       return this.playerController.playBuilding(message.content.name)
     }
+    if (message.type === 'moveUnit') {
+      return this.playerController.moveUnits(message.content.id, message.content.position);
+    }
   }
 
   sendMessage(type: string, message:string){ //send to client
