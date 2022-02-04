@@ -6,6 +6,8 @@ import { Vector } from '../../../common/vector';
 import { builds } from './builds_and_units/buildMap';
 import { GameCursorStatus } from './gameCursorStatus';
 import { AbstractUnit } from "./builds_and_units/units/abstractUnit";
+import { SoundManager } from "./soundManager";
+
 export class Canvas extends Control{
   //interactiveList: Record<string, InteractiveObject> = {}
   interactiveList: InteractiveList;
@@ -89,6 +91,7 @@ export class Canvas extends Control{
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
+        SoundManager.soldierAction();
         this.cursorStatus.selected = [];
       }
       if (action === 'attack') {

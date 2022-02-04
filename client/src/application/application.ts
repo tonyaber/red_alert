@@ -7,11 +7,14 @@ import { IClientModel } from '../game/IClientModel';
 import { StartPage } from '../game/startPage';
 import { Authorization } from '../game/authorization';
 import { SettingPage } from '../game/settingPage';
+import { SoundManager } from '../game/soundManager'
+
 export class Application extends Control{
   socket: IClientModel;
   constructor(parentNode: HTMLElement) {
     super(parentNode);
     const startPage = new StartPage(this.node);
+    SoundManager.preload();
     startPage.onSinglePlay = () => {
       startPage.destroy();
       this.socket = new LocalModel();
