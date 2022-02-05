@@ -40,13 +40,15 @@ export class GameCursorStatus{
       //no selected
       action = 'select';
     } else if (this.selected.find(it => !(it instanceof AbstractUnit)) == null) {
-      if (!this.hovered.length) {
-         action = 'move';
+      if (!this.hovered.length && this.selected[0].playerId === this.playerId) {
+        action = 'move';
+      } else if (!this.hovered.length) {
+        action = 'select';
       } else if (this.hovered[0].playerId !=this.playerId) {
         action = 'attack';
       }
     } else if ((this.selected[0] instanceof AbstractBuild)) {
-      if (this.hovered[0] == this.selected[0]) {
+      if (this.hovered[0] == this.selected[0]&&this.hovered[0].playerId===this.playerId&&!this.hovered[0].primary) {
         action = 'primary';
         // if (this.getPrimaries()[this.hovered[0].name] ==this.hovered[0]){
         //   action = 'no'
