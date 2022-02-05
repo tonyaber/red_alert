@@ -32,7 +32,7 @@ class SoundManagerClass{
   }
 
   playSound(name:string){
-    console.log(this.cache, name);
+    //console.log(this.cache, name);
     const cached = this.cache.get(name);
     if (cached){
       const audio = new Audio(URL.createObjectURL(cached));

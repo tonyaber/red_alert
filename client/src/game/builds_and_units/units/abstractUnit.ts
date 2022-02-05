@@ -50,19 +50,19 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
 
-  moveUnit(target: Vector) {
-    this.position = target;
-    // this.action = 'move'
-    // const direction = target.clone().sub(this.position);
-    // const interval = setInterval(() => {
-    //   this.position.add(direction.clone().scale(0.01));
-    //   if (Math.round(this.position.x) == target.x && Math.round(this.position.y) == target.y) {
-    //     clearInterval(interval);
-    //     this.selected = false;
-    //     this.action = 'nothing'
-    //   }
-    // })    
-  }
+  // moveUnit(target: Vector) {
+  //   this.position = target;
+  //   // this.action = 'move'
+  //   // const direction = target.clone().sub(this.position);
+  //   // const interval = setInterval(() => {
+  //   //   this.position.add(direction.clone().scale(0.01));
+  //   //   if (Math.round(this.position.x) == target.x && Math.round(this.position.y) == target.y) {
+  //   //     clearInterval(interval);
+  //   //     this.selected = false;
+  //   //     this.action = 'nothing'
+  //   //   }
+  //   // })    
+  // }
 
   attack(target: InteractiveObject) {
      this.position = target.position.clone().add(new Vector(20,20));

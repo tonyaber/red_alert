@@ -93,8 +93,9 @@ export class SocketModel implements IClientModel
     return this.client.sendMessage('gameMove', content);
   }
 
-  moveUnit(){
-
+  moveUnit(id: string, position: Vector):Promise<any>{
+    const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
+    return this.client.sendMessage('gameMove', content);
   }
 
   setAttackTarget(){

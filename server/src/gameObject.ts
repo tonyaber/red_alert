@@ -18,9 +18,12 @@ export class GameObject {
 
   subType: string;
   type: string;
+  direction: Vector;
+  target: Vector;
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     this.data.position = Vector.fromIVector(state.position);
+    this.target = this.data.position;
     this.data.playerId = state.playerId;
     this.data.health = 100;
     this.type = type;
@@ -28,13 +31,17 @@ export class GameObject {
   }
 
   tick(delta: number) {
-    //logic
-    this.objects.forEach(it => {
-      if (it) {
-        //it._update();
-      }
-    })
-    //
+    if (Math.round(this.data.position.x) !== this.target.x && Math.round(this.data.position.y) !== this.target.y){
+      this.data.position.add(this.direction.clone().scale(0.05));
+      this.update();
+    }
+    // //logic
+    // this.objects.forEach(it => {
+    //   if (it) {
+    //     //it._update();
+    //   }
+    // })
+    // //
   }
 
   create() {
@@ -43,6 +50,11 @@ export class GameObject {
       objectId: this.objectId,
       content: this.getState(),
     }, this.subType); 
+  }
+
+  moveUnit(target: IVector) {
+    this.target = Vector.fromIVector(target);
+    this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {
