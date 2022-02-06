@@ -3,12 +3,14 @@ import { Camera } from "./camera";
 import { GameDebugInfoView } from "./gameDebugInfoView";
 import { GameObject } from "./gameObject";
 import { TilingLayer } from "./tileLayer";
+import { BoundingLayer } from "./boundingLayer";
 
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
   debugInfoView = new GameDebugInfoView();
   objects: Array<GameObject> = [];
+  boundingLayer: BoundingLayer;
 
   constructor(camera:Camera, width:number, height:number, res:Record<string, HTMLImageElement>){
     this.camera = camera;
@@ -18,13 +20,15 @@ export class GameMainRender{
     this.tilingLayer.registred = [
       null, res['grass']
     ]
-    let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(0));
+    let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
 
     this.tilingLayer.update(this.camera.position, newMap);
 
-    for (let i =0; i<1000; i++){
+    this.boundingLayer = new BoundingLayer(mp, mp, camera.getTileSize(), camera.position);
+
+    for (let i =0; i<50; i++){
       //const obj = new GameObject(this.renderer.tilingLayer, res, new Vector(0, 0));
-      const obj = new GameObject(this.tilingLayer, res, new Vector(Math.floor(Math.random()*(mp-4)), Math.floor(Math.random()*(mp -4))));
+      const obj = new GameObject(this.tilingLayer, this.boundingLayer, res, new Vector(Math.floor(Math.random()*(mp-4)), Math.floor(Math.random()*(mp -4))));
       this.objects.push(obj);
     }
   }
@@ -40,12 +44,14 @@ export class GameMainRender{
   render(ctx: CanvasRenderingContext2D){
     //ctx.drawImage(this.tilingLayer.canvas, this.camera.position.x, this.camera.position.y);
     ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
+    ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
     this.debugInfoView.render(ctx);
   }
 
   setCameraPosition(position:Vector){
     this.camera.position = position;
     this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+    this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
   }
 
   processMove(cursor: Vector){

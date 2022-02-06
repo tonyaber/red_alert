@@ -1,6 +1,8 @@
 import { Vector } from "../../../common/vector";
+import { BoundingLayer } from "./boundingLayer";
 import { TilingLayer } from "./tileLayer";
 import { TileObject } from "./tileObject";
+import { BuildingInfoView } from "./sprites";
 
 export class GameObject{
   tiles: Array<TileObject> =[];
@@ -8,7 +10,7 @@ export class GameObject{
   isHovered: boolean = false;
   hovBalance: number = 0;
 
-  constructor(layer:TilingLayer/*, infoLayer:BoundingLayer, infoLayer1:BoundingLayer,*/, res:Record<string, HTMLImageElement>, pos:Vector){
+  constructor(layer:TilingLayer, infoLayer:BoundingLayer/* infoLayer1:BoundingLayer,*/, res:Record<string, HTMLImageElement>, pos:Vector){
     const tileMap = [
       [1,1,1,0],
       [1,1,1,0],
@@ -32,6 +34,13 @@ export class GameObject{
       if (!tileMap[i][j]){
         return;
       }
+
+      const info = new BuildingInfoView(pos.clone());
+      info.health = 10;
+      info.update();
+      infoLayer.objects.push(info);
+      //infoLayer.updateScreen();
+
       const tile = new TileObject(1, tilePos);
       //tile.tiling = layer;
       tile.onMouseEnter = ()=>{

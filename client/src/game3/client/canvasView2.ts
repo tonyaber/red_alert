@@ -29,6 +29,7 @@ export class Canvas extends Control{
     this.canvas.node.onclick = (e: MouseEvent) => {
       this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
       this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
       /*if (this.hoveredObjects === null) {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
