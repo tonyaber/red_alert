@@ -55,7 +55,7 @@ export class BoundingLayer{
       Math.floor(camera.y / this.tileSize)
     );
     this.map[tileY][tileX] = value;
-    this.renderTile(tileCamera, tileX, tileY);  
+    this.renderTile(this.objects, tileCamera, tileX, tileY);  
   }
 
   /*_clearTile(tilingCamera:Vector, obj:CachedSprite, tileSize:number){
@@ -72,7 +72,7 @@ export class BoundingLayer{
   }
 
 
-  renderTile(tilingCamera:Vector, tileX:number, tileY:number, lastTileSize?:number){
+  renderTile(objects:Array<CachedSprite>, tilingCamera:Vector, tileX:number, tileY:number, lastTileSize?:number){
     const renderX = (-tilingCamera.x + tileX) * this.tileSize; 
     const renderY = (-tilingCamera.y + tileY) * this.tileSize;
     const res = this.objects.filter(it=>{
@@ -118,7 +118,7 @@ export class BoundingLayer{
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let i = tilingCamera.y; i <= lastTile.y; i++){
       for (let j = tilingCamera.x; j <= lastTile.x; j++){
-        this.renderTile(tilingCamera, j, i, lastTileSize);
+        this.renderTile(this.objects, tilingCamera, j, i, lastTileSize);
       }
     }
   }
@@ -154,19 +154,21 @@ export class BoundingLayer{
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(copier.canvas, inc.x * tileSize*1, inc.y * tileSize*1);
 
-    const _renderTile = (tileX:number, tileY:number)=>{
-      this.renderTile(tileCamera, tileX, tileY);
+    const _renderTile = (objects:Array<CachedSprite>, tileX:number, tileY:number)=>{
+      this.renderTile(objects, tileCamera, tileX, tileY);
     }
 
     const renderCol = (colTile: number)=>{
+      const colObjects = this.objects.filter(it=>Math.floor(it.position.y * this.tileSize / this.tileSize) == colTile)
       for (let j = 0; j< renderTileHeight; j++){
-        _renderTile(colTile, tileCamera.y +j); 
+        _renderTile(colObjects, colTile, tileCamera.y +j); 
       }
     }
 
     const renderRow = (rowTile: number)=>{
+      const rowObjects = this.objects.filter(it=>Math.floor(it.position.x * this.tileSize / this.tileSize) == rowTile)
       for (let j = 0; j< renderTileWidth; j++){
-        _renderTile(tileCamera.x + j, rowTile);    
+        _renderTile(rowObjects, tileCamera.x + j, rowTile);    
       }
     }
 
