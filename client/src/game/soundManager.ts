@@ -3,9 +3,15 @@ class SoundManagerClass{
   private cache = new Map<string, Blob>();
   private soundList:Array<string> = [
     'yes-sir',
-    'like-the-wind',
-    'yes-commander'
+    //'like-the-wind',
+   // 'yes-commander',
+    'attacking',
+    // 'give-me-a-job',
+    // 'give-me-a-target',
+    // 'command-received',
+
   ];
+  volume: number = 0.2;
   constructor(){
 
   }
@@ -23,24 +29,50 @@ class SoundManagerClass{
     return fetch(url).then(res=>res.blob());
   }
 
-  soldierAction(){
+  soldierMove(){
     this.playSound('yes-sir');  
   }
 
-  tankAction(){
+  soldierAttack(){
+    this.playSound('attacking'); 
+
+  }
+
+  soldierReady(){
+
+  }
+
+  tankReady(){
+
+  }
+
+  tankMove(){
     this.playSound('like-the-wind');  
   }
 
+  tankAttack(){
+
+  }
+
+  
+
+
+
   playSound(name:string){
-    //console.log(this.cache, name);
     const cached = this.cache.get(name);
     if (cached){
       const audio = new Audio(URL.createObjectURL(cached));
+      audio.volume = this.volume;
       audio.play();
     } else {
       const audio = new Audio(`${this.baseURL}${name}.mp3`);
+      audio.volume = this.volume;
       audio.play();
     }
+  }
+
+  setVolume(volume:number){
+    this.volume = volume;
   }
 }
 

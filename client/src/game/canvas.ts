@@ -97,11 +97,14 @@ export class Canvas extends Control{
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
+        SoundManager.soldierMove();
         this.cursorStatus.selected = [];
       }
       if (action === 'attack') {
         this.cursorStatus.selected.forEach(item => (item as AbstractUnit).attack(this.hoveredObjects));
         this.cursorStatus.selected = [];
+        console.log('attack');
+        SoundManager.soldierAttack();
       }
     }
     
