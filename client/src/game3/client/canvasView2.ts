@@ -22,7 +22,11 @@ export class Canvas extends Control{
     this.ctx = this.canvas.node.getContext('2d');
 
     this.canvas.node.onmousemove = (e)=>{
-      this.renderer.setCameraPosition(new Vector(e.offsetX *20.5 -209, e.offsetY*20.5 -209));
+      const mv = new Vector(e.movementX, e.movementY).scale(0.5);
+      if (mv.abs()>0.0){
+        this.renderer.camera.velocity = new Vector(e.movementX, e.movementY).scale(0.05);
+      }
+      //this.renderer.setCameraPosition(new Vector(e.offsetX *20.5 -209, e.offsetY*20.5 -209));
       this.renderer.processMove(new Vector(e.offsetX, e.offsetY));
     }
 
@@ -50,6 +54,7 @@ export class Canvas extends Control{
       this.render(this.ctx, delta);
     });
     this.ticker.startRender();
+    this.renderer.setCameraPosition(new Vector(-200, -200));
   }
 
   updateObject(data:IGameObjectData){

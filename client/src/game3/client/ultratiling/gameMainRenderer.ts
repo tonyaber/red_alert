@@ -38,7 +38,9 @@ export class GameMainRender{
     /*this.tilingLayer.update(this.camera.position, this.tilingLayer.map.map(it=>it.map(jt=>{
       return (Math.random()<0.005? 1-jt: jt);
     })))*/
+    this.camera.tick(delta);
     this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+    this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
   }
 
   render(ctx: CanvasRenderingContext2D){
