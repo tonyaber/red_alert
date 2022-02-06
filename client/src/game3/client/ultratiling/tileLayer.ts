@@ -107,8 +107,8 @@ export class TilingLayer{
 
   updateScreen(tilingCamera:Vector, tileSize:number){
     const lastTile = this.getLastVisibleTile(tilingCamera, tileSize);
-    for (let i = /*tilingCamera.y*/0; i<= /*lastTile.y*/this.map.length-1; i++){
-      for (let j = /*tilingCamera.x*/0; j<= /*lastTile.x*/ this.map[0].length-1; j++){
+    for (let i = tilingCamera.y; i<= lastTile.y/*this.map.length-1*/; i++){
+      for (let j = tilingCamera.x; j<= lastTile.x/* this.map[0].length-1*/; j++){
         this.renderTile(tilingCamera, j, i);
       }
     }

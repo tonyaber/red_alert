@@ -10,43 +10,7 @@ import { GameObject } from "./ultratiling/gameObject";
 import { Camera } from "./ultratiling/camera";
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameDebugInfoView } from './ultratiling/gameDebugInfoView';
-
-class GameMainRender{
-  tilingLayer: TilingLayer; 
-  camera: Camera;
-  debugInfoView = new GameDebugInfoView();
-
-  constructor(camera:Camera, width:number, height:number, res:Record<string, HTMLImageElement>){
-    this.camera = camera;
-    console.log(camera.getTileSize())
-    const mp = 200;
-    this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
-    this.tilingLayer.registred = [
-      null, res['grass']
-    ]
-    let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(0));
-    this.tilingLayer.update(this.camera.position, newMap);
-  }
-
-  tick(delta:number){
-    this.debugInfoView.tick(delta);
-    /*this.tilingLayer.update(this.camera.position, this.tilingLayer.map.map(it=>it.map(jt=>{
-      return (Math.random()<0.005? 1-jt: jt);
-    })))*/
-    this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
-  }
-
-  render(ctx: CanvasRenderingContext2D){
-    //ctx.drawImage(this.tilingLayer.canvas, this.camera.position.x, this.camera.position.y);
-    ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
-    this.debugInfoView.render(ctx);
-  }
-
-  setCameraPosition(position:Vector){
-    this.camera.position = position;
-    this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
-  }
-}
+import { GameMainRender } from './ultratiling/gameMainRenderer';
 
 export class Canvas extends Control{
   //interactiveList: InteractiveList;
@@ -61,7 +25,8 @@ export class Canvas extends Control{
   //camera = new Camera();
   ticker = new RenderTicker();
   renderer:GameMainRender;
-  objects: Array<GameObject> = [];
+  //objects: Array<GameObject> = [];
+
 
   constructor(parentNode: HTMLElement, res:Record<string, HTMLImageElement>) {
     super(parentNode);
@@ -74,8 +39,7 @@ export class Canvas extends Control{
     this.canvas.node.onmousemove = (e)=>{
       //this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY));
       this.renderer.setCameraPosition(new Vector(e.offsetX *20.5 -209, e.offsetY*20.5 -209));
-      const moveCursor = new Vector(Math.floor((e.offsetX + camera.position.x) / camera.getTileSize()), Math.floor((e.offsetY + camera.position.y) / camera.getTileSize()))
-      this.objects.forEach(obj=>obj.processMove(moveCursor));
+      this.renderer.processMove(new Vector(e.offsetX, e.offsetY));
       //this.renderer.camera.position = new Vector(e.offsetX -100, e.offsetY -100);
       //this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
     }
@@ -112,11 +76,11 @@ export class Canvas extends Control{
     });
     this.ticker.startRender();
     
-    for (let i =0; i<1000; i++){
+    /*for (let i =0; i<1000; i++){
       //const obj = new GameObject(this.renderer.tilingLayer, res, new Vector(0, 0));
       const obj = new GameObject(this.renderer.tilingLayer, res, new Vector(Math.floor(Math.random()*196), Math.floor(Math.random()*196)));
       this.objects.push(obj);
-    }
+    }*/
     //this.renderer.setCameraPosition(new Vector( -209, -209));
     //this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
     
