@@ -72,7 +72,14 @@ export class Game extends Control{
     }
 
     canvas.onChangePosition = (id: string, position: Vector) => {
-      socket.moveUnit(id, position);
+      socket.moveUnit(id, position).then((result) => {
+          console.log(result);
+        });
+    }
+    canvas.onAttack = (id: string, targetId: string) => {
+      socket.setAttackTarget(id, targetId).then((result) => {
+        console.log(result)
+      })
     }
     
 

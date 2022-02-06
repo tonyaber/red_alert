@@ -16,6 +16,7 @@ export class Canvas extends Control{
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
+  onAttack: (id: string, targetId: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   hoveredObjects: InteractiveObject = null;
@@ -67,8 +68,8 @@ export class Canvas extends Control{
 
     this.interactiveList.onClick = (current) => {   
       this.interactiveList.list.forEach(item => item.selected = false);
-      if (current) {
-        this.setSelected(current.id);
+      if (current&&current.playerId === this.playerId) {
+        this.setSelected(current.id)
         this.cursorStatus.selected = current ? [current] : [];  
       }
       
@@ -97,11 +98,12 @@ export class Canvas extends Control{
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
-        SoundManager.soldierMove();
+        this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
         this.cursorStatus.selected = [];
-      }
+        SoundManager.soldierMove();}
       if (action === 'attack') {
-        this.cursorStatus.selected.forEach(item => (item as AbstractUnit).attack(this.hoveredObjects));
+        this.cursorStatus.selected.forEach(item => this.onAttack(item.id, this.hoveredObjects.id));
+        this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
         this.cursorStatus.selected = [];
         console.log('attack');
         SoundManager.soldierAttack();

@@ -6,7 +6,9 @@ export interface IGameObjectContent{
   position: Vector;
   health: number;
   playerId: string;
-  primary: boolean;
+  primary?: boolean;
+  action?: string;
+  target?: Vector; 
 }
 export interface IGameObjectData{  
   type: string;//name

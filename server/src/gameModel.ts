@@ -1,9 +1,11 @@
 import { IVector, Vector } from "../../common/vector";
 import { createIdGenerator } from "./idGenerator";
 import { IGameObjectContent, IGameObjectData, IRegisteredPlayerInfo } from "./dto";
-import { GameObject } from "./gameObject";
+import { GameObject } from "./gameObjects/gameObject";
 import { PlayerSide } from "./playerSide";
 import { TickList } from "./tickList";
+import { gameObjects } from "./gameObjects/gameObjectsMap";
+import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
 
 export class GameModel{
   players: IRegisteredPlayerInfo[] = [];
@@ -78,15 +80,17 @@ export class GameModel{
   addGameObject(playerId:string, objectName:string, position:IVector){
     //mapObject
     //проверка, можно ли его добавлять
-    const state = {position, playerId }
-    const gameObject = new GameObject(this.objects, this.playersSides, this.nextId(), objectName, state);
+    const state = { position, playerId }
+     const gameObjectConstructor = gameObjects[objectName];
+    const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
     gameObject.onUpdate = (state)=>{
       this.onUpdate(state, 'update');
     }
-    gameObject.onCreate = (state, subType) => {
+    gameObject.onCreate = (state) => {
       this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
+      this.objects[state.objectId] = gameObject;
       this.onUpdate(state, 'create');     
-      if (!this._getPrimary(playerId, objectName) /*&& subType==='build'*/) {
+      if (!this._getPrimary(playerId, objectName)&&gameObject instanceof AbstractBuildObject) {
         gameObject.setState((lastState) => {
           return {
             ...lastState,
@@ -102,12 +106,12 @@ export class GameModel{
     gameObject.create();
     this.gameObjects.push(gameObject);
     this.tickList.add(gameObject);
-
+  
     return 'add object';
   }
 
-  moveUnits(playerId: string, unitIds: string, target: IVector) {
-    const unit = this.gameObjects.find(item => item.objectId === unitIds && item.data.playerId === playerId).moveUnit(target)
+  moveUnits(playerId: string, unitId: string, target: IVector) {
+   this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target)
     // if (unit) {
     //     unit.setState(data => {
     //       data.position = Vector.fromIVector(target);
@@ -115,12 +119,13 @@ export class GameModel{
     //      })
     
     // }
-   return 'position'
+    return 'move unit';
     //objectt.. setState
   }
 
-  setAttackTarget(playerId:string, unit:string, target:string){
-
+  setAttackTarget(playerId: string, unitId: string, targetId: string) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
+    return 'attack';
   }
 
   setPrimary(playerId: string, buildId: string, name: string) {
