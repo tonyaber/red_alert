@@ -7,73 +7,9 @@ import Signal from "../../common/signal";
 
 import {TilingLayer} from "./ultratiling/tileLayer";
 import { GameObject } from "./ultratiling/gameObject";
-
-class Camera{
-  position: Vector;
-  velocity: Vector;
-  scale: number;
-  baseTileSize:number = 5;
-
-  constructor(){
-    this.position = new Vector(0, 0);
-    this.scale = 5;
-  }
-
-  tick(delta:number){
-    this.position.add(this.velocity.scale(delta));
-  }
-
-  getTileSize(){
-    return this.baseTileSize * this.scale;
-  }
-}
-
-class RenderTicker{
-  onTick: Signal<number> = new Signal();
-
-  constructor(){
-
-  }
-
-  startRender(){
-    let lastTime: number = null;
-    const render = () => {
-      requestAnimationFrame((timeStamp) => {
-        if (!lastTime) {
-          lastTime = timeStamp;
-        }
-        const delta = timeStamp - lastTime;
-        this.onTick.emit(delta);
-        lastTime = timeStamp;
-        render();
-      })
-      
-    }
-    render();
-  }
-}
-
-class GameDebugInfoView {
-  fps: number = 60;
-
-  constructor(){
-    
-  }
-
-  tick(delta:number){
-    const dv = 16;
-    if (this.fps > 60) {
-      this.fps = 60
-    }
-    this.fps = ((this.fps * (dv - 1)) + (1 / delta * 1000)) / dv;
-  }
-
-  render(ctx: CanvasRenderingContext2D){
-    ctx.fillStyle = "#fff";
-    ctx.fillText('canvas render', 0, 10);
-    ctx.fillText('fps: ' + this.fps.toFixed(2), 0, 20);
-  }
-}
+import { Camera } from "./ultratiling/camera";
+import { RenderTicker } from './ultratiling/renderTicker';
+import { GameDebugInfoView } from './ultratiling/gameDebugInfoView';
 
 class GameMainRender{
   tilingLayer: TilingLayer; 
@@ -113,14 +49,14 @@ class GameMainRender{
 }
 
 export class Canvas extends Control{
-  interactiveList: InteractiveList;
+  //interactiveList: InteractiveList;
 
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
-  hoveredObjects: InteractiveObject = null;
+  //hoveredObjects: InteractiveObject = null;
 
   //camera = new Camera();
   ticker = new RenderTicker();
@@ -133,7 +69,7 @@ export class Canvas extends Control{
     this.canvas.node.width = 800;
     this.canvas.node.height = 600;
     this.ctx = this.canvas.node.getContext('2d');
-    this.interactiveList = interactiveList;
+    //this.interactiveList = interactiveList;
 
     this.canvas.node.onmousemove = (e)=>{
       //this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY));
@@ -145,19 +81,21 @@ export class Canvas extends Control{
     }
     
     
-    this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
+    /*this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
       this.hoveredObjects = currentTarget;
-    }
+    }*/
 
  
     //this.interactiveList.add(obj);
 
     this.canvas.node.onclick = (e: MouseEvent) => {
-      if (this.hoveredObjects === null) {
+      this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
+      this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      /*if (this.hoveredObjects === null) {
          this.onClick?.(new Vector(e.offsetX, e.offsetY))
       } else {
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
-      }
+      }*/
     }
 
     this.canvas.node.oncontextmenu = (e)=>{
@@ -185,7 +123,7 @@ export class Canvas extends Control{
   }
 
   updateObject(data:IGameObjectData){
-    this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
+    //this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
   }
 
   deleteObject(data:IGameObjectData){

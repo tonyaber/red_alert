@@ -81,11 +81,50 @@ export class TilingLayer{
     }  
   }
 
+  getTileCamera(camera:Vector, tileSize:number){
+    const tileCamera = new Vector(
+      Math.floor(camera.x / tileSize),
+      Math.floor(camera.y / tileSize)
+    );  
+    return tileCamera;
+  }
+
+  getTilePixelPosition(tilingCamera:Vector, tileX:number, tileY:number){
+    return new Vector(
+      (-tilingCamera.x + tileX) * this.tileSize,
+      (-tilingCamera.y + tileY) * this.tileSize
+    )
+  }
+
+  getLastVisibleTile(tilingCamera:Vector, tileSize:number){
+    const viewTileHeight = Math.floor(this.canvas.height / tileSize);
+    const viewTileWidth =  Math.floor(this.canvas.width / tileSize);
+    return new Vector(
+      tilingCamera.x + viewTileWidth-1,
+      tilingCamera.y + viewTileHeight-1
+    );
+  }
+
+  updateScreen(tilingCamera:Vector, tileSize:number){
+    const lastTile = this.getLastVisibleTile(tilingCamera, tileSize);
+    for (let i = /*tilingCamera.y*/0; i<= /*lastTile.y*/this.map.length-1; i++){
+      for (let j = /*tilingCamera.x*/0; j<= /*lastTile.x*/ this.map[0].length-1; j++){
+        this.renderTile(tilingCamera, j, i);
+      }
+    }
+  }
+
   updataCache(camera:Vector, tileSize:number){
     const tileCamera = new Vector(
       Math.floor(camera.x / tileSize),
       Math.floor(camera.y / tileSize)
     );
+    if (this.tileSize != tileSize){
+      this.tileSize = tileSize;
+      this.updateScreen(tileCamera, tileSize);
+      this.lastCacheCamera = tileCamera.clone();
+      return;
+    }
     const inc = this.lastCacheCamera.clone().sub(tileCamera);
     //console.log(inc);
     if ((inc.abs()==0)){

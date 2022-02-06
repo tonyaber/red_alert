@@ -16,6 +16,6 @@ export class Camera{
   }
 
   getTileSize(){
-    return this.baseTileSize * this.scale;
+    return Math.floor(this.baseTileSize * this.scale);
   }
 }
