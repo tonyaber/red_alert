@@ -5,7 +5,7 @@ import { InteractiveList } from "./interactiveList";
 import { Vector } from '../../common/vector';
 
 
-import img from '../client/assets/tree2.png';
+//import img from '../client/assets/tree2.png';
 
 let tileSize = 20;
 let baseTileSize = 5;
