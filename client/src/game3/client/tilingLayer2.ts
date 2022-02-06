@@ -10,6 +10,9 @@ export class TilingLayer{
   map: Array<Array<number>>;
   registred: Array<CanvasImageSource> = [];
   tileSize: number;
+  //viewWidth: number = 700;
+  //viewHeight: number = 500;
+  //lastViewPort: {top:number, left:number, width:number, height:number};
   lastCamera: Vector;
   ctx1: CanvasRenderingContext2D;
   canvas1: any;
@@ -27,7 +30,7 @@ export class TilingLayer{
     this.canvas1.height = 600;//height*tileSize;
     this.ctx1 = this.canvas1.getContext('2d');
 
-    let newMap:Array<Array<number>> = new Array(height).fill(0).map(it=> new Array(width).fill(0));
+    let newMap:Array<Array<number>> = new Array(width).fill(0).map(it=> new Array(width).fill(0));
     this.map = newMap;
     //this.ctx.fillRect(0,0,1,1);
     //this.update(newMap);
@@ -68,39 +71,14 @@ export class TilingLayer{
   }
 
   renderTile(tilingCamera:Vector, tileX:number, tileY:number){
-    //const renderX = (-tilingCamera.x + tileX) * this.tileSize; 
-    //const renderY = (-tilingCamera.y + tileY) * this.tileSize;
-    const {x:renderX, y:renderY} = this.getTilePixelPosition(tilingCamera, tileX, tileY);
+    const renderX = (-tilingCamera.x + tileX) * this.tileSize; 
+    const renderY = (-tilingCamera.y + tileY) * this.tileSize;
     const graphic = this.registred[this.map[tileY] && this.map[tileY][tileX]];
     this.ctx.clearRect(renderX, renderY, this.tileSize, this.tileSize);
     if (graphic){
       this.ctx.drawImage(graphic, renderX, renderY, this.tileSize, this.tileSize);
       this.ctx.fillText(`${tileX}/${tileY}`, renderX, renderY + 10);
     }  
-  }
-
-  getTileCamera(camera:Vector, tileSize:number){
-    const tileCamera = new Vector(
-      Math.floor(camera.x / tileSize),
-      Math.floor(camera.y / tileSize)
-    );  
-    return tileCamera;
-  }
-
-  getTilePixelPosition(tilingCamera:Vector, tileX:number, tileY:number){
-    return new Vector(
-      (-tilingCamera.x + tileX) * this.tileSize,
-      (-tilingCamera.y + tileY) * this.tileSize
-    )
-  }
-
-  getLastVisibleTile(tilingCamera:Vector, tileSize:number){
-    const viewTileHeight = Math.floor(this.canvas.height / tileSize);
-    const viewTileWidth =  Math.floor(this.canvas.width / tileSize);
-    return new Vector(
-      tilingCamera.x + viewTileWidth-1,
-      tilingCamera.y + viewTileHeight-1
-    );
   }
 
   updataCache(camera:Vector, tileSize:number){
@@ -126,7 +104,7 @@ export class TilingLayer{
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(copier, inc.x * tileSize*1, inc.y * tileSize*1);
 
-    /*const renderTile = (renderTileY: number, renderTileX:number, renderX:number, renderY:number) => {
+    const renderTile = (renderTileY: number, renderTileX:number, renderX:number, renderY:number) => {
       const graphic = this.registred[this.map[renderTileY] && this.map[renderTileY][renderTileX]];
       this.ctx.clearRect(renderX, renderY, this.tileSize, this.tileSize);
       if (graphic){
@@ -138,7 +116,7 @@ export class TilingLayer{
     const _renderTile = (tilingCamera:Vector, tileSize:number, tileX:number, tileY:number)=>{
       //console.log(tilingCamera, tileX, tileY);
       renderTile(tileX, tileY, (-tilingCamera.x + tileX)*tileSize, (-tilingCamera.y + tileY) * tileSize);
-    }*/
+    }
 
     //this.map[20][20] = Math.floor(Math.random()*2);
     //_renderTile(tileCamera, this.tileSize, 20, 20);
@@ -146,14 +124,13 @@ export class TilingLayer{
     const renderCol = (colTile: number, colPos:number)=>{
       for (let j = 0; j< renderTileHeight; j++){
         //renderTile(colTile, tileCamera.y + j, colPos, j* tileSize); 
-        this.renderTile(tileCamera, colTile, tileCamera.y +j); 
+        _renderTile(tileCamera, this.tileSize, colTile, tileCamera.y +j); 
       }
     }
 
     const renderRow = (rowTile: number, rowPos:number)=>{
       for (let j = 0; j< renderTileWidth; j++){
-        //renderTile(tileCamera.x + j, rowTile, j* tileSize, rowPos);  
-        this.renderTile(tileCamera, tileCamera.x + j, rowTile);
+        renderTile(tileCamera.x + j, rowTile, j* tileSize, rowPos);  
       }
     }
 
@@ -225,37 +202,33 @@ export class TilingLayer{
     
   }
 
-  fullUpdate(camera:Vector, tileSize:number){
+  fullUpdate(tileSize:number){
     this.tileSize = tileSize;
-    const tileCamera = this.getTileCamera(camera, tileSize);
     this.map.forEach((it,i)=>it.forEach((jt, j)=>{
-      this.renderTile(tileCamera, j, i);
-      /*const graphic = this.registred[this.map[i][j]];
+      const graphic = this.registred[this.map[i][j]];
       this.ctx.clearRect(j*this.tileSize, i*this.tileSize, this.tileSize, this.tileSize);
       if (graphic){
         this.ctx.drawImage(graphic, j*this.tileSize, i*this.tileSize, this.tileSize, this.tileSize);
         this.ctx.fillText(`${j}/${i}`, j*this.tileSize, i*this.tileSize +10);
-      }*/
+      }
     }))  
   }
 
-  update(camera:Vector, map:Array<Array<number>>){
-    const tileCamera = this.getTileCamera(camera, this.tileSize);
+  update(map:Array<Array<number>>){
     map.forEach((it,i)=>it.forEach((jt, j)=>{
       if (this.map[i][j] != map[i][j]){
         this.map[i][j] = map[i][j];
-        this.renderTile(tileCamera, j, i);
-        /*const graphic = this.registred[map[i][j]];
+        const graphic = this.registred[map[i][j]];
         this.ctx.clearRect(j*this.tileSize, i*this.tileSize, this.tileSize, this.tileSize);
         if (graphic){
           this.ctx.drawImage(graphic, j*this.tileSize, i*this.tileSize, this.tileSize, this.tileSize);
           this.ctx.fillText(`${j}/${i}`, j*this.tileSize, i*this.tileSize+10);
-        }*/
+        }
       }
     }))
   }
 
-  /*updateTile(position:Vector, value: number){
+  updateTile(position:Vector, value: number){
     const {x:tx, y:ty} = position;
     if (this.map[ty][tx] != value){
       this.map[ty][tx] = value;
@@ -266,5 +239,5 @@ export class TilingLayer{
         this.ctx.fillText(`${tx}/${ty}`, tx*this.tileSize, ty*this.tileSize+10);
       }
     }
-  }*/
+  }
 }

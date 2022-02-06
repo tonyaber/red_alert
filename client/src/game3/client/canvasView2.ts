@@ -15,7 +15,7 @@ class Camera{
 
   constructor(){
     this.position = new Vector(0, 0);
-    this.scale = 25;
+    this.scale = 10;
   }
 
   tick(delta:number){
@@ -82,13 +82,13 @@ class GameMainRender{
   constructor(camera:Camera, width:number, height:number, res:Record<string, HTMLImageElement>){
     this.camera = camera;
     console.log(camera.getTileSize())
-    const mp = 100;
+    const mp = 200;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize());
     this.tilingLayer.registred = [
       null, res['grass']
     ]
     let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
-    this.tilingLayer.update(newMap);
+    this.tilingLayer.update(this.camera.position, newMap);
   }
 
   tick(delta:number){
@@ -131,7 +131,7 @@ export class Canvas extends Control{
 
     this.canvas.node.onmousemove = (e)=>{
       this.interactiveList.handleMove(new Vector(e.offsetX, e.offsetY), new Vector(e.offsetX, e.offsetY));
-      this.renderer.setCameraPosition(new Vector(e.offsetX *15 -100, e.offsetY*15 -100));
+      this.renderer.setCameraPosition(new Vector(e.offsetX *15 -200, e.offsetY*15 -200));
       //this.renderer.camera.position = new Vector(e.offsetX -100, e.offsetY -100);
       //this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
     }
