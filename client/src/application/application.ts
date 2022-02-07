@@ -8,6 +8,8 @@ import { StartPage } from '../game/startPage';
 import { Authorization } from '../game/authorization';
 import { SettingPage } from '../game/settingPage';
 import { SoundManager } from '../game/soundManager'
+import { resourceLoader, resources } from '../game/resources';
+
 
 export class Application extends Control{
   socket: IClientModel;
@@ -35,7 +37,9 @@ export class Application extends Control{
       const settingPage = new SettingPage(this.node, this.socket);
       settingPage.onStartGame = (data) => {
         settingPage.destroy();
-        const game = new Game(this.node, this.socket, name, data);
+         resourceLoader.load(resources).then(res=>{
+          const game = new Game(this.node, this.socket, name, data, res.textures) 
+        })
       }
     }
   }

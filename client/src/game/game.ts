@@ -1,13 +1,13 @@
 import Control from "../../../common/control";
 import { Vector } from "../../../common/vector";
-import { Canvas } from "./canvas";
+import { Canvas } from "./canvasView2";
 import { IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 
 export class Game extends Control{
-  constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string) {
+  constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
     super(parentNode);
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
     if (socket instanceof SocketModel && sidePanelInfo.type === 'spectator') {
@@ -21,7 +21,7 @@ export class Game extends Control{
       })
     }
    
-    const canvas = new Canvas(this.node, id);
+    const canvas = new Canvas(this.node, res, id);//id
     const sidePanel = new SidePanel(this.node);
     
     sidePanel.update(sidePanelInfo.sidePanel);
@@ -42,7 +42,7 @@ export class Game extends Control{
           console.log(result);
         })
       } else if (selected === 'onIsReadyClick') {
-        canvas.setPlannedBuild(object.object);
+        //canvas.setPlannedBuild(object.object);
         canvas.onClick = (position) => {
           canvas.onClick = null;
           socket.addBuild(object.object.name, position, id).then((result) => {
@@ -60,27 +60,27 @@ export class Game extends Control{
       }
     }
 
-    canvas.onObjectClick = (id: string, name: string, subType) => {
-      if (subType === 'build') {
-        socket.setPrimary(id, name).then((result) => {
-          console.log(result);
-        });
-      }
-      if (subType === 'unit') {
-        canvas.setSelected(id);
-      }
-    }
+    // canvas.onObjectClick = (id: string, name: string, subType) => {
+    //   if (subType === 'build') {
+    //     socket.setPrimary(id, name).then((result) => {
+    //       console.log(result);
+    //     });
+    //   }
+    //   if (subType === 'unit') {
+    //     canvas.setSelected(id);
+    //   }
+    // }
 
-    canvas.onChangePosition = (id: string, position: Vector) => {
-      socket.moveUnit(id, position).then((result) => {
-          console.log(result);
-        });
-    }
-    canvas.onAttack = (id: string, targetId: string) => {
-      socket.setAttackTarget(id, targetId).then((result) => {
-        console.log(result)
-      })
-    }
+    // canvas.onChangePosition = (id: string, position: Vector) => {
+    //   socket.moveUnit(id, position).then((result) => {
+    //       console.log(result);
+    //     });
+    // }
+    // canvas.onAttack = (id: string, targetId: string) => {
+    //   socket.setAttackTarget(id, targetId).then((result) => {
+    //     console.log(result)
+    //   })
+    // }
     
 
     
