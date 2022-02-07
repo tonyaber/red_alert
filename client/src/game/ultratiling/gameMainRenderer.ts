@@ -1,7 +1,6 @@
 import { Vector } from "../../../../common/vector";
 import { Camera } from "./camera";
 import { GameDebugInfoView } from "./gameDebugInfoView";
-import { GameObject } from "./gameObject";
 import { TilingLayer } from "./tileLayer";
 import { BoundingLayer } from "./boundingLayer";
 import { IGameObjectData } from '../dto';
@@ -11,7 +10,7 @@ export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
   debugInfoView = new GameDebugInfoView();
-  objects: Array<GameObject> = [];
+  objects: Array<InteractiveObject> = [];
   boundingLayer: BoundingLayer;
   res: Record<string, HTMLImageElement>;
 
@@ -69,7 +68,7 @@ export class GameMainRender{
   }
 
   addObject(data: IGameObjectData) {
-     const BuildConstructor = builds[data.type] || InteractiveObject;
+     const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
     this.objects.push(interactiveObject);
   }

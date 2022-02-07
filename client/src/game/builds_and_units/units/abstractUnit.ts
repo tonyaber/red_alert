@@ -12,9 +12,18 @@ export class AbstractUnit extends InteractiveObject{
   //infos: CachedSprite;
   isHovered: boolean = false;
   hovBalance: number = 0;
-
+  subType: string = 'unit';
+  id: string;
+  playerId: string;
+  position: Vector;
+  name: string;
+  primary: boolean = false;
+  health: number = 100;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>,camera: Camera, data: IGameObjectData){
     super();
+    this.id = data.objectId;
+    this.name = data.type;
+    this.updateObject(data.content)
     const tileMap = [
       [1,1,1,0],
       [1,1,1,0],
@@ -32,7 +41,7 @@ export class AbstractUnit extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new BuildingInfoView(pos.clone(), res["barrack"]);
+    const info = new BuildingInfoView(pos.clone(), res["barrack"],this.name, this.health, this.playerId, this.primary);
     info.health = 10;
     info.update();
     infoLayer.addObject(info);
@@ -97,7 +106,11 @@ export class AbstractUnit extends InteractiveObject{
       }
     }
   }
-
+  updateObject(data: IGameObjectContent) {
+    this.position = data.position;
+    this.playerId = data.playerId;
+  }
+  
   update(){
     //this.tiles.forEach(it=>it.update());
   }

@@ -2,14 +2,19 @@ import { Vector } from "../../../../common/vector";
 import { CachedSprite } from './cachedSprite';
 
 export class BuildingInfoView extends CachedSprite{
-  health: number =0;
-  name: string ='gfdf';
+  health: number;
+  name: string ;
   isPrimary: boolean;
   img: HTMLImageElement;
+  playerId: string;
 
-  constructor(position: Vector, img: HTMLImageElement) {    
+  constructor(position: Vector, img: HTMLImageElement, name: string, health: number,  playerId: string, isPrimary: boolean) {    
     super(200, 200, position);
     this.img = img;
+    this.name = name;
+    this.health = health;
+    this.playerId = playerId;
+    this.isPrimary = isPrimary;
   }
 
   update(): void {
@@ -19,9 +24,10 @@ export class BuildingInfoView extends CachedSprite{
     
     this.ctx.drawImage(this.img, 0, 0, 200, 200);
     this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
-    this.ctx.fillText('name: ' + this.name, 0, topText*2);
+    this.ctx.fillText('name: ' + this.name, 0, topText * 2);
+    this.ctx.fillText(this.playerId, 0, topText * 3);
     if (this.isPrimary){
-      this.ctx.fillText('primary', 0, topText*3);
+      this.ctx.fillText('primary', 0, topText*4);
     }
     
     this.onUpdate?.();

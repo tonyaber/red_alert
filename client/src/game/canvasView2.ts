@@ -1,7 +1,7 @@
 import Control from "../../../common/control";
+import { Camera } from "./ultratiling/camera";
 import { IGameObjectData } from "./dto";
 import { Vector } from '../../../common/vector';
-import { Camera } from "./ultratiling/camera";
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameMainRender } from './ultratiling/gameMainRenderer';
 
@@ -21,6 +21,8 @@ export class Canvas extends Control{
     super(parentNode);
     this.playerId = id;
     this.res = res;
+    const camera = new Camera();
+    
     this.canvas = new Control(this.node, 'canvas');
     this.canvas.node.width = 800;
     this.canvas.node.height = 600;
@@ -56,7 +58,6 @@ export class Canvas extends Control{
 
     } 
 
-    const camera = new Camera();
     this.renderer = new GameMainRender(camera, this.canvas.node.width, this.canvas.node.height, res);
     this.ticker.onTick.add((delta)=>{
       this.render(this.ctx, delta);

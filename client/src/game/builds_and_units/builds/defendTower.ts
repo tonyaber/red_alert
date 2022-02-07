@@ -1,6 +1,7 @@
 import { Vector } from '../../../../../common/vector';
 import { IGameObjectContent, IGameObjectData } from '../../dto';
 import { BoundingLayer } from '../../ultratiling/boundingLayer';
+import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { AbstractBuild } from './abstractBuild';
 

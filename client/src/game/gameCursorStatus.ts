@@ -2,7 +2,7 @@ import { IVector, Vector } from '../../../common/vector';
 import { AbstractBuild } from './builds_and_units/builds/abstractBuild';
 import { AbstractUnit } from './builds_and_units/units/abstractUnit';
 import { IObject } from './dto';
-import { InteractiveObject } from './interactiveObject';
+import { InteractiveObject } from './builds_and_units/interactiveObject';
 
 export class GameCursorStatus{
   pixelPosition:Vector = new Vector(0, 0);
@@ -109,7 +109,7 @@ export class GameCursorStatus{
     let num = 0;
     let label = 'ground'+num;
     if (this.hovered[0]){
-       label = this.hovered[0].type;
+       label = this.hovered[0].name;
     }
     ctx.fillText( label , this.pixelPosition.x, this.pixelPosition.y -10);
 

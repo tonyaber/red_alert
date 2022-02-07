@@ -12,7 +12,13 @@ export class InteractiveObject{
   //infos: CachedSprite;
   isHovered: boolean = false;
   hovBalance: number = 0;
-
+  subType: string = 'unit';
+  id: string;
+  playerId: string;
+  position: Vector;
+  name: string;
+  primary: boolean = false;
+  health: number = 100;
   constructor(){
     
   }

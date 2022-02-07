@@ -32,8 +32,7 @@ export class Barrack extends AbstractBuild{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new BuildingInfoView(pos.clone(), res["barrack"]);
-    info.health = 100;
+    const info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
     info.update();
     infoLayer.addObject(info);
     
