@@ -10,7 +10,7 @@ export class AbstractBuild extends InteractiveObject{
   type: string;
   primary: boolean;
   constructor(data: IGameObjectData) {
-    super(data);
+    super();
     this.id = data.objectId;
     this.type = data.type;
     this.updateObject(data.content)

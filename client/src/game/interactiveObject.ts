@@ -17,10 +17,11 @@ export class InteractiveObject{
   position: Vector;
   type: string;
   primary: boolean;
+  selected: boolean;
   color: string;
   subType: string;
 
-  constructor(data: IGameObjectData) {
+  constructor() {
     interactiveList.add(this);
   }
 

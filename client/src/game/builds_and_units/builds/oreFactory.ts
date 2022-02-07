@@ -3,7 +3,7 @@ import { IGameObjectContent, IGameObjectData } from '../../dto';
 import { AbstractBuild } from './abstractBuild';
 
 export class OreFactory extends AbstractBuild{
-   id: string;
+  id: string;
   playerId: string;
   position: Vector;
   type: string;

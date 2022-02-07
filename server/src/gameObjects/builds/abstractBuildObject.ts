@@ -1,60 +1,50 @@
-import { IVector, Vector } from "../../common/vector";
-import { IGameObjectContent,IGameObjectData } from "./dto";
-import { PlayerSide } from "./playerSide";
+import { IVector, Vector } from "../../../../common/vector";
+import { IGameObjectContent, IGameObjectData } from "../../dto";
+import { PlayerSide } from "../../playerSide";
+import { GameObject } from "../gameObject"
 
-export class GameObject {
-  data: IGameObjectContent = {
+export class AbstractBuildObject extends GameObject{
+   data: IGameObjectContent = {
     position: null,
     health: null,
     playerId: null,
     primary: false,
   };
   onUpdate: ( state: IGameObjectData) => void;
-  onCreate: (state: IGameObjectData, subType: string) => void;
+  onCreate: (state: IGameObjectData) => void;
   onDelete:(state: IGameObjectData) => void;
   objectId: string;
 
-  objects: [] = [];
+  objects: Record<string, GameObject> = {};
 
   subType: string;
   type: string;
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
+    super();
     this.data.position = Vector.fromIVector(state.position);
     this.data.playerId = state.playerId;
     this.data.health = 100;
     this.type = type;
     this.objectId = objectId;
   }
-
-  tick(delta: number) {
-    //logic
-    this.objects.forEach(it => {
-      if (it) {
-        //it._update();
-      }
-    })
-    //
-  }
-
+  
   create() {
      this.onCreate({
       type: this.type,
       objectId: this.objectId,
       content: this.getState(),
-    }, this.subType); 
+    }); 
   }
-
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {
     this.data = callback(this.getState());
     this.update();
   }
-
   getState() {
     return this.data;
   }
   
-  private update() {
+  update() {
     this.onUpdate({
       type: this.type,
       objectId: this.objectId,

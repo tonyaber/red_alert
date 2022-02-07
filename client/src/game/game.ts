@@ -1,4 +1,5 @@
 import Control from "../../../common/control";
+import { Vector } from "../../../common/vector";
 import { Canvas } from "./canvas";
 import { IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
@@ -20,7 +21,7 @@ export class Game extends Control{
       })
     }
    
-    const canvas = new Canvas(this.node);
+    const canvas = new Canvas(this.node, id);
     const sidePanel = new SidePanel(this.node);
     
     sidePanel.update(sidePanelInfo.sidePanel);
@@ -41,6 +42,7 @@ export class Game extends Control{
           console.log(result);
         })
       } else if (selected === 'onIsReadyClick') {
+        canvas.setPlannedBuild(object.object);
         canvas.onClick = (position) => {
           canvas.onClick = null;
           socket.addBuild(object.object.name, position, id).then((result) => {
@@ -64,7 +66,20 @@ export class Game extends Control{
           console.log(result);
         });
       }
-     
+      if (subType === 'unit') {
+        canvas.setSelected(id);
+      }
+    }
+
+    canvas.onChangePosition = (id: string, position: Vector) => {
+      socket.moveUnit(id, position).then((result) => {
+          console.log(result);
+        });
+    }
+    canvas.onAttack = (id: string, targetId: string) => {
+      socket.setAttackTarget(id, targetId).then((result) => {
+        console.log(result)
+      })
     }
     
 
