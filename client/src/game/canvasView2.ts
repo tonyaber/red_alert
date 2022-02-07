@@ -4,9 +4,6 @@ import { Vector } from '../../../common/vector';
 import { Camera } from "./ultratiling/camera";
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameMainRender } from './ultratiling/gameMainRenderer';
-import { builds } from './builds_and_units/buildMap';
-import { InteractiveObject } from "./interactiveObject";
-import { GameObject } from "./ultratiling/gameObject";
 
 
 export class Canvas extends Control{

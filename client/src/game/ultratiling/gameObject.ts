@@ -2,7 +2,7 @@ import { Vector } from "../../../../common/vector";
 import { BoundingLayer } from "./boundingLayer";
 import { TilingLayer } from "./tileLayer";
 import { TileObject } from "./tileObject";
-import { BuildingInfoView } from "./sprites";
+import { BuildingInfoView } from "./buildingInfoView";
 
 export class GameObject{
   tiles: Array<TileObject> =[];

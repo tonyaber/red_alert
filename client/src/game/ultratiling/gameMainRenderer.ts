@@ -5,7 +5,8 @@ import { GameObject } from "./gameObject";
 import { TilingLayer } from "./tileLayer";
 import { BoundingLayer } from "./boundingLayer";
 import { IGameObjectData } from '../dto';
-
+import { builds } from '../builds_and_units/buildMap';
+import { InteractiveObject } from "../builds_and_units/interactiveObject";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -68,9 +69,9 @@ export class GameMainRender{
   }
 
   addObject(data: IGameObjectData) {
-    console.log( this.camera.getTileVector(data.content.position))
-    const obj = new GameObject(this.tilingLayer, this.boundingLayer, this.res, this.camera.getTileVector(data.content.position));
-    this.objects.push(obj);
+    const BuildConstructor = builds[data.type] || InteractiveObject;
+    const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera.getTileVector(data.content.position));
+    this.objects.push(interactiveObject);
   }
 
 }

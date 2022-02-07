@@ -1,8 +1,8 @@
 import { Vector } from "../../../../common/vector";
 import { copier } from "./copier";
 import { mod } from "./mod";
-import { BuildingInfoView, CachedSprite } from "./sprites";
-
+import {  CachedSprite } from "./cachedSprite";
+import { BuildingInfoView } from './buildingInfoView';
 export class BoundingLayer{
   ctx: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
