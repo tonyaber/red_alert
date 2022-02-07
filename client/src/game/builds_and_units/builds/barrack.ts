@@ -2,6 +2,7 @@ import { Vector } from '../../../../../common/vector';
 import { IGameObjectContent, IGameObjectData } from '../../dto';
 import { BoundingLayer } from '../../ultratiling/boundingLayer';
 import { BuildingInfoView } from '../../ultratiling/buildingInfoView';
+import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
 import { AbstractBuild } from './abstractBuild';
@@ -12,15 +13,15 @@ export class Barrack extends AbstractBuild{
   // position: Vector;
   // type: string;
   // primary: boolean;
-  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, pos:Vector) {
-    super(layer, infoLayer, res, pos);
+  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
+     super(layer, infoLayer, res, camera, data);
     const tileMap = [
       [1,1,1,0],
       [1,1,1,0],
       [0,1,1,1],
       [1,1,1,0],
     ];
-
+    const pos = camera.getTileVector(data.content.position)
     /*const infos = new CachedSprite(tileSize*4, tileSize*4, pos.clone().scale(tileSize));
     infos.ctx.drawImage(res['buildingCenter'], 0, 0, tileSize*4, tileSize*4);
     infoLayer.addItem(infos);

@@ -10,7 +10,7 @@ export class DefendTower extends AbstractBuild{
   // position: Vector;
   // type: string;
   // primary: boolean;
-  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, pos:Vector) {
-    super(layer, infoLayer, res, pos);
+  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
+     super(layer, infoLayer, res, camera, data);
   }
 }

@@ -10,7 +10,7 @@ export class Bomber extends AbstractUnit{
   // position: Vector;
   // type: string;
   // selected: boolean;
-  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, pos:Vector) {
+  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, pos:Vector,camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, pos);
   }
 

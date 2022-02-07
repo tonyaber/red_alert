@@ -3,6 +3,7 @@ import { IGameObjectContent, IGameObjectData } from '../../dto';
 import { BoundingLayer } from '../../ultratiling/boundingLayer';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { AbstractBuild } from './abstractBuild';
+import { Camera } from '../../ultratiling/camera';
 
 export class BuildingCenter extends AbstractBuild{
   // id: string;
@@ -10,8 +11,8 @@ export class BuildingCenter extends AbstractBuild{
   // position: Vector;
   // type: string;
   // primary: boolean;
-  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, pos:Vector) {
-    super(layer, infoLayer, res, pos);
+  constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
+     super(layer, infoLayer, res, camera, data);
   }
   
 }

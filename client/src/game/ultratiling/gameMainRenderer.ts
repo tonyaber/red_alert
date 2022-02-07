@@ -69,8 +69,8 @@ export class GameMainRender{
   }
 
   addObject(data: IGameObjectData) {
-    const BuildConstructor = builds[data.type] || InteractiveObject;
-    const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera.getTileVector(data.content.position));
+     const BuildConstructor = builds[data.type] || InteractiveObject;
+    const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
     this.objects.push(interactiveObject);
   }
 
