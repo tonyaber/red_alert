@@ -6,6 +6,7 @@ import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
 import { InteractiveObject } from '../interactiveObject';
+import { inBox } from '../../inBox';
 
 export class AbstractUnit extends InteractiveObject{
    tiles: Array<TileObject> =[];
@@ -119,10 +120,12 @@ export class AbstractUnit extends InteractiveObject{
   }
 
   inShape(tile: Vector, cursor: Vector): boolean {
-
-   // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
-    if (tile.x ===this.info.position.x&&tile.y ===this.info.position.y) {
-      return true;
+    
+    let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
+     if (pos.abs()<15){
+       console.log(true)
+       return true;
+       
     }
     return false;
   }
