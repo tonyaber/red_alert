@@ -1,5 +1,6 @@
 import Control from '../../../common/control';
 import { IObjectInfo } from './dto';
+import red from './red.css'
 
 export class buildSidePanel extends Control{
   button: Control;
@@ -11,13 +12,14 @@ export class buildSidePanel extends Control{
   onIsPauseClick: (data: IObjectInfo) => void;
   status: Control<HTMLElement>;
   
+
   constructor(parentNode: HTMLElement) {
-    super(parentNode);
-    this.button = new Control(this.node, 'div');
-    this.node.style.border = '1px solid black';
-    this.node.style.padding = '10px';
-    this.progress = new Control(this.node, 'div');
-    this.status = new Control(this.node, 'div')
+    super(parentNode, 'div', red['builds_item']);
+    this.button = new Control(this.node, 'div', red['name_item']);
+   // this.node.style.border = '1px solid black';
+    //this.node.style.padding = '10px';
+    this.progress = new Control(this.node, 'div', red['progress']);
+    this.status = new Control(this.node, 'div', red['status'])
     this.node.onclick = () => {
       if (this.data) {
         if (this.data.status === 'available') {
