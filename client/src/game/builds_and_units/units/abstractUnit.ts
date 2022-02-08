@@ -20,16 +20,20 @@ export class AbstractUnit extends InteractiveObject{
   primary: boolean = false;
   health: number = 100;
   info: UnitInfoView;
+  infoLayer: BoundingLayer;
+  camera: Camera;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>,camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
     this.name = data.type;
+    this.infoLayer = infoLayer;
     this.position = data.content.position;
     this.playerId = data.content.playerId;
+    this.camera = camera;
     //this.updateObject(data.content)
-    const tileMap = [
-      [1],
-    ];
+    // const tileMap = [
+    //   [1],
+    // ];
     const pos = camera.getTileVector(data.content.position)
     /*const infos = new CachedSprite(tileSize*4, tileSize*4, pos.clone().scale(tileSize));
     infos.ctx.drawImage(res['buildingCenter'], 0, 0, tileSize*4, tileSize*4);
@@ -43,54 +47,54 @@ export class AbstractUnit extends InteractiveObject{
     //document.body.appendChild(infos.canvas);*/
     this.info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId);
     this.info.update();
-    infoLayer.addObject(this.info);
+    this.infoLayer.addObject(this.info);
     
-    tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
-      const tilePos = pos.clone().add(new Vector(j, i));
-      if (!tileMap[i][j]){
-        return;
-      }
+    // tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
+    //   const tilePos = pos.clone().add(new Vector(j, i));
+    //   if (!tileMap[i][j]){
+    //     return;
+    //   }
 
       
-      //infoLayer.updateScreen();
+    //   //infoLayer.updateScreen();
       
-      const tile = new TileObject(1, tilePos);
-      //tile.tiling = layer;
-      tile.onMouseEnter = ()=>{
-        //this.isHovered = true;
-        this.hovBalance+=1;
-       /* if (this.hovBalance == 1){
-          this.tiles.forEach(it1=>it1.tileType = 0);
-        }*/
-        //texts.health+=1;
-        //texts.update();
-        //this.update();
-      }
+    //   const tile = new TileObject(1, tilePos);
+    //   //tile.tiling = layer;
+    //   tile.onMouseEnter = ()=>{
+    //     //this.isHovered = true;
+    //     this.hovBalance+=1;
+    //    /* if (this.hovBalance == 1){
+    //       this.tiles.forEach(it1=>it1.tileType = 0);
+    //     }*/
+    //     //texts.health+=1;
+    //     //texts.update();
+    //     //this.update();
+    //   }
 
-      tile.onMouseLeave = ()=>{
-        this.hovBalance-=1;
-        /*if (this.hovBalance == 0){
-          this.tiles.forEach(it1=>it1.tileType = 1);
-          //this.update();
-        }*/
-        //this.tiles.forEach(it=>it.tileType = 0);
-      }
+    //   tile.onMouseLeave = ()=>{
+    //     this.hovBalance-=1;
+    //     /*if (this.hovBalance == 0){
+    //       this.tiles.forEach(it1=>it1.tileType = 1);
+    //       //this.update();
+    //     }*/
+    //     //this.tiles.forEach(it=>it.tileType = 0);
+    //   }
 
-      tile.onUpdate = ()=>{
-        //layer.updateCamera(layer.camera, layer.tileSize);
-        layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
+    //   tile.onUpdate = ()=>{
+    //     //layer.updateCamera(layer.camera, layer.tileSize);
+    //     layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
         
-        //optimize it, too many updates
-        //console.log('upd');
-      }
-      tile.onUpdate();
+    //     //optimize it, too many updates
+    //     //console.log('upd');
+    //   }
+    //   tile.onUpdate();
       
 
-      //tile.position = pos.clone().add(new Vector(j, i));
-      //console.log(tile.position)
-      this.tiles.push(tile);
-      //updateLayer
-    }));
+    //   //tile.position = pos.clone().add(new Vector(j, i));
+    //   //console.log(tile.position)
+    //   this.tiles.push(tile);
+    //   //updateLayer
+    // }));
   }
 
   processMove(cursor:Vector){
@@ -108,15 +112,16 @@ export class AbstractUnit extends InteractiveObject{
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
     this.playerId = data.playerId;
-    this.info.position = this.position.clone();
-    this.info.update()
-    console.log(this.position)
-    this.tiles.forEach(it => it.onUpdate());
+    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
+    this.info.position = this.camera.getTileVector(data.position.clone());
+    this.info.update();
+    this.infoLayer.updateObject(this.info)
   }
 
-   inShape(tile: Vector, cursor: Vector): boolean {
+  inShape(tile: Vector, cursor: Vector): boolean {
+
    // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
-    if (this.tiles.find(it => it.inShape(tile))) {
+    if (tile.x ===this.info.position.x&&tile.y ===this.info.position.y) {
       return true;
     }
     return false;

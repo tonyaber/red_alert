@@ -58,11 +58,11 @@ export class BoundingLayer{
     this.renderTile(this.objects, tileCamera, tileX, tileY);  
   }
 
-  /*_clearTile(tilingCamera:Vector, obj:CachedSprite, tileSize:number){
+  _clearTile(tilingCamera:Vector, obj:CachedSprite, tileSize:number){
     const renderX = (-tilingCamera.x * tileSize) + obj.position.x * tileSize; 
     const renderY = (-tilingCamera.y * tileSize) + obj.position.y * tileSize;
     this.ctx.clearRect(renderX, renderY, obj.canvas.width, obj.canvas.height);
-  }*/
+  }
 
   _renderTile(tilingCamera:Vector, obj:CachedSprite){
     const renderX = (-tilingCamera.x * this.tileSize) + obj.position.x * this.tileSize; 
@@ -92,6 +92,10 @@ export class BoundingLayer{
   addObject(object: CachedSprite) {
     this.objects.push(object);
     this._renderTile(this.getTileCamera(this.camera, this.tileSize), object);
+  }
+
+  updateObject(object: CachedSprite) {
+    this._renderTile(this.getTileCamera(this.camera, this.tileSize), object);    
   }
 
   getTileCamera(camera:Vector, tileSize:number){

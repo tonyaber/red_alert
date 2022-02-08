@@ -26,8 +26,10 @@ export class BuildingInfoView extends CachedSprite{
     this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
     this.ctx.fillText('name: ' + this.name, 0, topText * 2);
     this.ctx.fillText(this.playerId, 0, topText * 3);
-    this.ctx.fillText('primary' + this.isPrimary, 0, topText * 4);
-    console.log(this.isPrimary)
+    
+    if (this.isPrimary) {
+      this.ctx.fillText('Primary', 0, topText * 4);
+    }
     this.onUpdate?.();
   }
 }
