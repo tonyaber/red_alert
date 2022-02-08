@@ -122,6 +122,7 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
+    this.tiles.forEach(it => it.onUpdate());
     this.info.isPrimary = this.primary;
     this.info.update();
     

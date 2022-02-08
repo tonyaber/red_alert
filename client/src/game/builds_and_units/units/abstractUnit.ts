@@ -19,11 +19,14 @@ export class AbstractUnit extends InteractiveObject{
   name: string;
   primary: boolean = false;
   health: number = 100;
+  info: UnitInfoView;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>,camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
     this.name = data.type;
-    this.updateObject(data.content)
+    this.position = data.content.position;
+    this.playerId = data.content.playerId;
+    //this.updateObject(data.content)
     const tileMap = [
       [1],
     ];
@@ -38,9 +41,9 @@ export class AbstractUnit extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId);
-    info.update();
-    infoLayer.addObject(info);
+    this.info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId);
+    this.info.update();
+    infoLayer.addObject(this.info);
     
     tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
       const tilePos = pos.clone().add(new Vector(j, i));
@@ -105,7 +108,10 @@ export class AbstractUnit extends InteractiveObject{
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
     this.playerId = data.playerId;
+    this.info.position = this.position.clone();
+    this.info.update()
     console.log(this.position)
+    this.tiles.forEach(it => it.onUpdate());
   }
 
    inShape(tile: Vector, cursor: Vector): boolean {
