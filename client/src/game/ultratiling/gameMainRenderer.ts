@@ -6,6 +6,9 @@ import { BoundingLayer } from "./boundingLayer";
 import { IGameObjectData } from '../dto';
 import { builds } from '../builds_and_units/buildMap';
 import { InteractiveObject } from "../builds_and_units/interactiveObject";
+import { InteractiveList } from "../interactiveList";
+import { interactiveList } from "../builds_and_units/interactiveObject";
+import { GameCursorStatus } from '../gameCursorStatus';
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -13,11 +16,15 @@ export class GameMainRender{
   objects: Array<InteractiveObject> = [];
   boundingLayer: BoundingLayer;
   res: Record<string, HTMLImageElement>;
+  interactiveList: InteractiveList;
+  playerId: string;
 
-  constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>) {
+  constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
     this.camera = camera;
-    console.log(camera.getTileSize())
+    this.playerId = playerId;
+   // this.cursorStatus = new GameCursorStatus(this.playerId);
+    this.interactiveList = interactiveList;
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
     this.tilingLayer.registred = [
@@ -64,13 +71,28 @@ export class GameMainRender{
       Math.floor((cursor.x + this.camera.position.x) / this.camera.getTileSize()), 
       Math.floor((cursor.y + this.camera.position.y) / this.camera.getTileSize())
     );
-    this.objects.forEach(obj=>obj.processMove(moveCursor));
+    this.interactiveList.list.forEach(obj=>obj.processMove(moveCursor));
   }
 
   addObject(data: IGameObjectData) {
      const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    this.objects.push(interactiveObject);
+    
+  }
+
+  handleClick(camera: Vector, tileSize: number) {
+
+    
+  }
+  handleMouseMove(cursor: Vector) {
+    this.interactiveList.handleMove(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor));
+  }
+
+  handleMouseDown(cursor: Vector) {
+    this.interactiveList.list.forEach(item => item.selected = false);
+    this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
+   //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
+   // console.log(this.camera.position.clone().add(cursor));
   }
 
 }

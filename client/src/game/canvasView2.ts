@@ -30,20 +30,23 @@ export class Canvas extends Control{
 
     this.canvas.node.onmousemove = (e)=>{
       const mv = new Vector(e.movementX, e.movementY).scale(0.5);
-      const maxSpeed = 10;
+      const maxSpeed = 0.1;
       if (mv.abs()<maxSpeed){
         this.renderer.camera.velocity = mv;
       } else {
          this.renderer.camera.velocity = mv.normalize().scale(maxSpeed);
       }
+     
       //this.renderer.setCameraPosition(new Vector(e.offsetX *20.5 -209, e.offsetY*20.5 -209));
       this.renderer.processMove(new Vector(e.offsetX, e.offsetY));
+      this.renderer.handleMouseMove(new Vector(e.offsetX, e.offsetY));
     }
 
     this.canvas.node.onclick = (e: MouseEvent) => {
       this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
       this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
       this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      //this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
      // if (this.hoveredObjects === null) {
          this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
       //} else {
@@ -51,14 +54,14 @@ export class Canvas extends Control{
       //}
     }
 
-    this.canvas.node.oncontextmenu = (e)=>{
+    this.canvas.node.oncontextmenu = (e) => {
       e.preventDefault();
     }
     this.canvas.node.onmousedown = (e: MouseEvent) => {
-
+      this.renderer.handleMouseDown(new Vector(e.offsetX, e.offsetY));
     } 
 
-    this.renderer = new GameMainRender(camera, this.canvas.node.width, this.canvas.node.height, res);
+    this.renderer = new GameMainRender(camera, this.canvas.node.width, this.canvas.node.height, res, this.playerId);
     this.ticker.onTick.add((delta)=>{
       this.render(this.ctx, delta);
     });

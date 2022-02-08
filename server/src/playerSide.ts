@@ -3,7 +3,7 @@ import { IObjectInfo } from "./dto";
 import { tech } from "./techTree";
 
 export class PlayerSide{
-  money:number = 5000;
+  money:number = 50000;
   buildings: IObjectInfo[] = [];
   buildsInGame: string[] = [];
   onUpdate:(data: string)=>void;

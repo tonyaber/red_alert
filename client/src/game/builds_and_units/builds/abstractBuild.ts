@@ -25,9 +25,9 @@ export class AbstractBuild extends InteractiveObject{
     this.name = data.type;
     this.updateObject(data.content)
     const tileMap = [
+      [0,1,1,0],
       [1,1,1,0],
-      [1,1,1,0],
-      [0,1,1,1],
+      [1,1,1,1],
       [1,1,1,0],
     ];
     const pos = camera.getTileVector(data.content.position)
@@ -105,6 +105,15 @@ export class AbstractBuild extends InteractiveObject{
       }
     }
   }
+
+  inShape(tile: Vector, cursor: Vector): boolean {
+   // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
+    if (this.tiles.find(it => it.inShape(tile))) {
+      return true;
+    }
+    return false;
+  }
+  
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
     this.playerId = data.playerId;

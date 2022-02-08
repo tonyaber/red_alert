@@ -1,13 +1,20 @@
 import { Vector } from '../../../../common/vector';
-import { IGameObjectData, IGameObjectContent } from '../dto';
-import { BoundingLayer } from '../ultratiling/boundingLayer';
-import { BuildingInfoView } from '../ultratiling/buildingInfoView';
-import { TilingLayer } from '../ultratiling/tileLayer';
+import { InteractiveList } from '../interactiveList';
+// import { IGameObjectData, IGameObjectContent } from '../dto';
+// import { BoundingLayer } from '../ultratiling/boundingLayer';
+// import { BuildingInfoView } from '../ultratiling/buildingInfoView';
+// import { TilingLayer } from '../ultratiling/tileLayer';
 import { TileObject } from '../ultratiling/tileObject';
 
-//const interactiveList = new InteractiveList();
+const interactiveList = new InteractiveList();
 
 export class InteractiveObject{
+  onMouseMove: any;
+  onMouseEnter: any;
+  onMouseLeave: any;
+  onClick: any;
+  onDestroyed: () => void;
+  getList: () => InteractiveList;
    tiles: Array<TileObject> =[];
   //infos: CachedSprite;
   isHovered: boolean = false;
@@ -19,13 +26,41 @@ export class InteractiveObject{
   name: string;
   primary: boolean = false;
   health: number = 100;
+  selected: boolean;
   constructor(){
-    
+    interactiveList.add(this);
   }
 
   processMove(cursor:Vector){
     //console.log(cursor);
     
+  }
+  handleMove(tile:Vector, cursor:Vector){
+    if (this.inShape(tile, cursor)){
+      this.onMouseMove?.(tile);
+      if (!this.isHovered) {
+        this.isHovered = true;
+        this.onMouseEnter?.(tile);
+      }
+    } else {
+      if (this.isHovered) {
+        this.isHovered = false;
+        this.onMouseLeave?.(tile);
+      }
+    }  
+  }
+
+  handleClick(tile:Vector, cursor:Vector){
+    if (this.inShape(tile, cursor)) {
+      this.onClick?.(tile, cursor);
+    }
+  }
+  inShape(tile: Vector, cursor: Vector): boolean {
+      let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
+    if (pos.abs()<15){
+      return true;
+    }
+    return false;
   }
 
   update(){
@@ -100,3 +135,5 @@ export class InteractiveObject{
     
 //   }
 }
+
+export { interactiveList };
