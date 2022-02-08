@@ -1,10 +1,8 @@
-import { Vector } from '../../../../../common/vector';
 import { IGameObjectData } from '../../dto';
 import { BoundingLayer } from '../../ultratiling/boundingLayer';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { AbstractUnit } from './abstractUnit';
 import { Camera } from '../../ultratiling/camera';
-
 
 export class Bomber extends AbstractUnit{
   // id: string;

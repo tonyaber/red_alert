@@ -17,17 +17,22 @@ export class AbstractBuild extends InteractiveObject{
   playerId: string;
   position: Vector;
   name: string;
-  primary: boolean;
+  primary: boolean = false;
   health: number = 100;
+  info: BuildingInfoView;
+  infoLayer: any;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
     this.name = data.type;
-    this.updateObject(data.content)
+    this.infoLayer = infoLayer;
+    this.position = data.content.position;
+    this.playerId = data.content.playerId;
+    this.primary = data.content.primary;
     const tileMap = [
-      [1,1,1,0],
-      [1,1,1,0],
-      [0,1,1,1],
+      [0,1,1,0],
+      [0,1,1,0],
+      [1,1,1,1],
       [1,1,1,0],
     ];
     const pos = camera.getTileVector(data.content.position)
@@ -41,9 +46,9 @@ export class AbstractBuild extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
-    info.update();
-    infoLayer.addObject(info);
+    this.info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
+    this.info.update();
+    this.infoLayer.addObject(this.info);
     
     tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
       const tilePos = pos.clone().add(new Vector(j, i));
@@ -91,6 +96,7 @@ export class AbstractBuild extends InteractiveObject{
       this.tiles.push(tile);
       //updateLayer
     }));
+    
   }
 
   processMove(cursor:Vector){
@@ -105,10 +111,22 @@ export class AbstractBuild extends InteractiveObject{
       }
     }
   }
+
+  inShape(tile: Vector, cursor: Vector): boolean {
+   // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
+    if (this.tiles.find(it => it.inShape(tile))) {
+      return true;
+    }
+    return false;
+  }
+  
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
+    this.info.isPrimary = this.primary;
+    this.info.update();
+    this.infoLayer.updateObject(this.info)
   }
 
   update(){

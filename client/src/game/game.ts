@@ -43,7 +43,7 @@ export class Game extends Control{
           console.log(result);
         })
       } else if (selected === 'onIsReadyClick') {
-        //canvas.setPlannedBuild(object.object);
+        canvas.setPlannedBuild(object.object);
         canvas.onClick = (position) => {
           canvas.onClick = null;
           socket.addBuild(object.object.name, position, id).then((result) => {
@@ -61,22 +61,22 @@ export class Game extends Control{
       }
     }
 
-    // canvas.onObjectClick = (id: string, name: string, subType) => {
-    //   if (subType === 'build') {
-    //     socket.setPrimary(id, name).then((result) => {
-    //       console.log(result);
-    //     });
-    //   }
-    //   if (subType === 'unit') {
-    //     canvas.setSelected(id);
-    //   }
-    // }
+    canvas.onObjectClick = (id: string, name: string, subType) => {
+      if (subType === 'build') {
+        socket.setPrimary(id, name).then((result) => {
+          console.log(result);
+        });
+      }
+      if (subType === 'unit') {
+        //canvas.setSelected(id);
+      }
+    }
 
-    // canvas.onChangePosition = (id: string, position: Vector) => {
-    //   socket.moveUnit(id, position).then((result) => {
-    //       console.log(result);
-    //     });
-    // }
+    canvas.onChangePosition = (id: string, position: Vector) => {
+      socket.moveUnit(id, position).then((result) => {
+          console.log(result);
+        });
+    }
     // canvas.onAttack = (id: string, targetId: string) => {
     //   socket.setAttackTarget(id, targetId).then((result) => {
     //     console.log(result)
