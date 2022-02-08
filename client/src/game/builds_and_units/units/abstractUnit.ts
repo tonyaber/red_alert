@@ -1,7 +1,7 @@
 import { Vector } from '../../../../../common/vector';
 import { IGameObjectContent, IGameObjectData } from '../../dto';
 import { BoundingLayer } from '../../ultratiling/boundingLayer';
-import { BuildingInfoView } from '../../ultratiling/buildingInfoView';
+import { UnitInfoView } from '../../ultratiling/unitInfoView';
 import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
@@ -25,10 +25,7 @@ export class AbstractUnit extends InteractiveObject{
     this.name = data.type;
     this.updateObject(data.content)
     const tileMap = [
-      [1,1,1,0],
-      [1,1,1,0],
-      [0,1,1,1],
-      [1,1,1,0],
+      [1],
     ];
     const pos = camera.getTileVector(data.content.position)
     /*const infos = new CachedSprite(tileSize*4, tileSize*4, pos.clone().scale(tileSize));
@@ -41,8 +38,7 @@ export class AbstractUnit extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new BuildingInfoView(pos.clone(), res["barrack"],this.name, this.health, this.playerId, this.primary);
-    info.health = 10;
+    const info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId);
     info.update();
     infoLayer.addObject(info);
     
@@ -109,8 +105,17 @@ export class AbstractUnit extends InteractiveObject{
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
     this.playerId = data.playerId;
+    console.log(this.position)
   }
-  
+
+   inShape(tile: Vector, cursor: Vector): boolean {
+   // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
+    if (this.tiles.find(it => it.inShape(tile))) {
+      return true;
+    }
+    return false;
+  }
+
   update(){
     //this.tiles.forEach(it=>it.update());
   }

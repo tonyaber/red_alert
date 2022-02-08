@@ -3,7 +3,7 @@ import { Camera } from "./camera";
 import { GameDebugInfoView } from "./gameDebugInfoView";
 import { TilingLayer } from "./tileLayer";
 import { BoundingLayer } from "./boundingLayer";
-import { IGameObjectData } from '../dto';
+import { IGameObjectData, IObject } from '../dto';
 import { builds } from '../builds_and_units/buildMap';
 import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
@@ -18,12 +18,18 @@ export class GameMainRender{
   res: Record<string, HTMLImageElement>;
   interactiveList: InteractiveList;
   playerId: string;
+  cursorStatus: GameCursorStatus;
+  cursorPosition: Vector;
+  hoveredObjects: InteractiveObject;
+  onAddBuild: (position: Vector) => void;
+  onObjectClick: (id: string, name: string, subType: string) => void;
+  onChangePosition: (id: string, position: Vector) => void;
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
     this.camera = camera;
     this.playerId = playerId;
-   // this.cursorStatus = new GameCursorStatus(this.playerId);
+    this.cursorStatus = new GameCursorStatus(this.playerId);
     this.interactiveList = interactiveList;
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
@@ -35,6 +41,18 @@ export class GameMainRender{
     this.tilingLayer.update(this.camera.position, newMap);
 
     this.boundingLayer = new BoundingLayer(mp, mp, camera.getTileSize(), camera.position);
+    this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
+      this.hoveredObjects = currentTarget;
+      this.cursorStatus.hovered = currentTarget ? [currentTarget] : [];
+    }
+
+    this.interactiveList.onClick = (current) => {   
+      this.interactiveList.list.forEach(item => item.selected = false);
+      if (current&&current.playerId === this.playerId) {
+        this.setSelected(current.id)
+        this.cursorStatus.selected = current ? [current] : [];  
+      }      
+    };
 
     // for (let i =0; i<50; i++){
     //   //const obj = new GameObject(this.renderer.tilingLayer, res, new Vector(0, 0));
@@ -58,6 +76,7 @@ export class GameMainRender{
     ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
     ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
     this.debugInfoView.render(ctx);
+    this.cursorStatus.render(ctx, new Vector(0,0));
   }
 
   setCameraPosition(position:Vector){
@@ -80,18 +99,49 @@ export class GameMainRender{
     
   }
 
+  updateObject(data:IGameObjectData){
+   this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
+  }
+
+  setPlannedBuild(object:IObject) {
+    this.cursorStatus.planned = object;
+  }
+
+  setSelected(id: string) {
+    this.interactiveList.list.find(item => item.id === id).selected = true;
+  }
+
   handleClick(camera: Vector, tileSize: number) {
 
     
   }
   handleMouseMove(cursor: Vector) {
     this.interactiveList.handleMove(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor));
+    this.cursorPosition = this.camera.getTileVector(this.camera.position.clone().add(cursor))
+    this.cursorStatus.pixelPosition = cursor
   }
 
   handleMouseDown(cursor: Vector) {
     this.interactiveList.list.forEach(item => item.selected = false);
     this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
-   //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
+    const action = this.cursorStatus.getAction();
+    console.log(action)
+     if (action === 'build') {
+        this.onAddBuild?.(this.camera.position.clone().add(cursor));
+        this.cursorStatus.planned = null;
+    }
+    if (action === 'primary') {
+        this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);
+    } 
+    if (action === 'move') {
+        this.cursorStatus.selected.forEach(item=>this.onChangePosition(item.id, this.camera.position.clone().add(cursor)))
+        //отправлять на сервер this.cursorPosition
+        //когда приходит ответ - запускать патч
+        //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
+        this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
+        this.cursorStatus.selected = [];
+    }
+    //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
    // console.log(this.camera.position.clone().add(cursor));
   }
 

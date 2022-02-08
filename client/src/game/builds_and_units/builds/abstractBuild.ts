@@ -17,16 +17,19 @@ export class AbstractBuild extends InteractiveObject{
   playerId: string;
   position: Vector;
   name: string;
-  primary: boolean;
+  primary: boolean = false;
   health: number = 100;
+  info: BuildingInfoView;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
     this.name = data.type;
-    this.updateObject(data.content)
+    this.position = data.content.position;
+    this.playerId = data.content.playerId;
+    this.primary = data.content.primary;
     const tileMap = [
       [0,1,1,0],
-      [1,1,1,0],
+      [0,1,1,0],
       [1,1,1,1],
       [1,1,1,0],
     ];
@@ -41,9 +44,9 @@ export class AbstractBuild extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    const info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
-    info.update();
-    infoLayer.addObject(info);
+    this.info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
+    this.info.update();
+    infoLayer.addObject(this.info);
     
     tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
       const tilePos = pos.clone().add(new Vector(j, i));
@@ -91,6 +94,7 @@ export class AbstractBuild extends InteractiveObject{
       this.tiles.push(tile);
       //updateLayer
     }));
+    
   }
 
   processMove(cursor:Vector){
@@ -118,6 +122,9 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
+    this.info.isPrimary = this.primary;
+    this.info.update();
+    
   }
 
   update(){

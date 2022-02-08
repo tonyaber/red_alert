@@ -1,6 +1,6 @@
 import Control from "../../../common/control";
 import { Camera } from "./ultratiling/camera";
-import { IGameObjectData } from "./dto";
+import { IGameObjectData, IObject } from "./dto";
 import { Vector } from '../../../common/vector';
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameMainRender } from './ultratiling/gameMainRenderer';
@@ -9,7 +9,8 @@ import { GameMainRender } from './ultratiling/gameMainRenderer';
 export class Canvas extends Control{
   onGameMove: () => void;
   onClick: (position: Vector) => void;
-  onObjectClick: (id: string, name: string) => void;
+  onObjectClick: (id: string, name: string, subType: string) => void;
+  onChangePosition: (id: string, position: Vector) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   ticker = new RenderTicker();
@@ -43,12 +44,12 @@ export class Canvas extends Control{
     }
 
     this.canvas.node.onclick = (e: MouseEvent) => {
-      this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
-      this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
-      this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
-      //this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
+      // this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
+      // this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      // this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      // //this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
      // if (this.hoveredObjects === null) {
-         this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
+        // this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
       //} else {
        // this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
       //}
@@ -67,14 +68,30 @@ export class Canvas extends Control{
     });
     this.ticker.startRender();
     this.renderer.setCameraPosition(new Vector(-200, -200));
+
+    this.renderer.onAddBuild = (position)=>{
+      this.onClick(position);
+    }
+
+    this.renderer.onObjectClick = (id, name, subType) => {
+      this.onObjectClick(id, name, subType);
+    }
+    this.renderer.onChangePosition = (id, position)=>{
+      this.onChangePosition(id, position)
+    }
   }
 
   updateObject(data:IGameObjectData){
+    this.renderer.updateObject(data);
     //this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
   }
 
   deleteObject(data:IGameObjectData){
 
+  }
+
+  setPlannedBuild(object: IObject) {
+    this.renderer.setPlannedBuild(object);
   }
 
   addObject(data: IGameObjectData) {

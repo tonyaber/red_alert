@@ -1,4 +1,5 @@
 import { Vector } from '../../../../common/vector';
+import { IGameObjectContent } from '../dto';
 import { InteractiveList } from '../interactiveList';
 // import { IGameObjectData, IGameObjectContent } from '../dto';
 // import { BoundingLayer } from '../ultratiling/boundingLayer';
@@ -34,6 +35,10 @@ export class InteractiveObject{
   processMove(cursor:Vector){
     //console.log(cursor);
     
+  }
+
+  updateObject(data: IGameObjectContent) {
+
   }
   handleMove(tile:Vector, cursor:Vector){
     if (this.inShape(tile, cursor)){
