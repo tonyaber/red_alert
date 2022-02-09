@@ -139,6 +139,7 @@
   box-shadow: 3px 3px 4px #666;
   overflow: hidden; 
   transition-duration: 0.3s;
+  position: relative;
     
 }
 .builds_item:hover{
@@ -156,6 +157,48 @@
   border: 1px solid #006600;
   box-shadow: 3px 3px 4px #006600; 
 }
+
+.barrack{
+  background: url('../assets/png/barrack.png') no-repeat 0 0/cover;
+}
+
+.buildingCenter{
+  background: url('../assets/png/buildingCenter.png') no-repeat 0 0/cover;
+}
+.energyPlant{
+  background: url('../assets/png/energy.png') no-repeat 50% 50%/contain;
+
+}
+.carFactory{
+  background: url('../assets/png/carFactory.png') no-repeat 50% 50%/contain;
+}
+
+.defendTower{
+  background: url('../assets/png/defendedTower.png') no-repeat 50% 50%/contain;
+}
+
+.oreFactory{
+  background: url('../assets/png/plant.png') no-repeat 50% 50%/contain;
+}
+
+.radar{
+  background: url('../assets/png/radar.png') no-repeat 50% 50%/contain;
+}
+
+   /* techCenter,
+    radar,
+    repairStation,
+    oreBarrel,
+    
+    
+    soldier,
+    truck,
+    bomber,
+    tank,
+    heavyTank,
+    dog
+
+*/
 
 .builds_column{
   width: 100%;
@@ -212,7 +255,21 @@
 }
 
 .name_item{
+  width: 100%;
+  height: 20px;
+  background-color: black;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 1px solid #666;
+}
 
+.progress{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(169, 169, 169, 0.308);
 }
 
 

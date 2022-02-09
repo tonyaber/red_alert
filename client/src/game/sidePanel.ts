@@ -17,6 +17,7 @@ export class SidePanel extends Control{
   buttonSecondColumnDown: Control<HTMLElement>;
   //buildAvailbe: string[];
   buildAvailable: IObjectInfo[] = [];
+  unitsAvailable: IObjectInfo[] = [];
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', red['game_side']); 
@@ -58,6 +59,21 @@ export class SidePanel extends Control{
     this.buttonSecondColumnUp = new Control(this.buildingsSecondColumnFooter.node, 'div', red["button"] + ' ' + red["button_up"]);
     this.buttonSecondColumnDown = new Control(this.buildingsSecondColumnFooter.node, 'div', red["button"] + ' ' + red["button_down"]);
     this.changeSecondColumnButtonsState();
+    this.buttonSecondColumnUp.node.onclick = () => {
+      let colMarginTop = this.unitNode.node.style.marginTop.replace(/[^0-9,-]/g, "")
+      let freeSpace = (window.innerHeight - 300 - (this.unitsAvailable.length * 100) - Number(colMarginTop))
+      if (freeSpace < 100) {
+        this.unitNode.node.style.marginTop = String(Number(colMarginTop) - 100) + 'px';
+        this.changeSecondColumnButtonsState()
+      }
+    }
+    this.buttonSecondColumnDown.node.onclick = () => {
+      let colMarginTop = this.unitNode.node.style.marginTop.replace(/[^0-9,-]/g, "")
+      if (Number(colMarginTop) < 0) {
+        this.unitNode.node.style.marginTop = String(Number(colMarginTop) + 100) + 'px';
+        this.changeSecondColumnButtonsState()
+      }
+    }     
   }
 
   changeFirstColumnButtonsState() {
@@ -81,7 +97,7 @@ export class SidePanel extends Control{
   changeSecondColumnButtonsState() {
     // Менять состояние кнопок вверх/вниз в зависимости от количества Юнитов
     let colMarginTop = this.unitNode.node.style.marginTop.replace(/[^0-9,-]/g, "")
-    let freeSpace = (window.innerHeight - 300 - /*this.buildAvailable.length * 100*/ - Number(colMarginTop))
+    let freeSpace = (window.innerHeight - 300 - this.unitsAvailable.length * 100 - Number(colMarginTop))
     if (freeSpace > 100) {
       this.buttonSecondColumnUp.node.classList.add(red["button__inactive"]) //перемотка вверх не нужна
     } else {
@@ -106,6 +122,7 @@ export class SidePanel extends Control{
       } else {
         const nodeParent = item.object.subType === 'build' ? this.buildNode : this.unitNode;
         const obj = new buildSidePanel(nodeParent.node);
+        obj.node.classList.add(red[`${item.object.name}`]);
         obj.onAvailableClick = (data) => {
           this.onSidePanelClick('onAvailableClick', data)
         }
@@ -130,7 +147,9 @@ export class SidePanel extends Control{
     // console.log('buildBtn', this.buildButtons);
     // console.log('data.sidePanelData', data.sidePanelData);
     this.buildAvailable = data.sidePanelData.filter(it => it.object.subType === 'build' && it.status === 'available');
-    console.log('Available', this.buildAvailable);
+    //console.log('Available', this.buildAvailable);
+    this.unitsAvailable = data.sidePanelData.filter(it => it.object.subType === 'unit' && it.status === 'available');
+    console.log('Available', this.unitsAvailable);
     this.changeFirstColumnButtonsState();
     if (data.sidePanelData.length !== keys.length) {
       keys.map(item => {
