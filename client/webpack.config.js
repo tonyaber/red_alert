@@ -27,13 +27,13 @@ const config = {
         }),
         new CopyPlugin({
             patterns: [
-              
-              { from: "./src/assets/", to: "./src/assets/" },
-              
+
+                { from: "./src/assets/", to: "./src/assets/" },
+
 
             ],
-          }),
-        
+        }),
+
 
         // Add your plugins here
         // Learn more about plugins from https://webpack.js.org/configuration/plugins/
@@ -47,7 +47,17 @@ const config = {
             },
             {
                 test: /\.css$/i,
-                use: [stylesHandler,'css-loader'],
+                use: [
+                    stylesHandler,
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: {
+                                exportLocalsConvention: "camelCase",
+                            },
+                        },
+                    }
+                ],
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
@@ -66,10 +76,10 @@ const config = {
 module.exports = () => {
     if (isProduction) {
         config.mode = 'production';
-        
+
         config.plugins.push(new MiniCssExtractPlugin());
-        
-        
+
+
     } else {
         config.mode = 'development';
     }

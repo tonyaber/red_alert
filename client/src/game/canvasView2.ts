@@ -4,6 +4,7 @@ import { IGameObjectData, IObject } from "./dto";
 import { Vector } from '../../../common/vector';
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameMainRender } from './ultratiling/gameMainRenderer';
+import red from './red.css'
 
 
 export class Canvas extends Control{
@@ -19,13 +20,13 @@ export class Canvas extends Control{
   res: Record<string, HTMLImageElement>;
 
   constructor(parentNode: HTMLElement, res:Record<string, HTMLImageElement>, id: string) {
-    super(parentNode);
+    super(parentNode, 'div', red['game_field']);
     this.playerId = id;
     this.res = res;
     const camera = new Camera();
     
     this.canvas = new Control(this.node, 'canvas');
-    this.canvas.node.width = 800;
+    this.canvas.node.width = 1200;
     this.canvas.node.height = 600;
     this.ctx = this.canvas.node.getContext('2d');
 

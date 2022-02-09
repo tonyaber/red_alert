@@ -5,10 +5,11 @@ import { IStartGameResponse } from "./dto";
 import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
+import red from './red.css'
 
 export class Game extends Control{
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
-    super(parentNode);
+    super(parentNode, 'div', red['global_main']);
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
     if (socket instanceof SocketModel && sidePanelInfo.type === 'spectator') {
       sidePanelInfo.players.forEach(item => {
@@ -21,6 +22,10 @@ export class Game extends Control{
       })
     }
    
+    const wrapperGameControls = new Control(this.node, 'div', red['wrap_game_controls']);
+    const exit = new Control(wrapperGameControls.node, 'button', red['exit_game'], 'exit');
+    const pause = new Control(wrapperGameControls.node, 'button', red['pause_game'], 'pause');
+
     const canvas = new Canvas(this.node, res, id);//id
     const sidePanel = new SidePanel(this.node);
     
