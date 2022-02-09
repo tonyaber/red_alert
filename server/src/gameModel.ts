@@ -81,6 +81,7 @@ export class GameModel{
     //mapObject
     //проверка, можно ли его добавлять
     const state = { position, playerId }
+    console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
     const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
     gameObject.onUpdate = (state)=>{

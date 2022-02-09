@@ -32,7 +32,7 @@ export class Canvas extends Control{
 
     this.canvas.node.onmousemove = (e)=>{
       const mv = new Vector(e.movementX, e.movementY).scale(0.5);
-      const maxSpeed = 0.1;
+      const maxSpeed = 0.01;
       if (mv.abs()<maxSpeed){
         this.renderer.camera.velocity = mv;
       } else {
@@ -96,7 +96,7 @@ export class Canvas extends Control{
   }
 
   addObject(data: IGameObjectData) {
-    console.log(data)
+    //console.log(data)
     this.renderer.addObject(data);
     
    

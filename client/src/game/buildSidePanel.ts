@@ -39,7 +39,7 @@ export class buildSidePanel extends Control{
 
   update(item: IObjectInfo) {
     this.time = item.object.time;
-    console.log(this.time)
+    //console.log(this.time)
     //if(item.status)
     if(item.status === 'isReady') {
       this.node.classList.add(red['builds_item__ready']);

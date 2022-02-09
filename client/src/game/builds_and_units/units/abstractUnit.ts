@@ -123,7 +123,7 @@ export class AbstractUnit extends InteractiveObject{
     
     let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
      if (pos.abs()<15){
-       console.log(true)
+      // console.log(true)
        return true;
        
     }

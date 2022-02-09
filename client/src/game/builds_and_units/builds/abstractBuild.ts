@@ -32,8 +32,8 @@ export class AbstractBuild extends InteractiveObject{
     const tileMap = [
       [0,1,1,0],
       [0,1,1,0],
+      [0,1,1,0],
       [1,1,1,1],
-      [1,1,1,0],
     ];
     const pos = camera.getTileVector(data.content.position)
     /*const infos = new CachedSprite(tileSize*4, tileSize*4, pos.clone().scale(tileSize));
@@ -100,7 +100,6 @@ export class AbstractBuild extends InteractiveObject{
   }
 
   processMove(cursor:Vector){
-    //console.log(cursor);
     let lastBalance = this.hovBalance;
     this.tiles.forEach(it=>it.processMove(cursor));
     if (lastBalance !==this.hovBalance){
@@ -113,7 +112,6 @@ export class AbstractBuild extends InteractiveObject{
   }
 
   inShape(tile: Vector, cursor: Vector): boolean {
-   // let pos = tile.clone().sub(new Vector(this.position.x, this.position.y));
     if (this.tiles.find(it => it.inShape(tile))) {
       return true;
     }
