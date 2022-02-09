@@ -16,17 +16,17 @@ export class BuildingCenter extends AbstractBuild{
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, camera, data);
     const tileMap = [
+      [0,1,0,0],
+      [1,1,1,0],
       [1,1,1,1],
-      [1,1,1,1],
-      [1,1,1,1],
-      [1,1,1,1],
+      [0,1,0,0],
     ];
     const pos = camera.getTileVector(data.content.position)
 
     this.info = new BuildingInfoView(pos.clone(), res["buildingCenter"], this.name, this.health, this.playerId, this.primary);
     this.info.update();
     this.infoLayer.addObject(this.info);
-    console.log(tileMap)
+    //console.log(tileMap)
     tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
       const tilePos = pos.clone().add(new Vector(j, i));
       if (!tileMap[i][j]){
@@ -34,7 +34,7 @@ export class BuildingCenter extends AbstractBuild{
       }     
       const tile = new TileObject(1, tilePos);
       tile.onMouseEnter = () => {
-        console.log(tilePos)
+       // console.log(tilePos)
         this.hovBalance+=1;
       }
 

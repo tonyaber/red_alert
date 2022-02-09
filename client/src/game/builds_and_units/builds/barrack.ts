@@ -11,7 +11,7 @@ export class Barrack extends AbstractBuild {
   constructor(layer: TilingLayer, infoLayer: BoundingLayer, res: Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, camera, data);
     const tileMap = [
-      [0,0,1,0],
+      [0,1,1,0],
       [0,1,1,0],
       [1,1,1,1],
       [1,1,0,0],
