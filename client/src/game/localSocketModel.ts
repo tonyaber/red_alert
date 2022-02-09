@@ -120,8 +120,10 @@ export class LocalModel implements IClientModel
     return new Promise(resolve => resolve(result))
   }
 
-  moveUnit(id: string, position: Vector): Promise<string>{
-    const result =  this.myPlayer.moveUnits(id, position);
+  moveUnit(id: string, position: Vector,tileSize:number): Promise<string>{
+    console.log('TILESIZE',tileSize)
+
+    const result =  this.myPlayer.moveUnits(id, position,tileSize);
     return new Promise(resolve => resolve(result));
   }
 

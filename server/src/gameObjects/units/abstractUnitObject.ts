@@ -2,6 +2,8 @@ import { IVector, Vector } from "../../../../common/vector";
 import { IGameObjectContent, IGameObjectData } from "../../dto";
 import { PlayerSide } from "../../playerSide";
 import { GameObject } from "../gameObject"
+import {tracePath} from "../../trace";
+import {tilesCollection, TilesCollection} from "../../tileCollection";
 
 export class AbstractUnitObject extends GameObject{
   data: IGameObjectContent = {
@@ -23,6 +25,7 @@ export class AbstractUnitObject extends GameObject{
   direction: Vector;
   action: string;
   targetId: string;
+  private path: Vector[];
 
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -33,6 +36,8 @@ export class AbstractUnitObject extends GameObject{
     this.data.health = 100;
     this.type = type;
     this.objectId = objectId;
+    this.target=null
+    this.path=[]
   }
    
     // //logic
@@ -43,8 +48,10 @@ export class AbstractUnitObject extends GameObject{
     // })
     // //
   tick(delta: number) {
+    //******
     if (this.action === 'move') {
-      if (this.data.target && Math.round(this.data.position.x) !== this.data.target.x && Math.round(this.data.position.y) !== this.data.target.y){
+      if (this.data.target && Math.round(this.data.position.x) !== this.data.target.x
+          && Math.round(this.data.position.y) !== this.data.target.y){
         this.setState((data ) => {
           return {
             ...data,
@@ -67,13 +74,31 @@ export class AbstractUnitObject extends GameObject{
     }); 
   }
    
-  moveUnit(target: IVector) {
+  moveUnit(target: IVector,tileSize:number) {
     this.action = 'move';
-    this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
-    this.setState((data ) => {
+    const tilesArray=tilesCollection.getTilesArray()
+    this.direction = Vector.fromIVector(target).clone().sub(this.data.position);
+    const targetToTile={x:Math.floor(target.x/tileSize),y:Math.floor(target.y/tileSize)}
+    const positionToTile={x:Math.floor(this.data.position.x/tileSize),y:Math.floor(this.data.position.y/tileSize)}
+    if(!this.path.length){
+      tracePath(tilesArray,new Vector(targetToTile.x,targetToTile.y),
+        new Vector(positionToTile.x,positionToTile.y),(path)=>{
+          console.log("PATHES",path)
+          this.path=path
+          const step =this.path.pop()
+          this.target=new Vector(step.x*tileSize,step.y*tileSize)
+        })
+    }
+    console.log(this.target,'TARGET')
+    if(this.target && (positionToTile.x==this.target.x/tileSize && positionToTile.y==this.target.y/tileSize)){
+      const step = this.path.pop()
+      console.log(this.target,'TARGETinside')
+      this.target=(this.path && this.path.length>0) ? new Vector(step.x*tileSize,step.y*tileSize) :null
+    }
+   this.setState((data ) => {
       return {
         ...data,
-        target: Vector.fromIVector(target),
+        target: Vector.fromIVector(this.target),
       }
     })
   }
