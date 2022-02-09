@@ -11,6 +11,7 @@ export class buildSidePanel extends Control{
   onIsReadyClick: (data: IObjectInfo) => void;
   onIsPauseClick: (data: IObjectInfo) => void;
   status: Control<HTMLElement>;
+  time: number;
   
 
   constructor(parentNode: HTMLElement) {
@@ -19,6 +20,7 @@ export class buildSidePanel extends Control{
    // this.node.style.border = '1px solid black';
     //this.node.style.padding = '10px';
     this.progress = new Control(this.node, 'div', red['progress']);
+    
     this.status = new Control(this.node, 'div', red['status'])
     this.node.onclick = () => {
       if (this.data) {
@@ -36,6 +38,8 @@ export class buildSidePanel extends Control{
   }
 
   update(item: IObjectInfo) {
+    this.time = item.object.time;
+    console.log(this.time)
     //if(item.status)
     if(item.status === 'isReady') {
       this.node.classList.add(red['builds_item__ready']);
