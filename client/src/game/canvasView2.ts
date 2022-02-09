@@ -26,7 +26,7 @@ export class Canvas extends Control{
     const camera = new Camera();
     
     this.canvas = new Control(this.node, 'canvas');
-    this.canvas.node.width = 800;
+    this.canvas.node.width = 1200;
     this.canvas.node.height = 600;
     this.ctx = this.canvas.node.getContext('2d');
 

@@ -22,6 +22,10 @@ export class Game extends Control{
       })
     }
    
+    const wrapperGameControls = new Control(this.node, 'div', red['wrap_game_controls']);
+    const exit = new Control(wrapperGameControls.node, 'button', red['exit_game'], 'exit');
+    const pause = new Control(wrapperGameControls.node, 'button', red['pause_game'], 'pause');
+
     const canvas = new Canvas(this.node, res, id);//id
     const sidePanel = new SidePanel(this.node);
     

@@ -10,6 +10,7 @@
 .global_main{
   display: flex;
   height: calc(100vh - 6px);  
+  position: relative;
 }
 
 .global_header{
@@ -81,6 +82,7 @@
   box-shadow: 3px 3px 4px #666;
   background-color: black;
   color: #999;
+  transition-duration: 0.3s;
 }
 
 .repair_button{
@@ -101,6 +103,7 @@
 .cash_button:hover,
 .map_button:hover{
   transform: scale(0.95);
+  transition-duration: 0.3s;
 }
 
 .wrapper_equipment{
@@ -135,12 +138,14 @@
   border: 1px solid #666;
   box-shadow: 3px 3px 4px #666;
   overflow: hidden; 
+  transition-duration: 0.3s;
     
 }
 .builds_item:hover{
   border: 1px solid #999;
   transform: scale(1.01);
   box-shadow: 3px 3px 4px #999;  
+  transition-duration: 0.3s;
 }
 
 .builds_item__ready{
@@ -180,7 +185,6 @@
   align-items: center;
   width: 100%;
   height: 40px;
-  
   flex-shrink: 0;
   border:none;
   position: absolute;
@@ -210,4 +214,39 @@
 .name_item{
 
 }
+
+
+/*game*/
+.wrap_game_controls{
+  position: absolute;
+  top: 5px;
+  left: 20%;
+  width: 150px;
+  height: 30px;
+  background: url('../assets/img/aside/fon-metall.jpg');
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.exit_game, 
+.pause_game{
+  width: 40%;
+  height: 25px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: black;
+  color: #999;
+  border: none;
+  box-shadow: 3px 3px 2px rgb(151, 126, 61);
+  transition-duration: 0.3s;
+}
+
+.exit_game:hover, 
+.pause_game:hover{
+  filter: brightness(3);
+  transform: scale(0.95);
+  transition-duration: 0.3s;
+}
+
 

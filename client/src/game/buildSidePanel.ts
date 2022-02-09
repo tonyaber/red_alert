@@ -37,6 +37,9 @@ export class buildSidePanel extends Control{
 
   update(item: IObjectInfo) {
     //if(item.status)
+    if(item.status === 'isReady') {
+      this.node.classList.add(red['builds_item__ready']);
+    } else this.node.classList.remove(red['builds_item__ready']);
     this.data = item;
     this.button.node.textContent = item.object.name;
     this.progress.node.textContent = item.progress.toString();
