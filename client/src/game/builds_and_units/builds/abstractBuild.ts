@@ -21,6 +21,7 @@ export class AbstractBuild extends InteractiveObject{
   health: number = 100;
   info: BuildingInfoView;
   infoLayer: any;
+  private tileMap: number[][];
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
@@ -29,7 +30,7 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.content.position;
     this.playerId = data.content.playerId;
     this.primary = data.content.primary;
-    const tileMap = [
+    this.tileMap = [
       [0,1,1,0],
       [0,1,1,0],
       [1,1,1,1],
@@ -50,15 +51,12 @@ export class AbstractBuild extends InteractiveObject{
     this.info.update();
     this.infoLayer.addObject(this.info);
     
-    tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
+    this.tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
       const tilePos = pos.clone().add(new Vector(j, i));
-      if (!tileMap[i][j]){
+      if (!this.tileMap[i][j]){
         return;
       }
-
-      
       //infoLayer.updateScreen();
-      
       const tile = new TileObject(1, tilePos);
       //tile.tiling = layer;
       tile.onMouseEnter = ()=>{

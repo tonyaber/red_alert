@@ -39,6 +39,7 @@ export class GameModel{
   }
   //player side methods
   startBuilding(playerId: string, objectType: string) {
+    console.log(playerId,'--',objectType)
     this.playersSides.find(item => item.id === playerId).startBuilding(objectType);
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
@@ -78,6 +79,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
+    console.log('addGameObjectServer')
     //mapObject
     //проверка, можно ли его добавлять
     const state = { position, playerId }
@@ -110,8 +112,8 @@ export class GameModel{
     return 'add object';
   }
 
-  moveUnits(playerId: string, unitId: string, target: IVector) {
-   this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target)
+  moveUnits(playerId: string, unitId: string, target: IVector,tileSize:number) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target,tileSize)
     // if (unit) {
     //     unit.setState(data => {
     //       data.position = Vector.fromIVector(target);

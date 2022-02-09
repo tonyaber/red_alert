@@ -30,6 +30,7 @@ export class Game extends Control{
       sidePanel.update(data);
     }
     socket.onUpdate = (data) => {
+     // console.log(data,'GAme')
       canvas.updateObject(data)
     }
     socket.onAddObject = (data) => {
@@ -71,9 +72,9 @@ export class Game extends Control{
       }
     }
 
-    canvas.onChangePosition = (id: string, position: Vector) => {
-      socket.moveUnit(id, position).then((result) => {
-          console.log(result);
+    canvas.onChangePosition = (id: string, position: Vector,tileSize:number) => {
+      socket.moveUnit(id, position,tileSize).then((result) => {
+          console.log(result,'UNIT');
         });
     }
     // canvas.onAttack = (id: string, targetId: string) => {

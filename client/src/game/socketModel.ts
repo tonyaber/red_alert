@@ -17,6 +17,7 @@ export class SocketModel implements IClientModel
     this.client = client;
     this.messageHandler = (message:IServerResponseMessage) => {
       if (message.type === 'update') {
+        console.log('socketModel',message.content)
         this.onUpdate(JSON.parse(message.content));
       }
       if (message.type === 'create') {
@@ -93,8 +94,9 @@ export class SocketModel implements IClientModel
     return this.client.sendMessage('gameMove', content);
   }
 
-  moveUnit(id: string, position: Vector):Promise<string>{
+  moveUnit(id: string, position: Vector,tileSize:number):Promise<string>{
     const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
+    console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
   }
 

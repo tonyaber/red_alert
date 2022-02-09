@@ -9,6 +9,7 @@ import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
+import {tilesCollection, TilesCollection} from "../../../../server/src/tileCollection";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -23,7 +24,7 @@ export class GameMainRender{
   hoveredObjects: InteractiveObject;
   onAddBuild: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector) => void;
+  onChangePosition: (id: string, position: Vector,tileSize:number) => void;
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
@@ -96,10 +97,14 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
      const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    
+    if(interactiveObject.subType==='build'){
+      const buildPos=interactiveObject.tiles.map(e=>e.getPosition())
+      tilesCollection.addBuild(buildPos)
+    }
   }
 
   updateObject(data:IGameObjectData){
+    //console.log('%^',data)
    this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
   }
 
@@ -134,7 +139,9 @@ export class GameMainRender{
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);
     } 
     if (action === 'move') {
-        this.cursorStatus.selected.forEach(item=>this.onChangePosition(item.id, this.camera.position.clone().add(cursor)))
+      console.log("move",this.camera.position.clone().add(cursor))
+        this.cursorStatus.selected.forEach(item=>this.onChangePosition(
+          item.id, this.camera.position.clone().add(cursor),this.camera.getTileSize()))
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))

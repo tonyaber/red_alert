@@ -26,8 +26,8 @@ export class PlayerController{
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
-  moveUnits(unitId:string, target:IVector){
-    return this.gameModel.moveUnits(this.playerId, unitId, target);
+  moveUnits(unitId:string, target:IVector,tileSize:number){
+    return this.gameModel.moveUnits(this.playerId, unitId, target,tileSize);
   }
 
   updateSidePanel(targetId: string) {

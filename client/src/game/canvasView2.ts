@@ -10,7 +10,7 @@ export class Canvas extends Control{
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector) => void;
+  onChangePosition: (id: string, position: Vector,tileSize:number) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   ticker = new RenderTicker();
@@ -76,8 +76,8 @@ export class Canvas extends Control{
     this.renderer.onObjectClick = (id, name, subType) => {
       this.onObjectClick(id, name, subType);
     }
-    this.renderer.onChangePosition = (id, position)=>{
-      this.onChangePosition(id, position)
+    this.renderer.onChangePosition = (id, position,tileSize:number)=>{
+      this.onChangePosition(id, position,tileSize)
     }
   }
 
