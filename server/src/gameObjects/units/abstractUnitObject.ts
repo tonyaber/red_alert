@@ -57,7 +57,8 @@ attackRadius:number = 3;
   // })
   // //
   tick(delta: number) {
-    if ((this.action === 'move'||this.action === 'moveToAttack') && this.target) {
+    if ((this.action === 'move' || this.action === 'moveToAttack') && this.target) {
+      console.log(this.data.position)
       //todo tileSize подумасть пока костыль this.tileSize
      if (Math.abs(Math.floor(this.data.position.x) - this.target.x) <= 10
           && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10) {
