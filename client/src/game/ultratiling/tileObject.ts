@@ -22,7 +22,9 @@ export class TileObject{
     this._tileType = tileType;
     this.position = tilePosition.clone();
   }
-
+  getPosition(){
+      return this.position
+  }
   inShape(cursor:Vector){
     return (cursor.x == this.position.x && cursor.y == this.position.y);
   }

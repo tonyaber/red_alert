@@ -21,6 +21,7 @@ export class AbstractBuild extends InteractiveObject{
   health: number = 100;
   info: BuildingInfoView;
   infoLayer: any;
+  private tileMap: number[][];
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
