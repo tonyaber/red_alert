@@ -63,9 +63,9 @@ attackRadius:number = 3;
           && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10) {
         const step = this.path.pop()
         if (!step) {
-          this.target = null
+          //this.target = null
           if(this.action === 'moveToAttack'){
-            this.action='attack'
+            this.action = 'attack';
           }
         }
         else {
@@ -87,7 +87,10 @@ attackRadius:number = 3;
 
     if (this.action === 'attack') {
       if (this.objects[this.targetId]) {
-        this.weapon.tryShot(new Vector(0,0));
+       // this.weapon.position = this.data.position;
+        this.weapon.position = this.data.position;
+        this.weapon.tryShot(this.target);
+        this.weapon.step(delta);
       } else {
         this.targetId = null;
         this.action = 'idle';
@@ -164,7 +167,7 @@ attackRadius:number = 3;
             }
           })
         }
-        this.tileSize = tileSize
+        this.tileSize = tileSize;
         const step = this.path.pop()
         //  console.log(step.x*tileSize,step.y*tileSize,step.x,step.y)
         this.target = new Vector(step.x * tileSize, step.y * tileSize)
@@ -190,6 +193,7 @@ attackRadius:number = 3;
     this.action = 'moveToAttack'; //attack
     this.targetId = targetId;
     const target = this.objects[targetId].data.position;
+    
     console.log(target)
    this.tracePath(target, tileSize,this.action)
   }

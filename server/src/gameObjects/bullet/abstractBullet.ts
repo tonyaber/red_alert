@@ -13,17 +13,19 @@ export class AbstractBullet {
     this.position = position;
   }
 
-  // step(delta: number) {
-  //   if (this.isDestroyed) return;
-
-  //   const next = this.position.clone().add(this.position.clone().sub(this.target).normalize().scale(-this.speed * delta));
-  //   if (onLine(this.target, this.position, next)) {
-  //     this.onTarget?.();
-  //     this.isDestroyed = true;
-  //   } else {
-  //     this.position = next;
-  //   }
-  // }
+  step(delta: number) {
+    if (this.isDestroyed) return;
+    
+    const next = this.position.clone().add(this.position.clone().sub(this.target).normalize().scale(-this.speed * delta));
+    console.log('bullet', onLine(this.target, this.position, next))
+    console.log(this.position, this.target, next)
+    if (onLine(this.target, this.position, next)) {
+      this.onTarget?.();
+      this.isDestroyed = true;
+    } else {
+      this.position = next;
+    }
+  }
   // render(ctx:CanvasRenderingContext2D, camera:Vector){
   //   if (this.isDestroyed) return;
 
@@ -37,4 +39,10 @@ export class AbstractBullet {
   //   ctx.fill();
   //   ctx.stroke();
   //}
+}
+export function onLine(v:Vector, vs:Vector, ve:Vector){
+  const dline = vs.clone().sub(ve).abs();
+  const dve = v.clone().sub(ve).abs();
+  const dvs = v.clone().sub(vs).abs();
+  return (dve + dvs) <= dline + 0.00001;
 }

@@ -121,16 +121,8 @@ export class GameModel{
   }
 
   moveUnits(playerId: string, unitId: string, target: IVector,tileSize:number) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target,tileSize)
-    // if (unit) {
-    //     unit.setState(data => {
-    //       data.position = Vector.fromIVector(target);
-    //       return data;
-    //      })
-    
-    // }
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target, tileSize);
     return 'move unit';
-    //objectt.. setState
   }
 
   setAttackTarget(playerId: string, unitId: string, targetId: string, tileSize: number) {

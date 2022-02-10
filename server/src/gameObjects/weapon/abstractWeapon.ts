@@ -8,6 +8,7 @@ export class AbstractWeapon{
   attackRadius: number;
   bullets: Array<AbstractBullet> = [];
   reloadTime: number;
+  
   private loading: number = 0;
   private BulletConstructor: IBulletConstructor;
   position:Vector;
@@ -21,7 +22,7 @@ export class AbstractWeapon{
 
   step(delta:number){
     this.loading -= delta;
-    //this.bullets.forEach(it=>it.step(delta));
+    this.bullets.forEach(it=>it.step(delta));
   }
 
   render(ctx:CanvasRenderingContext2D, camera:Vector){
@@ -30,24 +31,24 @@ export class AbstractWeapon{
 
   tryShot(target:Vector){
     //if (!this.position) {console.log('no pos'); return;}
-    this.loading -= 50;
-    if (this.loading<=0 /*&& target.clone().sub(this.position.clone().scale(55)).abs()<this.attackRadius*/){
+   console.log('weapon',  target.clone().sub(this.position.clone()).abs(), this.attackRadius)
+    //if (this.loading<=0 && target.clone().sub(this.position.clone().scale(this.tileSize)).abs()<this.attackRadius){
       //console.log('radiused');
       this.shot(target);
-      return true;
-    }
+     // return true;
+    //}
     
-    return false;
+   // return false;
   }
 
-  private shot(target:Vector){
-   // const bullet = new this.BulletConstructor(target, this.position.clone().scale(55));
-    this.loading = this.reloadTime;
-    //bullet.onTarget = ()=>{
-     // this.bullets = this.bullets.filter(it=>it!=bullet);
+  private shot(target: Vector) {
     
+    const bullet = new this.BulletConstructor(target, this.position.clone());
+    this.loading = this.reloadTime;
+    bullet.onTarget = ()=>{
+      this.bullets = this.bullets.filter(it=>it!=bullet);    
       this.onBulletTarget?.(target.clone());
-    //}
-    //this.bullets.push(bullet);
+    }
+    this.bullets.push(bullet);
   }
 }
