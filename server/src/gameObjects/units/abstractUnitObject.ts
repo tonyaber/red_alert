@@ -3,7 +3,9 @@ import {IGameObjectContent, IGameObjectData} from "../../dto";
 import {PlayerSide} from "../../playerSide";
 import {GameObject} from "../gameObject"
 import {tracePath} from "../../trace";
-import {tilesCollection, TilesCollection} from "../../tileCollection";
+import { tilesCollection, TilesCollection } from "../../tileCollection";
+import { AbstractWeapon } from '../weapon/abstractWeapon';
+import { AbstractBullet } from "../bullet/abstractBullet";
 
 export class AbstractUnitObject extends GameObject {
   data: IGameObjectContent = {
@@ -27,6 +29,7 @@ attackRadius:number = 3;
   targetId: string;
   private path: Vector[];
   private tileSize: number;
+  weapon: any;
 
 
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -39,6 +42,10 @@ attackRadius:number = 3;
     this.objectId = objectId;
     this.target = null
     this.path = []
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
+    this.weapon.onBulletTarget = (point: Vector) => {
+      this.onDamageTile?.(this.targetId, point);
+    }
 
   }
 
@@ -77,10 +84,14 @@ attackRadius:number = 3;
         })
       }
     }
-    //написать логику движения до врага
 
     if (this.action === 'attack') {
-      //to do something
+      if (this.objects[this.targetId]) {
+        this.weapon.tryShot(new Vector(0,0));
+      } else {
+        this.targetId = null;
+        this.action = 'idle';
+      }
     }
   }
 
@@ -130,7 +141,7 @@ attackRadius:number = 3;
     inxs(1)
     return tilesArray
   }
-tracePath(target: IVector, tileSize: number,action:string){
+  tracePath(target: IVector, tileSize: number, action: string) {
   const traceMap = this.getTraceMap(target, tileSize)
   //console.log("TRR",traceMap)
   const targetToTile = {x: Math.floor(target.x / tileSize), y: Math.floor(target.y / tileSize)}
@@ -146,7 +157,7 @@ tracePath(target: IVector, tileSize: number,action:string){
         //console.log('pos',this.data.position)
 
         this.path = path
-        if(action==='moveToTile'){
+        if(action==='moveToAttack'){
           this.path =path.filter(p=>{
             if(p.x+this.attackRadius<target.x || p.y+this.attackRadius<target.y){
               return p
@@ -171,13 +182,16 @@ tracePath(target: IVector, tileSize: number,action:string){
 }
   moveUnit(target: IVector) {
     this.action = 'move';
+    console.log(target);
    this.tracePath(target, 50,this.action)
   }
 
-  attack(targetId: string) {
+  attack(targetId: string, tileSize: number) {
     this.action = 'moveToAttack'; //attack
+    this.targetId = targetId;
     const target = this.objects[targetId].data.position;
-   this.tracePath(target, 50,this.action)
+    console.log(target)
+   this.tracePath(target, tileSize,this.action)
   }
 
   setState(callback: (data: IGameObjectContent) => IGameObjectContent) {

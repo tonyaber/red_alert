@@ -13,7 +13,8 @@ export class GameObject {
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
-  onDelete:(state: IGameObjectData) => void;
+  onDelete: (state: IGameObjectData) => void;
+  onDamageTile: (targetId: string, point: Vector) => void;
   objectId: string;
 
   objects: Record<string, GameObject> = {}
@@ -59,7 +60,7 @@ export class GameObject {
     //this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
 
-  attack(targetId: string){
+  attack(targetId: string, tileSize: number){
     
   }
 
@@ -69,7 +70,7 @@ export class GameObject {
   }
 
   getState() {
-    //return this.data;
+    return this.data;
   }
   
   protected update() {
@@ -78,5 +79,27 @@ export class GameObject {
     //   objectId: this.objectId,
     //   content: this.getState(),
     // });    
+  }
+  damage(point: Vector) {
+    
+    if (this.data.health === 0) {
+      this.destroy();
+    } else if(this.data.health>0){
+      console.log(this.data.health)
+      this.setState((data) => {
+        return {
+          ...data,
+          health:this.data.health-10,
+        }
+      })
+    } 
+  }
+
+  destroy() {
+    this.onDelete({
+       type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });  
   }
 }

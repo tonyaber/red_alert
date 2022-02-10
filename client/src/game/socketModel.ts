@@ -10,6 +10,7 @@ export class SocketModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
+   onDeleteObject: (data: IGameObjectData) => void;
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
@@ -22,6 +23,9 @@ export class SocketModel implements IClientModel
       }
       if (message.type === 'create') {
         this.onAddObject(JSON.parse(message.content));
+      }
+      if (message.type === 'delete') {
+        this.onDeleteObject(JSON.parse(message.content));
       }
 
       if (message.type === 'updateSidePanel') {

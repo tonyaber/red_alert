@@ -43,8 +43,8 @@ export class PlayerController{
     return this.gameModel.getObjects();
   }
 
-  setAttackTarget(unitId:string, targetId:string){
-    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
+  setAttackTarget(unitId:string, targetId:string, tileSize: number){
+    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId, tileSize)
   }
 
   setPrimary(buildId: string, name: string) {    

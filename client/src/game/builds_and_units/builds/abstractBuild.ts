@@ -18,7 +18,7 @@ export class AbstractBuild extends InteractiveObject{
   position: Vector;
   name: string;
   primary: boolean = false;
-  health: number = 100;
+  health: number;
   info: BuildingInfoView;
   infoLayer: any;
   private tileMap: number[][];
@@ -30,6 +30,8 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.content.position;
     this.playerId = data.content.playerId;
     this.primary = data.content.primary;
+    this.health = data.content.health;
+    this.camera = camera;
     // const tileMap = [
     //   [0,0,0,0],
     //   [0,1,1,0],
@@ -123,7 +125,9 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
+    this.health = data.health;
     this.info.isPrimary = this.primary;
+    this.info.health = data.health;
     this.info.update();
     this.infoLayer.updateObject(this.info)
   }

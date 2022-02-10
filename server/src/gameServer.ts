@@ -45,7 +45,8 @@ export class GameServer {
       if (action === 'create') {
         this.players.forEach(player => player.sendMessage('create', JSON.stringify(data)));
       }
-      if(action === 'delete'){
+      if (action === 'delete') {
+        this.players.forEach(player=> player.sendMessage('delete', JSON.stringify(data)));
 
       }     
     }

@@ -42,6 +42,10 @@ export class Game extends Control{
       canvas.addObject(data);
     }
 
+    socket.onDeleteObject = (data) => {
+      canvas.deleteObject(data)
+    }
+
     sidePanel.onSidePanelClick = (selected, object) => {
       if (selected === 'onAvailableClick') {
         socket.startBuild(object.object.name, id).then((result) => {

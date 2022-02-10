@@ -1,6 +1,8 @@
 import { Vector } from '../../../../common/vector';
 import { IGameObjectContent } from '../dto';
 import { InteractiveList } from '../interactiveList';
+import { BoundingLayer } from '../ultratiling/boundingLayer';
+import { Camera } from '../ultratiling/camera';
 // import { IGameObjectData, IGameObjectContent } from '../dto';
 // import { BoundingLayer } from '../ultratiling/boundingLayer';
 // import { BuildingInfoView } from '../ultratiling/buildingInfoView';
@@ -28,6 +30,9 @@ export class InteractiveObject{
   primary: boolean = false;
   health: number = 100;
   selected: boolean;
+  infoLayer: BoundingLayer;
+  camera: Camera;
+  info: any;
   constructor(){
     interactiveList.add(this);
   }
@@ -70,6 +75,10 @@ export class InteractiveObject{
 
   update(){
     //this.tiles.forEach(it=>it.update());
+  }
+
+  destroy(){
+    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
   }
 //   isHovered: boolean;
 //   onMouseMove: any;

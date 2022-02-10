@@ -10,7 +10,7 @@ export class IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
-
+  onDeleteObject: (data: IGameObjectData) => void;
   addUser: () => void;
 
   registerGamePlayer: () => void;

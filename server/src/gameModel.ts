@@ -103,8 +103,14 @@ export class GameModel{
       }
     }
     gameObject.onDelete = (state) => {
-       this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+      this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+      this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
       this.onUpdate(state, 'delete'); 
+    }
+
+    gameObject.onDamageTile = (targetId, point) => {
+      this.gameObjects.find(it => it.objectId === targetId).damage(point);
+      //gameObjects
     }
     gameObject.create();
     this.gameObjects.push(gameObject);
@@ -126,8 +132,8 @@ export class GameModel{
     //objectt.. setState
   }
 
-  setAttackTarget(playerId: string, unitId: string, targetId: string) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
+  setAttackTarget(playerId: string, unitId: string, targetId: string, tileSize: number) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId, tileSize);
     return 'attack';
   }
 

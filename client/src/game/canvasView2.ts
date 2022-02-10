@@ -93,7 +93,7 @@ export class Canvas extends Control{
   }
 
   deleteObject(data:IGameObjectData){
-
+    this.renderer.deleteObject(data);
   }
 
   setPlannedBuild(object: IObject) {

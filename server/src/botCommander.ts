@@ -18,18 +18,18 @@ export class BotCommander{
   }
   
   private handleClientMessage(type: string, message: string) {    
-    // if (type === 'startGame') {
-    //   const data:IStartGameResponse = JSON.parse(message);      
-    //   const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');         
-    //   this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name);
-    // }   
-    // if (type === 'updateSidePanel') {
-    //   this.panelInfo = JSON.parse(message);
-    //   const buildsIsReady =  this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');      
-    //   if (buildsIsReady.length) {
-    //     this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, new Vector(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500)))
-    //   }
-    // }
+    if (type === 'startGame') {
+      const data:IStartGameResponse = JSON.parse(message);      
+      const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');         
+      this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name);
+    }   
+    if (type === 'updateSidePanel') {
+      this.panelInfo = JSON.parse(message);
+      const buildsIsReady =  this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');      
+      if (buildsIsReady.length) {
+        this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, new Vector(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500)))
+      }
+    }
   }
 
   tick(delta: number) {

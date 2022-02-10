@@ -109,6 +109,11 @@ export class GameMainRender{
    this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
   }
 
+  deleteObject(data: IGameObjectData) {
+    this.interactiveList.list.find(item => item.id === data.objectId).destroy();
+    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
+  }
+
   setPlannedBuild(object:IObject) {
     this.cursorStatus.planned = object;
   }

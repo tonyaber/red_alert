@@ -15,6 +15,7 @@ export class LocalModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
+  onDeleteObject: (data: IGameObjectData) => void;
   myPlayer: PlayerController;
   player: string;
 
@@ -56,7 +57,8 @@ export class LocalModel implements IClientModel
       if (action === 'create') {
         this.onAddObject(data);
       }
-      if(action === 'delete'){
+      if (action === 'delete') {
+        this.onDeleteObject(data);
       }
     }
 
