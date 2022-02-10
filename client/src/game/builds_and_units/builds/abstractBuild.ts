@@ -20,7 +20,7 @@ export class AbstractBuild extends InteractiveObject{
   primary: boolean = false;
   health: number = 100;
   info: BuildingInfoView;
-  infoLayer: any;
+  infoLayer: BoundingLayer;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
@@ -46,8 +46,20 @@ export class AbstractBuild extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    this.info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
-    this.info.update();
+    this.info = new BuildingInfoView(pos.clone(), res/*["barrack"], this.name, this.health, this.playerId, this.primary*/);  
+    this.info.onUpdate = ()=>{
+      this.infoLayer.updateObject(this.info);
+    }
+
+    const infoState = {
+      name: this.name,
+      health: this.health,
+      playerId: this.playerId,
+      primary: this.primary
+    };
+
+    this.info.update(infoState);
+    //this.info.update();
     this.infoLayer.addObject(this.info);
     
     tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
@@ -124,9 +136,14 @@ export class AbstractBuild extends InteractiveObject{
     this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
-    this.info.isPrimary = this.primary;
-    this.info.update();
-    this.infoLayer.updateObject(this.info)
+    
+    const infoState = {
+      name: this.name,
+      health: this.health,
+      playerId: this.playerId,
+      primary: this.primary
+    };
+    this.info.update(infoState);
   }
 
   update(){

@@ -14,7 +14,7 @@ export class CachedSprite{
     this.position = position.clone();
   }  
 
-  update(){
+  update(nextState:any){
     this.onUpdate();
   }
 
