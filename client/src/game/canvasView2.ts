@@ -11,7 +11,8 @@ export class Canvas extends Control{
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector,tileSize:number) => void;
+  onChangePosition: (id: string, position: Vector, tileSize: number) => void;
+  onAttack: (id: string, targetId: string, tileSize: number) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   ticker = new RenderTicker();
@@ -79,6 +80,10 @@ export class Canvas extends Control{
     }
     this.renderer.onChangePosition = (id, position,tileSize:number)=>{
       this.onChangePosition(id, position,tileSize)
+    }
+
+    this.renderer.onAttack = (id, idTarget, tileSize) => {
+      this.onAttack(id, idTarget, tileSize);
     }
   }
 

@@ -95,13 +95,13 @@ export class SocketModel implements IClientModel
   }
 
   moveUnit(id: string, position: Vector,tileSize:number):Promise<string>{
-    const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
+    const content = JSON.stringify({ type: 'moveUnit', content: {id, position, tileSize} });
     console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
   }
 
-  setAttackTarget(id: string, targetId: string):Promise<string>{
-    const content = JSON.stringify({ type: 'attack', content: {id, targetId} });
+  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
+    const content = JSON.stringify({ type: 'attack', content: {id, targetId, tileSize} });
     return this.client.sendMessage('gameMove', content);
   }
   destroy() {

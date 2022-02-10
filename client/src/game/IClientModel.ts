@@ -27,7 +27,7 @@ export class IClientModel
   setPrimary: (id: string, name: string) => Promise<string>;
   moveUnit: (id: string, position: Vector,tileSize:number)=> Promise<string>;
 
-  setAttackTarget:(id: string, targetId: string)=>Promise<string>;
+  setAttackTarget:(id: string, targetId: string,tileSize:number)=>Promise<string>;
   registerSpectator: () => void;
   //all game player methods
 }

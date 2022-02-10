@@ -82,11 +82,11 @@ export class Game extends Control{
           console.log(result,'UNIT');
         });
     }
-    // canvas.onAttack = (id: string, targetId: string) => {
-    //   socket.setAttackTarget(id, targetId).then((result) => {
-    //     console.log(result)
-    //   })
-    // }
+    canvas.onAttack = (id: string, targetId: string, tileSize: number) => {
+      socket.setAttackTarget(id, targetId, tileSize).then((result) => {
+        console.log(result)
+      })
+    }
     
 
     

@@ -24,7 +24,8 @@ export class GameMainRender{
   hoveredObjects: InteractiveObject;
   onAddBuild: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector,tileSize:number) => void;
+  onChangePosition: (id: string, position: Vector, tileSize: number) => void;
+  onAttack: (id: string, targetId: string, tileSize: number) => void;
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
@@ -148,6 +149,12 @@ export class GameMainRender{
         this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
         this.cursorStatus.selected = [];
     }
+    if (action === 'attack') {
+      this.cursorStatus.selected.forEach(item => this.onAttack(item.id, this.hoveredObjects.id, this.camera.getTileSize()));
+      this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
+      this.cursorStatus.selected = [];
+    }
+    
     //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
    // console.log(this.camera.position.clone().add(cursor));
   }

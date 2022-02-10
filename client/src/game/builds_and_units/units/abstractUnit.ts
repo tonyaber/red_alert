@@ -111,7 +111,7 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
   updateObject(data: IGameObjectContent) {
-    console.log("UPD")
+    //console.log("UPD")
     this.position = data.position;
     this.playerId = data.playerId;
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());

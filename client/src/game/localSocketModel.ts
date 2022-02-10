@@ -127,8 +127,8 @@ export class LocalModel implements IClientModel
     return new Promise(resolve => resolve(result));
   }
 
-  setAttackTarget(id: string, targetId: string):Promise<string>{
-    const result = this.myPlayer.setAttackTarget(id, targetId);
+  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
+    const result = this.myPlayer.setAttackTarget(id, targetId, tileSize);
     return new Promise(resolve => resolve(result));
   }
 
