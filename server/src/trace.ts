@@ -16,10 +16,16 @@ function iteration(map:Array<Array<number>>, points:Array<{x:number, y:number}>,
       const row = map[py];
       if (row && row[px]!=null && row[px]>generation){
         row[px] = generation;
-        nextPoints.push({x:px, y:py});
+       // if(tilesCollection.getTileData(`${px}-${py}`).occupancyRatio==0){
+          nextPoints.push({x:px, y:py});
+        // }else{
+        //   console.log({x:px, y:py})
+        // }
       }
     })
+
   });
+  //console.log(nextPoints)
   return nextPoints;
 }
 
@@ -39,10 +45,10 @@ export function indexateAsync( map:Array<Array<number>>, points:Array<{x:number,
   let gen = indexGenerator(map, points, generation);
   let iterationStart = new Date();
   let res:any;
-
   const chunkLength = 300;
   for (let i=0; i<chunkLength; i++){
     res = gen.next();
+   // console.log('RES',res)
     if (res.done){
       break;
     }
@@ -79,7 +85,7 @@ export function indexateAsync( map:Array<Array<number>>, points:Array<{x:number,
 export function tracePath(map:Array<Array<number>>, indexPoint:IVector, destination:IVector, onFinish:(path:Array<Vector>)=>void){
 
   indexateAsync(map, [indexPoint], 0, ()=>{
-   const path = findPath(map, Vector.fromIVector(indexPoint), Vector.fromIVector(destination));
+   const path = findPath(map,Vector.fromIVector(indexPoint), Vector.fromIVector(destination));
     onFinish(path);
   }, Date.now())
 }
@@ -87,6 +93,7 @@ export function tracePath(map:Array<Array<number>>, indexPoint:IVector, destinat
 export function tracePathes(map:Array<Array<number>>, indexPoint:IVector, destinations:Array<IVector>, onFinish:(pathes:Array<Array<Vector>>)=>void){
   const pathes: Array<Array<Vector>> = [];
   indexateAsync(map, [indexPoint], 0, ()=>{
+
     destinations.forEach(destination=>{
       const path = findPath(map, Vector.fromIVector(indexPoint), Vector.fromIVector(destination));
       if (path){
@@ -98,41 +105,33 @@ export function tracePathes(map:Array<Array<number>>, indexPoint:IVector, destin
 }
 
 export function findPath(map:Array<Array<number>>, indexPoint:Vector, destPoint:Vector){
+
   let path:Array<Vector> = [];
   let currentValue = map[destPoint.y][destPoint.x]
-  console.log(destPoint,'-->',currentValue)
+  console.log("CurrentVal",currentValue)
+ // console.log(destPoint,'-->',currentValue)
   if (currentValue == Number.MAX_SAFE_INTEGER) {
     return null;
   }
   let currentPoint:Vector = destPoint.clone();
-
   let crashDetector = 1000;
   while (currentValue != 0 && crashDetector>0){
     crashDetector--;
     let nextStep = steps.find(step=>{
-    //  console.log('currentPoint',currentPoint)
-    //  console.log(Vector.fromIVector(step))
-      let point = currentPoint.clone().add(Vector.fromIVector(step));
-      //console.log(point,'--- point')
-      //console.log((map[point.y][point.x] == currentValue-1),
-       // tilesCollection.getTileData(`${point.x}-${point.y}`).occupancyRatio==0)
-      let result = (map[point.y][point.x] == currentValue-1) &&
-                   (tilesCollection.getTileData(`${point.x}-${point.y}`).occupancyRatio==0)
-     // console.log('###',map[point.y][point.x])
-      //console.log('result',result)
-      if (result){
-        console.log('**',map[point.y][point.x])
-        currentPoint = point;
+     let point = currentPoint.clone().add(Vector.fromIVector(step));
+     let result = (map[point.y][point.x] == currentValue-1)
+     if (result/* && tilesCollection.getTileData(`${point.x}-${point.y}`).occupancyRatio==0*/){
+      currentPoint = point;
         currentValue = map[point.y][point.x];
-        console.log("*(*(*(",point)
         path.push(Vector.fromIVector(point));
       }
       return result;
     });
-
+//console.log('nextStep',nextStep)
   }
   if (crashDetector<0){
     throw new Error('Infinity cycle');
   }
+  console.log("PPPP-->>>",path)
   return path;
 }

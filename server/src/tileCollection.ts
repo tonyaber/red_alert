@@ -164,10 +164,11 @@ export class TilesCollection {
   }
 
   addBuild(buildPos: Vector[]) {
-    buildPos.forEach(b=>{
+   buildPos.forEach(b=>{
       this.getTileData(`${b.x}-${b.y}`).occupancyRatio=4
-      //this.arrayTiles[b.y][b.x]=4
+      this.arrayTiles[b.y][b.x]=-1
     })
   }
+
 }
 export const tilesCollection=new TilesCollection()
