@@ -13,7 +13,7 @@ export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
   debugInfoView = new GameDebugInfoView();
-  objects: Array<InteractiveObject> = [];
+  //objects: Array<InteractiveObject> = [];
   boundingLayer: BoundingLayer;
   res: Record<string, HTMLImageElement>;
   interactiveList: InteractiveList;
@@ -28,6 +28,9 @@ export class GameMainRender{
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
     this.camera = camera;
+    this.camera.onUpdate = ()=>{
+      this._updateLayersCamera(this.camera.position, this.camera.getTileSize());
+    }
     this.playerId = playerId;
     this.cursorStatus = new GameCursorStatus(this.playerId);
     this.interactiveList = interactiveList;
@@ -54,6 +57,8 @@ export class GameMainRender{
       }      
     };
 
+    //this._updateLayersCamera(this.camera.position, this.camera.getTileSize());
+
     // for (let i =0; i<50; i++){
     //   //const obj = new GameObject(this.renderer.tilingLayer, res, new Vector(0, 0));
     //   const obj = new GameObject(this.tilingLayer, this.boundingLayer, res, new Vector(Math.floor(Math.random()*(mp-4)), Math.floor(Math.random()*(mp -4))));
@@ -67,8 +72,8 @@ export class GameMainRender{
       return (Math.random()<0.005? 1-jt: jt);
     })))*/
     this.camera.tick(delta);
-    this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
-    this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+    //this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+    //this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
   }
 
   render(ctx: CanvasRenderingContext2D){
@@ -79,10 +84,17 @@ export class GameMainRender{
     this.cursorStatus.render(ctx, new Vector(0,0));
   }
 
+  private _updateLayersCamera(position:Vector, tileSize:number){
+    this.tilingLayer.updateCamera(position, tileSize);
+    this.boundingLayer.updateCamera(position, tileSize);
+  }
+
   setCameraPosition(position:Vector){
     this.camera.position = position;
-    this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
-    this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+  }
+
+  setCameraScale(value: number){
+    this.camera.scale = value;
   }
 
   processMove(cursor: Vector){

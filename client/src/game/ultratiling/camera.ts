@@ -4,7 +4,10 @@ export class Camera{
   position: Vector;
   velocity: Vector = new Vector(0, 0);
   scale: number;
-  baseTileSize:number = 5;
+  baseTileSize: number = 5;
+  onUpdatePosition: (position: Vector, lastPosition: Vector) => void;
+  onUpdateTileSize: (tileSize: number, lastTileSize: number) => void;
+  onUpdate: () => void;
 
   constructor(){
     this.position = new Vector(0, 0);
@@ -12,25 +15,45 @@ export class Camera{
   }
 
   tick(delta:number){
-    this.position.add(this.velocity.clone().scale(delta));
-    if (this.position.x < -100) {
-      this.position.x = -100;
+    if (this.velocity.x === 0 && this.velocity.y === 0) {
+      return;
     }
-    if (this.position.y < -100) {
-      this.position.y = -100;
+
+    const position = this.position.clone();
+    position.add(this.velocity.clone().scale(delta));
+    if (position.x < -100) {
+      position.x = -100;
     }
-    if (this.position.x > 100 * this.getTileSize() + 100 -800) {
-      this.position.x = 100 * this.getTileSize() + 100 -800;
+    if (position.y < -100) {
+      position.y = -100;
     }
-    if (this.position.y > 100 * this.getTileSize() + 100 -600) {
-      this.position.y = 100 * this.getTileSize() + 100-600;
+    if (position.x > 100 * this.getTileSize() + 100 - 800) {
+      position.x = 100 * this.getTileSize() + 100 - 800;
+    }
+    if (position.y > 100 * this.getTileSize() + 100 - 600) {
+      position.y = 100 * this.getTileSize() + 100 - 600;
     }
     this.velocity.scale(0.95);
     if (this.velocity.abs()<0.1){
       this.velocity.scale(0);
     }
+
+    this.setPosition(position);
   }
 
+  setPosition(position: Vector) {
+    const lastPosition = this.position;
+    this.position = position;
+    this.onUpdatePosition?.(position, lastPosition);
+    this.onUpdate();
+  }
+
+  setScale(scale: number) {
+    const lastTileSize = this.getTileSize();
+    this.scale = scale;
+    this.onUpdateTileSize(this.getTileSize(), lastTileSize);
+    this.onUpdate();
+  }
   
   getTileVector(position:Vector){
     const tileCamera = new Vector(
