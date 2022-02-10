@@ -1,45 +1,71 @@
 import { Vector } from '../../../../common/vector';
 import { IGameObjectContent } from '../dto';
+//import { IGameObjectContent } from '../dto';
 import { InteractiveList } from '../interactiveList';
 // import { IGameObjectData, IGameObjectContent } from '../dto';
 // import { BoundingLayer } from '../ultratiling/boundingLayer';
 // import { BuildingInfoView } from '../ultratiling/buildingInfoView';
 // import { TilingLayer } from '../ultratiling/tileLayer';
-import { TileObject } from '../ultratiling/tileObject';
+//import { TileObject } from '../ultratiling/tileObject';
 
 const interactiveList = new InteractiveList();
 
 export class InteractiveObject{
-  onMouseMove: any;
-  onMouseEnter: any;
-  onMouseLeave: any;
-  onClick: any;
+  onMouseMove: (tile:Vector)=>void;
+  onMouseEnter: (tile:Vector)=>void;
+  onMouseLeave: (tile:Vector)=>void;
+  onClick: (tile:Vector, cursor:Vector)=>void;
   onDestroyed: () => void;
-  getList: () => InteractiveList;
-   tiles: Array<TileObject> =[];
-  //infos: CachedSprite;
-  isHovered: boolean = false;
-  hovBalance: number = 0;
-  subType: string = 'unit';
+
   id: string;
-  playerId: string;
-  position: Vector;
-  name: string;
-  primary: boolean = false;
-  health: number = 100;
-  selected: boolean;
+  name:string;
+  subType:string;
+
+  get playerId(){
+    return this._gameData.playerId;
+  }
+
+  get primary(){
+    return this._gameData.primary;
+  }
+
+  private _selected:boolean;
+  get selected(){
+    return this._selected;
+  }
+  set selected(value:boolean){
+    if (this._selected != value){
+      this._selected = value;
+      this.update();
+    }
+  }
+
+  //real hovered status
+  private _hovered:boolean;
+  get hovered(){
+    return this._hovered;
+  }
+  set hovered(value:boolean){
+    if (this._hovered != value){
+      this._hovered = value;
+      this.update();
+    }
+  }
+
+  protected _gameData:IGameObjectContent;
+  set gameData(value:IGameObjectContent){
+    //maybe use last data to correct update
+    this._gameData = value;
+    this.update();
+  }
+
+  //for interactive list overlap check
+  private isHovered: boolean = false;
+
   constructor(){
     interactiveList.add(this);
   }
 
-  processMove(cursor:Vector){
-    //console.log(cursor);
-    
-  }
-
-  updateObject(data: IGameObjectContent) {
-
-  }
   handleMove(tile:Vector, cursor:Vector){
     if (this.inShape(tile, cursor)){
       this.onMouseMove?.(tile);
@@ -60,16 +86,20 @@ export class InteractiveObject{
       this.onClick?.(tile, cursor);
     }
   }
-  inShape(tile: Vector, cursor: Vector): boolean {
-      let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
-    if (pos.abs()<15){
-      return true;
-    }
+
+  //LIFECYCLE METHOD, use it for override!
+  protected inShape(tile: Vector, cursor: Vector): boolean {
     return false;
   }
 
-  update(){
+  //LIFECYCLE METHOD, use it for override!
+  protected update(){
     //this.tiles.forEach(it=>it.update());
+  }
+
+  //LIFECYCLE METHOD, use it for override!
+  protected destroy(){
+
   }
 //   isHovered: boolean;
 //   onMouseMove: any;

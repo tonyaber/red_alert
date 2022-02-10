@@ -40,7 +40,7 @@ export class Canvas extends Control{
       }
      
       //this.renderer.setCameraPosition(new Vector(e.offsetX *20.5 -209, e.offsetY*20.5 -209));
-      this.renderer.processMove(new Vector(e.offsetX, e.offsetY));
+      //this.renderer.processMove(new Vector(e.offsetX, e.offsetY));
       this.renderer.handleMouseMove(new Vector(e.offsetX, e.offsetY));
     }
 

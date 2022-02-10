@@ -2,19 +2,27 @@ import { InteractiveObject } from "./builds_and_units/interactiveObject";
 import { Vector } from '../../../common/vector';
 
 export class InteractiveList{
-  public list:InteractiveObject[] = [];
-  hoveredObjects: InteractiveObject[] = [];
+  private list:InteractiveObject[] = [];
+  private hoveredObjects: InteractiveObject[] = [];
 
   _hovered:InteractiveObject;
   set hovered(value:InteractiveObject){
     let last = this._hovered;
+    if (last){
+      last.hovered = false;
+    }
     this._hovered = value;
+    if (this._hovered){
+      this._hovered.hovered = true;
+    }
     this.onChangeHovered?.(last, value);
   }
   get hovered(){
     return this._hovered;
   }
+
   onChangeHovered: (lastTarget:InteractiveObject, currentTarget:InteractiveObject)=>void;
+
   onClick: (target:InteractiveObject)=>void;
   constructor(){
     this.list = [];
@@ -23,10 +31,6 @@ export class InteractiveList{
 
 
   add(object: InteractiveObject) {
-
-    object.getList = () => {
-      return this;
-    }
     object.onMouseEnter = ()=>{
       this.hoveredObjects.push(object);
       this.handleHover();
@@ -44,6 +48,14 @@ export class InteractiveList{
     // this.list.sort((a,b)=>{
     //  return (a.position.y - b.position.y)*1000 + a.position.x - b.position.x;
     // })
+  }
+
+  getItem(id:string){
+    return this.list.find(item=>item.id === id);
+  }
+
+  resetSelection(){
+    this.list.forEach(item => item.selected = false);
   }
 
   public handleMove(tile:Vector, cursor:Vector){

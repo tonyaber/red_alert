@@ -11,14 +11,14 @@ import { inBox } from '../../inBox';
 export class AbstractUnit extends InteractiveObject{
    tiles: Array<TileObject> =[];
   //infos: CachedSprite;
-  isHovered: boolean = false;
+  //isHovered: boolean = false;
   hovBalance: number = 0;
   subType: string = 'unit';
   id: string;
-  playerId: string;
+  //playerId: string;
   position: Vector;
   name: string;
-  primary: boolean = false;
+  //primary: boolean = false;
   health: number = 100;
   info: UnitInfoView;
   infoLayer: BoundingLayer;
@@ -29,7 +29,7 @@ export class AbstractUnit extends InteractiveObject{
     this.name = data.type;
     this.infoLayer = infoLayer;
     this.position = data.content.position;
-    this.playerId = data.content.playerId;
+    //this.playerId = data.content.playerId;
     this.camera = camera;
     //this.updateObject(data.content)
     // const tileMap = [
@@ -112,7 +112,7 @@ export class AbstractUnit extends InteractiveObject{
   }
   updateObject(data: IGameObjectContent) {
     this.position = data.position;
-    this.playerId = data.playerId;
+    //this.playerId = data.playerId;
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
     this.info.position = this.camera.getTileVector(data.position.clone());
     this.info.update();

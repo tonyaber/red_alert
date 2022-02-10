@@ -9,6 +9,7 @@ import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
+import { mod } from "./mod";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -50,7 +51,8 @@ export class GameMainRender{
     }
 
     this.interactiveList.onClick = (current) => {   
-      this.interactiveList.list.forEach(item => item.selected = false);
+      this.interactiveList.resetSelection();
+      //this.interactiveList.list.forEach(item => item.selected = false);
       if (current&&current.playerId === this.playerId) {
         this.setSelected(current.id)
         this.cursorStatus.selected = current ? [current] : [];  
@@ -78,8 +80,17 @@ export class GameMainRender{
 
   render(ctx: CanvasRenderingContext2D){
     //ctx.drawImage(this.tilingLayer.canvas, this.camera.position.x, this.camera.position.y);
-    ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
-    ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
+    //this.ctx1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+    ctx.drawImage(this.tilingLayer.canvas, 
+      -mod(this.camera.position.x, this.camera.getTileSize()), 
+      -mod(this.camera.position.y, this.camera.getTileSize())
+    );
+    ctx.drawImage(this.boundingLayer.canvas, 
+      -mod(this.camera.position.x, this.camera.getTileSize()), 
+      -mod(this.camera.position.y, this.camera.getTileSize())
+    );
+    //ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
+    //ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
     this.debugInfoView.render(ctx);
     this.cursorStatus.render(ctx, new Vector(0,0));
   }
@@ -97,22 +108,24 @@ export class GameMainRender{
     this.camera.scale = value;
   }
 
-  processMove(cursor: Vector){
+  /*processMove(cursor: Vector){
     const moveCursor = new Vector(
       Math.floor((cursor.x + this.camera.position.x) / this.camera.getTileSize()), 
       Math.floor((cursor.y + this.camera.position.y) / this.camera.getTileSize())
     );
     this.interactiveList.list.forEach(obj=>obj.processMove(moveCursor));
-  }
+  }*/
 
   addObject(data: IGameObjectData) {
-     const BuildConstructor = builds[data.type];
+    const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
+    interactiveObject.gameData = data.content;
     
   }
 
   updateObject(data:IGameObjectData){
-   this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
+  // this.interactiveList.getItem(data.objectId).updateObject(data.content)
+    this.interactiveList.getItem(data.objectId).gameData = data.content; //updateObject(data.content)
   }
 
   setPlannedBuild(object:IObject) {
@@ -120,7 +133,8 @@ export class GameMainRender{
   }
 
   setSelected(id: string) {
-    this.interactiveList.list.find(item => item.id === id).selected = true;
+    this.interactiveList.getItem(id).selected = true;
+    //this.interactiveList.list.find(item => item.id === id).selected = true;
   }
 
   handleClick(camera: Vector, tileSize: number) {
@@ -134,7 +148,7 @@ export class GameMainRender{
   }
 
   handleMouseDown(cursor: Vector) {
-    this.interactiveList.list.forEach(item => item.selected = false);
+    this.interactiveList.resetSelection();//.list.forEach(item => item.selected = false);
     this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
     const action = this.cursorStatus.getAction();
     console.log(action)
@@ -150,7 +164,8 @@ export class GameMainRender{
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
-        this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
+        //this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
+        this.interactiveList.resetSelection();
         this.cursorStatus.selected = [];
     }
     //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));

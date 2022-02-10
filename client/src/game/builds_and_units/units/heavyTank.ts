@@ -7,10 +7,10 @@ import { Camera } from '../../ultratiling/camera';
 
 export class HeavyTank extends AbstractUnit{
   id: string;
-  playerId: string;
+  //playerId: string;
   position: Vector;
   type: string;
-  selected: boolean;
+  //selected: boolean;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
      super(layer, infoLayer, res, camera, data);
   }

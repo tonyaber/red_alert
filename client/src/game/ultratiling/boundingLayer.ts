@@ -24,10 +24,10 @@ export class BoundingLayer{
     this.canvas.height = 900;
     this.ctx = this.canvas.getContext('2d');
 
-    this.canvas1 = document.createElement('canvas');
+   /* this.canvas1 = document.createElement('canvas');
     this.canvas1.width = 800;//width*tileSize;
     this.canvas1.height = 600;//height*tileSize;
-    this.ctx1 = this.canvas1.getContext('2d');
+    this.ctx1 = this.canvas1.getContext('2d');*/
 
     let newMap:Array<Array<number>> = new Array(height).fill(0).map(it=> new Array(width).fill(0));
     this.map = newMap;
@@ -41,12 +41,12 @@ export class BoundingLayer{
       this.lastCamera = camera.clone();
     }
     this.updateCache(camera, tileSize);
-
+/*
     this.ctx1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
     this.ctx1.drawImage(this.canvas, 
       -mod(camera.x, tileSize)*1, 
       -mod(camera.y, tileSize)*1
-    );
+    );*/
   }
 
   updateCacheTile(camera:Vector, tileX:number, tileY:number, value:number){
