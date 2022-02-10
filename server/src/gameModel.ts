@@ -104,6 +104,7 @@ export class GameModel{
     }
     gameObject.onDelete = (state) => {
       this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+      delete this.objects[state.objectId];
       this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
       this.onUpdate(state, 'delete'); 
     }

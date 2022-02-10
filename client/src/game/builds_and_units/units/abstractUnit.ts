@@ -126,8 +126,8 @@ export class AbstractUnit extends InteractiveObject{
   inShape(tile: Vector, cursor: Vector): boolean {
     
     let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
-     if (pos.abs()<15){
-      // console.log(true)
+     if (pos.abs()<30){
+       console.log(true)
        return true;
        
     }
