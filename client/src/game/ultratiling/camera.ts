@@ -5,6 +5,7 @@ export class Camera{
   velocity: Vector = new Vector(0, 0);
   scale: number;
   baseTileSize:number = 5;
+  inertion:number = 0.95;
 
   constructor(){
     this.position = new Vector(0, 0);
@@ -25,7 +26,7 @@ export class Camera{
     if (this.position.y > 100 * this.getTileSize() + 100 -600) {
       this.position.y = 100 * this.getTileSize() + 100-600;
     }
-    this.velocity.scale(0.95);
+    this.velocity.scale(this.inertion);
     if (this.velocity.abs()<0.1){
       this.velocity.scale(0);
     }
