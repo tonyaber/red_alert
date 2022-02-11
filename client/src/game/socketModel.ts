@@ -54,6 +54,11 @@ export class SocketModel implements IClientModel
   registerGamePlayer() {
     this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'human'}));
   }
+  
+   addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+      const content = JSON.stringify({ type: 'addInitialDate', content: { name, playerId ,position} })
+    return this.client.sendMessage('gameMove', content);
+  }
 
   startBuild(name: string, playerId: string) :Promise<string>{
     const content = JSON.stringify({ type: 'startBuild', content: { name, playerId } });

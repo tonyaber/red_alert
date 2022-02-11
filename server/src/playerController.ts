@@ -53,5 +53,11 @@ export class PlayerController{
   setPrimary(buildId: string, name: string) {    
     return this.gameModel.setPrimary(this.playerId, buildId, name);
   }
+  addInitialDate(name: string, playerId: string, position: IVector) {
+    console.log(playerId)
+    if (playerId === this.playerId) {
+      return this.gameModel.addGameObject(this.playerId,name, position)
+    }
+  }
 
 }

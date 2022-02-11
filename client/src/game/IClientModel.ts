@@ -24,10 +24,13 @@ export class IClientModel
   //to map
   addBuild: (name: string, position: Vector, playerId: string) => Promise<string>;
 
+  addInitialDate: (name: string, position: Vector, playerId: string) => Promise<string>;
+
   setPrimary: (id: string, name: string) => Promise<string>;
   moveUnit: (id: string, position: Vector,tileSize:number)=> Promise<string>;
 
   setAttackTarget:(id: string, targetId: string,tileSize:number)=>Promise<string>;
   registerSpectator: () => void;
+
   //all game player methods
 }

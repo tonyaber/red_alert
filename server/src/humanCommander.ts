@@ -10,7 +10,7 @@ export class HumanCommander{
     this.connection = connection;
   }
 
-  handleClientMessage(message) {
+  handleClientMessage(message: any) {
     if (message.type == 'add'){
       const privateResponse = ''; //this.playerController.addGameObject()
       this.sendMessage('', privateResponse);
@@ -36,9 +36,13 @@ export class HumanCommander{
     if (message.type === 'attack') {
       return this.playerController.setAttackTarget(message.content.id, message.content.targetId, message.content.tileSize);
     }
+    if (message.type === 'addInitialDate') {
+      return this.playerController.addInitialDate(message.content.name, message.content.playerId, message.content.position);
+    }
   }
 
-  sendMessage(type: string, message:string){ //send to client
+  sendMessage(type: string, message: string) {
+      //send to client
     this.connection.sendUTF(JSON.stringify({type, content: message}));
   }
 }

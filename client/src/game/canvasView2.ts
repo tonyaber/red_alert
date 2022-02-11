@@ -33,7 +33,7 @@ export class Canvas extends Control{
 
     this.canvas.node.onmousemove = (e)=>{
       const mv = new Vector(e.movementX, e.movementY).scale(0.5);
-      const maxSpeed = 0.01;
+      const maxSpeed = 2;
       if (mv.abs()<maxSpeed){
         this.renderer.camera.velocity = mv;
       } else {

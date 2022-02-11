@@ -18,6 +18,7 @@ export class LocalModel implements IClientModel
   onDeleteObject: (data: IGameObjectData) => void;
   myPlayer: PlayerController;
   player: string;
+  game: GameModel;
 
   constructor(){
 
@@ -81,8 +82,10 @@ export class LocalModel implements IClientModel
     this.onStartGame(JSON.stringify({ players: allPlayers, sidePanel, type:'human' }));
     bots.forEach(item => {       
       const sidePanel = game.getState(item.playerController.playerId);      
-      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type:'bot' }))
+      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type: 'bot' }))
+      
     })
+    this.game = game;
   }
 
   //side
@@ -114,6 +117,10 @@ export class LocalModel implements IClientModel
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{
     const result = this.myPlayer.addGameObject(name, position);
+    return new Promise(resolve => resolve(result))
+  }
+  addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+    const result = this.game.addGameObject(playerId,name, position);
     return new Promise(resolve => resolve(result))
   }
 

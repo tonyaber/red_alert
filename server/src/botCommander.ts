@@ -10,7 +10,7 @@ export class BotCommander{
   loading: number = 1000;
   panelInfo: IUpdateSidePanel;
   radius: number = 0; // радиус постройки вокруг инишл здания
-  startPoint: Vector; // стартовая точка для постройки первого здания
+  startPoint: Vector = null; // стартовая точка для постройки первого здания
   circlePoints: Array<IVector> = []; // точки на круге
   startAngle: number = 4; // угол отклонения при расчете точек на окружности
   stepBuilding: number = 1; // номер круга постройки  
@@ -24,10 +24,16 @@ export class BotCommander{
     this.startPoint = new Vector(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500));
   }
   
-  private handleClientMessage(type: string, message: string) {    
+  private handleClientMessage(type: string, message: string) {   
+    if (type === 'addBuild' && !this.startPoint) {
+      const mes = JSON.parse(message);
+      this.startPoint = mes.content.position;
+
+    }
     if (type === 'startGame') {
       const data:IStartGameResponse = JSON.parse(message);      
       const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');  // Доступные здания
+      
       this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name); 
       this.circlePoints = this.getCirclePoints() // Получим точки окружности вокруг первого здания
     }   
@@ -48,7 +54,7 @@ export class BotCommander{
   tick(delta: number) {
     
     this.loading -= delta;
-    if (this.loading <= 0) {
+    if (this.loading <= 0&&this.startPoint) {
 
       this.loading = this.reloadingTime;
       const random = Math.random();

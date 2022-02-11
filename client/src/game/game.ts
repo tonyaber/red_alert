@@ -6,6 +6,7 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
+import {INITIAL_DATE} from '../../../server/src/initialDate';
 
 export class Game extends Control{
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
@@ -91,9 +92,11 @@ export class Game extends Control{
         console.log(result)
       })
     }
-    
-
-    
-
+    sidePanelInfo.players.map((it, index) => {
+      
+      INITIAL_DATE[index].forEach(el => {
+        socket.addInitialDate(el.name, el.position, it)
+      })
+    });
   }
 }
