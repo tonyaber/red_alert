@@ -38,52 +38,52 @@ export class BotCommander{
       this.circlePoints = this.getCirclePoints() // Получим точки окружности вокруг первого здания
     }   
     if (type === 'updateSidePanel') {
-      this.panelInfo = JSON.parse(message);
-      const buildsIsReady = this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');  //  && item.object.subType === 'build'
-      if (buildsIsReady.length) {
-        // console.log('buildsIsReady: ', buildsIsReady)
-        const lastEl = this.circlePoints[this.circlePoints.length - 1]
-        this.circlePoints.pop();
-        let vector = new Vector(lastEl.x, lastEl.y)
-        let currentPointAdd = vector.clone().add(vector) // надо клонировать?
-        this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, vector); // this.startPoint
-      }
+      // this.panelInfo = JSON.parse(message);
+      // const buildsIsReady = this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');  //  && item.object.subType === 'build'
+      // if (buildsIsReady.length) {
+      //   // console.log('buildsIsReady: ', buildsIsReady)
+      //   const lastEl = this.circlePoints[this.circlePoints.length - 1]
+      //   this.circlePoints.pop();
+      //   let vector = new Vector(lastEl.x, lastEl.y)
+      //   let currentPointAdd = vector.clone().add(vector) // надо клонировать?
+      //   this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, vector); // this.startPoint
+      // }
     }
   }
 
   tick(delta: number) {
     
-    this.loading -= delta;
-    if (this.loading <= 0&&this.startPoint) {
+    // this.loading -= delta;
+    // if (this.loading <= 0&&this.startPoint) {
 
-      this.loading = this.reloadingTime;
-      const random = Math.random();
-      this.radius += this.radius < 10 ? 1 : 0.5;
+    //   this.loading = this.reloadingTime;
+    //   const random = Math.random();
+    //   this.radius += this.radius < 10 ? 1 : 0.5;
       
-      // строим здание 
-      if (random < 0.3) {
-        const availableBuilds = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'build');     // available ?
-        if (availableBuilds.length) {
-          // console.log('builds: ', availableBuilds)
-          this.playerController.startBuilding(availableBuilds[Math.floor(Math.random() * availableBuilds.length)].object.name);
-        }
-      // строим юнита
-      } else if (random < 1) {
-        const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
-        if (availableUnits.length) {
-          this.playerController.startBuilding(availableUnits[Math.floor(Math.random() * availableUnits.length)].object.name);
-        }
+    //   // строим здание 
+    //   if (random < 0.3) {
+    //     const availableBuilds = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'build');     // available ?
+    //     if (availableBuilds.length) {
+    //       // console.log('builds: ', availableBuilds)
+    //       this.playerController.startBuilding(availableBuilds[Math.floor(Math.random() * availableBuilds.length)].object.name);
+    //     }
+    //   // строим юнита
+    //   } else if (random < 1) {
+    //     const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
+    //     if (availableUnits.length) {
+    //       this.playerController.startBuilding(availableUnits[Math.floor(Math.random() * availableUnits.length)].object.name);
+    //     }
 
-      //add to attack or some 
-      //console.log(this.playerController.getObjects())
-      }
+    //   //add to attack or some 
+    //   //console.log(this.playerController.getObjects())
+    //   }
 
-      if (this.circlePoints.length === 0) {
-        this.stepBuilding++
-        this.circlePoints = this.getCirclePoints()
-        // console.log(`точки на ${this.stepBuilding}-й окружности: `, this.circlePoints)
-      }
-    }
+    //   if (this.circlePoints.length === 0) {
+    //     this.stepBuilding++
+    //     this.circlePoints = this.getCirclePoints()
+    //     // console.log(`точки на ${this.stepBuilding}-й окружности: `, this.circlePoints)
+    //   }
+    // }
     const privateMessage=0;//this.playerController.addGameObject()
     //
   }

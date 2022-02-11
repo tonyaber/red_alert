@@ -34,7 +34,10 @@ export class AbstractWeapon{
    console.log('weapon',  target.clone().sub(this.position.clone()).abs(), this.attackRadius)
     //if (this.loading<=0 && target.clone().sub(this.position.clone().scale(this.tileSize)).abs()<this.attackRadius){
       //console.log('radiused');
+    if (Math.random() > 0.5) {
       this.shot(target);
+    }
+      
      // return true;
     //}
     

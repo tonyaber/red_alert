@@ -14,6 +14,7 @@ export class GameModel{
   onUpdate: (state: IGameObjectData, action: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
+  onShot: (point: Vector) => void;
   tickList: TickList;
   gameObjects: GameObject[] = [];
   nextId: () => string;
@@ -115,6 +116,7 @@ export class GameModel{
 
     gameObject.onDamageTile = (targetId, point) => {
       this.gameObjects.find(it => it.objectId === targetId).damage(point);
+      this.onShot(point);
       //gameObjects
     }
     gameObject.create();

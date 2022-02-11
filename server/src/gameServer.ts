@@ -50,6 +50,9 @@ export class GameServer {
 
       }     
     }
+    this.gameModel.onShot = (point) => {
+      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify(point)));
+    }
     this.gameModel.onSideUpdate = (id, data)=>{
       (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])
         .filter(it => it.targetId === id)
