@@ -39,7 +39,7 @@ export class GameModel{
   }
   //player side methods
   startBuilding(playerId: string, objectType: string) {
-    console.log(playerId,'--',objectType)
+    // console.log(playerId,'--',objectType)
     this.playersSides.find(item => item.id === playerId).startBuilding(objectType);
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
@@ -62,9 +62,12 @@ export class GameModel{
   }
 
   private _addUnit(type: string, spawn: string, playerId: string) {
-    const position = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary).data.position;
-    const newPosition = position.clone().add(new Vector(25,25));
-    this.addGameObject(playerId, type, newPosition);
+    const el = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary);
+    if(el){
+      const position = el.data.position;
+      const newPosition = position.clone().add(new Vector(25, 25));
+      this.addGameObject(playerId, type, newPosition);
+    }
     //position for primary
     //this.addGameObject()
   }
@@ -79,11 +82,11 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
-    console.log('addGameObjectServer')
+    // console.log('addGameObjectServer')
     //mapObject
     //проверка, можно ли его добавлять
     const state = { position, playerId }
-    console.log(objectName)
+    // console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
     const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
     gameObject.onUpdate = (state)=>{

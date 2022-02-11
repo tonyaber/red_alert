@@ -10,6 +10,7 @@ export class PlayerController{
     this.playerId = playerId;
   }
 
+  //  на сайд панели постройку запускает
   startBuilding(objectType: string) {
    return this.gameModel.startBuilding(this.playerId, objectType);
   }
@@ -22,7 +23,9 @@ export class PlayerController{
     return this.gameModel.playBuilding(this.playerId, objectType);
   }
 
-  addGameObject(objectType:string, position:IVector){
+  // Добавление объекта на канвас
+  addGameObject(objectType: string, position: IVector) {
+    console.log("%c"+this.playerId+ ' строит '+ objectType+ ': '+position.x+': '+position.y, 'color: blue')
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
