@@ -131,7 +131,7 @@ export class GameMainRender{
     this.interactiveList.list.forEach(item => item.selected = false);
     this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
     const action = this.cursorStatus.getAction();
-    console.log(action)
+    // console.log(action)
      if (action === 'build') {
         this.onAddBuild?.(this.camera.position.clone().add(cursor));
         this.cursorStatus.planned = null;

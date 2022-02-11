@@ -46,15 +46,15 @@ export class Canvas extends Control{
     }
 
     this.canvas.node.onclick = (e: MouseEvent) => {
-      // this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
-      // this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
-      // this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
-      // //this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
-     // if (this.hoveredObjects === null) {
-        // this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
-      //} else {
-       // this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
-      //}
+      this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
+      this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      // this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
+      // if (this.hoveredObjects === null) {
+      //     this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
+      // } else {
+      //   this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.type);
+      // }
     }
 
     this.canvas.node.oncontextmenu = (e) => {
