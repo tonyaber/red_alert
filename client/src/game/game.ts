@@ -87,7 +87,7 @@ export class Game extends Control{
           console.log(result,'UNIT');
         });
     }
-    canvas.onAttack = (id: string, targetId: string, tileSize: number) => {
+  canvas.onAttack = (id: string, targetId: string, tileSize: number) => {
       socket.setAttackTarget(id, targetId, tileSize).then((result) => {
         console.log(result)
       })
@@ -98,5 +98,60 @@ export class Game extends Control{
         socket.addInitialDate(el.name, el.position, it)
       })
     });
+
+    this.node.onclick = ()=>{
+      this.node.requestFullscreen();
+    }
+
+    const handleBorder = (position:Vector, border:number)=>{
+      const scrollVector = new Vector(0, 0);
+      if (position.x < border){
+        scrollVector.x = -1;
+      }
+      if (position.y < border){
+        scrollVector.y = -1;
+      }
+      if (position.x > this.node.clientWidth - border){
+        scrollVector.x = 1;
+      }
+      if (position.y > this.node.clientHeight - border){
+        scrollVector.y = 1;
+      }
+      return scrollVector;
+    }
+
+    const moveHandler = (e: MouseEvent)=>{
+      const border = Math.min(20, this.node.clientWidth / 3, this.node.clientHeight / 3);
+      const scrollVector = handleBorder(new Vector(e.clientX, e.clientY), border);
+      canvas.setScrollDirection(scrollVector, 1);  
+    }
+
+    const mouseLeaveHandler = (e: MouseEvent)=>{
+      const border = Math.min(100, this.node.clientWidth / 3, this.node.clientHeight / 3);
+      const scrollVector = handleBorder(new Vector(e.offsetX, e.offsetY), border);
+      canvas.setScrollDirection(scrollVector, 1);
+    }
+
+    const mouseEnterHandler = ()=>{
+      const scrollVector = new Vector(0, 0);
+      canvas.setScrollDirection(scrollVector, 0.95);
+    }
+
+    const handleScrolls = ()=>{
+      const isFullScreenMode = window.document.fullscreenElement == this.node
+      if (isFullScreenMode){
+        this.node.onmouseleave = null;
+        this.node.onmouseenter =null;
+        this.node.onmousemove = moveHandler;
+      } else {
+        this.node.onmousemove = null;
+        this.node.onmouseleave = mouseLeaveHandler;
+        this.node.onmouseenter = mouseEnterHandler;
+      }
+    }
+
+    this.node.onfullscreenchange = handleScrolls;
+    handleScrolls();
+
   }
 }
