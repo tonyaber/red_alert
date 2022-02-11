@@ -110,4 +110,10 @@ export class Canvas extends Control{
     this.renderer.tick(delta);
     this.renderer.render(ctx);
   }
+
+  setScrollDirection(direction:Vector, inertion:number){
+    this.renderer.camera.velocity = direction;
+    this.renderer.camera.inertion = inertion;
+  }
+  
 }
