@@ -178,4 +178,15 @@ export class TilingLayer{
     }))
   }
 
+  public resizeViewPort(width:number, height:number){
+    const safeZone = this.tileSize * 4;
+    this.canvas.width = width + safeZone;
+    this.canvas.height = height + safeZone;
+    this.canvas1.width = width;
+    this.canvas1.height = height;
+    copier.canvas.width = width + safeZone;
+    copier.canvas.height = height+ safeZone
+    const tileCamera = this.getTileCamera(this.camera, this.tileSize);
+    this.updateScreen(tileCamera, this.tileSize);
+  }
 }
