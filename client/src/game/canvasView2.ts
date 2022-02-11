@@ -19,6 +19,7 @@ export class Canvas extends Control{
   renderer:GameMainRender;
   playerId: string;
   res: Record<string, HTMLImageElement>;
+  private _resizeHandler: ()=>void;
 
   constructor(parentNode: HTMLElement, res:Record<string, HTMLImageElement>, id: string) {
     super(parentNode, 'div', red['game_field']);
@@ -33,7 +34,7 @@ export class Canvas extends Control{
 
     this.canvas.node.onmousemove = (e)=>{
       const mv = new Vector(e.movementX, e.movementY).scale(0.5);
-      const maxSpeed = 2;
+      const maxSpeed = 0.01;
       if (mv.abs()<maxSpeed){
         this.renderer.camera.velocity = mv;
       } else {
@@ -46,9 +47,9 @@ export class Canvas extends Control{
     }
 
     this.canvas.node.onclick = (e: MouseEvent) => {
-      this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
-      this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
-      this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      // this.renderer.camera.scale = this.renderer.camera.scale - 0.2;
+      // this.renderer.tilingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
+      // this.renderer.boundingLayer.updateCamera(this.renderer.camera.position, this.renderer.camera.getTileSize());
       // this.renderer.handleClick(this.renderer.camera.position, this.renderer.camera.getTileSize())
       // if (this.hoveredObjects === null) {
       //     this.onClick?.(this.renderer.camera.position.clone().add(new Vector(e.offsetX, e.offsetY)))
@@ -85,6 +86,12 @@ export class Canvas extends Control{
     this.renderer.onAttack = (id, idTarget, tileSize) => {
       this.onAttack(id, idTarget, tileSize);
     }
+
+    this._resizeHandler = ()=>{
+      this.autoSize();
+    }
+    window.addEventListener('resize', this._resizeHandler);
+    this.autoSize();
   }
 
   updateObject(data:IGameObjectData){
@@ -116,9 +123,19 @@ export class Canvas extends Control{
     this.renderer.render(ctx);
   }
 
-  setScrollDirection(direction:Vector, inertion:number){
+  private autoSize(){
+    this.canvas.node.width = this.node.clientWidth;
+    this.canvas.node.height = this.node.clientHeight;
+    this.renderer.resizeViewPort(this.canvas.node.width, this.canvas.node.height);
+  }
+
+  destroy(): void {
+    window.removeEventListener('resize', this._resizeHandler);
+    super.destroy();
+  }
+
+   setScrollDirection(direction:Vector, inertion:number){
     this.renderer.camera.velocity = direction;
     this.renderer.camera.inertion = inertion;
   }
-  
 }
