@@ -145,4 +145,9 @@ export class GameMainRender{
    // console.log(this.camera.position.clone().add(cursor));
   }
 
+  public resizeViewPort(width:number, height:number){
+    this.tilingLayer.resizeViewPort(width, height);
+    this.boundingLayer.resizeViewPort(width, height);
+  }
+
 }

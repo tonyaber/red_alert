@@ -18,6 +18,7 @@ export class Canvas extends Control{
   renderer:GameMainRender;
   playerId: string;
   res: Record<string, HTMLImageElement>;
+  private _resizeHandler: ()=>void;
 
   constructor(parentNode: HTMLElement, res:Record<string, HTMLImageElement>, id: string) {
     super(parentNode, 'div', red['game_field']);
@@ -80,6 +81,12 @@ export class Canvas extends Control{
     this.renderer.onChangePosition = (id, position)=>{
       this.onChangePosition(id, position)
     }
+
+    this._resizeHandler = ()=>{
+      this.autoSize();
+    }
+    window.addEventListener('resize', this._resizeHandler);
+    this.autoSize();
   }
 
   updateObject(data:IGameObjectData){
@@ -109,5 +116,16 @@ export class Canvas extends Control{
     ctx.fillRect(0, 0, this.canvas.node.width, this.canvas.node.height);
     this.renderer.tick(delta);
     this.renderer.render(ctx);
+  }
+
+  private autoSize(){
+    this.canvas.node.width = this.node.clientWidth;
+    this.canvas.node.height = this.node.clientHeight;
+    this.renderer.resizeViewPort(this.canvas.node.width, this.canvas.node.height);
+  }
+
+  destroy(): void {
+    window.removeEventListener('resize', this._resizeHandler);
+    super.destroy();
   }
 }
