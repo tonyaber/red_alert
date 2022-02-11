@@ -114,6 +114,7 @@ export class GameMainRender{
     
     explosion.onDestroyed = () => {
       this.explosions = this.explosions.filter(it => it != explosion);
+      this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
     }
     this.explosions.push(explosion);
     

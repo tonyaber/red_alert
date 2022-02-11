@@ -19,7 +19,12 @@ export class Explosion extends InteractiveObject{
     }
    
 
-  } 
+  }
+  
+  inShape(tile: Vector, cursor: Vector): boolean { 
+    return false;
+  }
+
   render(ctx:CanvasRenderingContext2D, camera:Vector, delta:number){
     this.animation.render(ctx, delta, this.position.clone().sub(camera));
   } 
