@@ -16,6 +16,7 @@ export class LocalModel implements IClientModel
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
@@ -61,6 +62,9 @@ export class LocalModel implements IClientModel
       if (action === 'delete') {
         this.onDeleteObject(data);
       }
+    }
+    game.onShot = (point) => {
+      this.onShot(point);
     }
 
     // game.onUpdate = (id, data)=>{

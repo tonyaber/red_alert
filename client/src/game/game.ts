@@ -47,6 +47,10 @@ export class Game extends Control{
       canvas.deleteObject(data)
     }
 
+    socket.onShot = (point) => {
+      canvas.addShot(point);
+    }
+
     sidePanel.onSidePanelClick = (selected, object) => {
       if (selected === 'onAvailableClick') {
         socket.startBuild(object.object.name, id).then((result) => {
@@ -92,11 +96,13 @@ export class Game extends Control{
         console.log(result)
       })
     }
+    
     sidePanelInfo.players.map((it, index) => {
-      
-      INITIAL_DATE[index].forEach(el => {
-        socket.addInitialDate(el.name, el.position, it)
-      })
+      if (sidePanelInfo.type != 'spectator') {
+        INITIAL_DATE[index].forEach(el => {
+          socket.addInitialDate(el.name, el.position, it)
+        })
+      }      
     });
 
     this.node.onclick = ()=>{

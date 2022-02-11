@@ -116,6 +116,10 @@ export class Canvas extends Control{
     //const interactiveObject = new BuildConstructor(data);
   }
 
+  addShot(point: Vector) {
+    this.renderer.addShot(point);
+  }
+
   render(ctx: CanvasRenderingContext2D, delta: number) {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.canvas.node.width, this.canvas.node.height);

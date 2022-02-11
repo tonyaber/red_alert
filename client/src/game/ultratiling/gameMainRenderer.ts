@@ -9,7 +9,8 @@ import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
-import {tilesCollection, TilesCollection} from "../../../../server/src/tileCollection";
+import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
+import { Explosion } from '../builds_and_units/explosion';
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -26,6 +27,7 @@ export class GameMainRender{
   onObjectClick: (id: string, name: string, subType: string) => void;
   onChangePosition: (id: string, position: Vector, tileSize: number) => void;
   onAttack: (id: string, targetId: string, tileSize: number) => void;
+  explosions: Explosion[]=[];
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
@@ -65,6 +67,7 @@ export class GameMainRender{
 
   tick(delta:number){
     this.debugInfoView.tick(delta);
+    
     /*this.tilingLayer.update(this.camera.position, this.tilingLayer.map.map(it=>it.map(jt=>{
       return (Math.random()<0.005? 1-jt: jt);
     })))*/
@@ -78,6 +81,8 @@ export class GameMainRender{
     ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
     ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
     this.debugInfoView.render(ctx);
+    this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
+    
     this.cursorStatus.render(ctx, new Vector(0,0));
   }
 
@@ -102,6 +107,16 @@ export class GameMainRender{
       const buildPos=interactiveObject.tiles.map(e=>e.getPosition())
       tilesCollection.addBuild(buildPos)
     }
+  }
+
+  addShot(point: Vector) {
+    const explosion = new Explosion(point);
+    
+    explosion.onDestroyed = () => {
+      this.explosions = this.explosions.filter(it => it != explosion);
+    }
+    this.explosions.push(explosion);
+    
   }
 
   updateObject(data:IGameObjectData){

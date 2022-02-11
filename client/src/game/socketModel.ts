@@ -10,7 +10,8 @@ export class SocketModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
-   onDeleteObject: (data: IGameObjectData) => void;
+  onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
@@ -37,6 +38,9 @@ export class SocketModel implements IClientModel
       if (message.type === 'auth') {
         this.onAuth(message.content);
       }      
+      if (message.type === 'shot') {
+        this.onShot(JSON.parse(message.content));
+      }
     }
     this.client.onMessage.add(this.messageHandler)
   }

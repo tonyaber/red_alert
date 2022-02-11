@@ -11,6 +11,7 @@ export class IClientModel
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   addUser: () => void;
 
   registerGamePlayer: () => void;
