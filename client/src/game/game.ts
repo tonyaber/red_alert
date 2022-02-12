@@ -8,6 +8,8 @@ import { SocketModel } from "./socketModel";
 import red from './red.css'
 
 export class Game extends Control{
+  onExit: () => void;
+  onPause: () => void;
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
     super(parentNode, 'div', red['global_main']);
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
@@ -24,7 +26,14 @@ export class Game extends Control{
    
     const wrapperGameControls = new Control(this.node, 'div', red['wrap_game_controls']);
     const exit = new Control(wrapperGameControls.node, 'button', red['exit_game'], 'exit');
+    exit.node.onclick = () => {
+      this.onExit();
+    }
     const pause = new Control(wrapperGameControls.node, 'button', red['pause_game'], 'pause');
+    if(sidePanelInfo.type === 'spectator'){ pause.node.setAttribute('disabled', 'true')}
+    pause.node.onclick = () => {
+      this.onPause(); //TODO сделать попап с паузой
+    }
 
     const canvas = new Canvas(this.node, res, id);//id
     const sidePanel = new SidePanel(this.node);

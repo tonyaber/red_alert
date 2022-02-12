@@ -1,11 +1,12 @@
 import Control from '../../../common/control';
-import { IClientModel } from './IClientModel';
+import { IClientModel } from '../game/IClientModel';
+import style from './roomPage.css'
 
-export class SettingPage extends Control{
+export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
   onStartGame: (players: string) => void;
   constructor(parentNode: HTMLElement,socket: IClientModel) {
-    super(parentNode);
-    const Setting = new Control(this.node, 'div', '', 'Setting');
+    super(parentNode, 'div', style['room_main'], 'Room Page');
+    const Setting = new Control(this.node, 'div', '', 'чатик....');
     const button = new Control(this.node, 'button', '', 'Register');
     button.node.onclick = () => {
       socket.registerGamePlayer()
@@ -20,3 +21,4 @@ export class SettingPage extends Control{
 
   }
 }
+

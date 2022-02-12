@@ -1,0 +1,87 @@
+.main{
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  background-color: black;
+  position: relative;
+}
+
+/*
+.main_wrapper{
+  position: relative;
+  transition-duration: 500ms;
+  left: 0;
+  background-color: #000;
+}
+
+.hide{
+  left: 100%;
+}
+*/
+.select_wrapper{
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.select_item{
+  width: 300px;
+  height: 300px;
+  border: none;
+  margin: 150px 50px;
+  padding-top: 300px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.select_item:hover{
+  filter: brightness(2);
+  box-shadow: 7px 7px 7px #666, -3px -3px 7px gold;
+  transition: 0.5s;
+ /* border: 1px solid #fff;*/
+}
+
+
+
+.capture{
+  position: absolute;
+  height: 30px;
+  bottom: -10%;
+  width: 100%;
+  background: #666 url('../assets/img/aside/fon-metall.jpg') no-repeat 0 0/cover;
+  color: black;
+  font-size: 24px;
+  font-weight: 500;
+  transition: 0.5s;
+  text-align: center;
+}
+
+.select_item:hover .capture{
+  bottom: 0;
+  transition: 0.5s;
+}
+
+/*
+.main_bottom{
+  display: flex;
+  justify-content: center;
+}
+
+.button{
+  width: 300px;
+  height: 100px;
+  border: 1px solid #000;
+}
+*/
+
+.multi_player{
+  background: url('../assets/img/startpage/button-online.png') no-repeat 0 0/contain;
+}
+
+.single_player{
+  background: url('../assets/img/startpage/button-single.png') no-repeat 0 0/contain;
+}
