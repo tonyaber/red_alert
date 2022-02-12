@@ -30,7 +30,7 @@ export class PlayerController{
   }
 
   moveUnits(unitId:string, target:IVector){
-    return this.gameModel.moveUnits(this.playerId, unitId);
+    return this.gameModel.moveUnits(this.playerId, unitId, target);
   }
 
   updateSidePanel(targetId: string) {

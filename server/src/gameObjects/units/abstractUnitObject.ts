@@ -148,7 +148,7 @@ attackRadius:number = 2;
   }
   tracePathToTarget(target: IVector, action: string) {
     const traceMap = this.getTraceMap(target);
-
+    console.log(traceMap)
   //console.log("TRR",traceMap)
   const targetToTile = {x: Math.floor(target.x ), y: Math.floor(target.y )}
   const positionToTile = {
@@ -157,8 +157,8 @@ attackRadius:number = 2;
   }
   if (this.path.length == 0) {
     //todo если будет становиться пустым то не пересчитывать опять
-    tracePath(traceMap, this.data.position, target
-     /* new Vector(positionToTile.x, positionToTile.y), new Vector(targetToTile.x, targetToTile.y)*/, (path) => {
+    tracePath(traceMap, 
+      new Vector(positionToTile.x, positionToTile.y), new Vector(targetToTile.x, targetToTile.y), (path) => {
         //console.log("PATHES",path)
         //console.log('pos',this.data.position)
        
@@ -171,7 +171,7 @@ attackRadius:number = 2;
           })
        }
        console.log('PATH', path)
-       console.log('this.PAth', this.path)
+       
         
         const step = this.path.pop();
 
