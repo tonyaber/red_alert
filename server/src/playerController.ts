@@ -29,8 +29,8 @@ export class PlayerController{
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
-  moveUnits(unitId:string, target:IVector,tileSize:number){
-    return this.gameModel.moveUnits(this.playerId, unitId, target,tileSize);
+  moveUnits(unitId:string, target:IVector){
+    return this.gameModel.moveUnits(this.playerId, unitId, target);
   }
 
   updateSidePanel(targetId: string) {
@@ -46,8 +46,8 @@ export class PlayerController{
     return this.gameModel.getObjects();
   }
 
-  setAttackTarget(unitId:string, targetId:string, tileSize: number){
-    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId, tileSize)
+  setAttackTarget(unitId:string, targetId:string){
+    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
   }
 
   setPrimary(buildId: string, name: string) {    

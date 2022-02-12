@@ -6,6 +6,7 @@ import { PlayerSide } from "./playerSide";
 import { TickList } from "./tickList";
 import { gameObjects } from "./gameObjects/gameObjectsMap";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
+import { tilesCollection } from "./tileCollection";
 
 export class GameModel{
   players: IRegisteredPlayerInfo[] = [];
@@ -66,7 +67,7 @@ export class GameModel{
     const el = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary);
     if(el){
       const position = el.data.position;
-      const newPosition = position.clone().add(new Vector(25, 25));
+      const newPosition = position.clone();
       this.addGameObject(playerId, type, newPosition);
     }
     //position for primary
@@ -86,7 +87,7 @@ export class GameModel{
     // console.log('addGameObjectServer')
     //mapObject
     //проверка, можно ли его добавлять
-    console.log(position)
+    //console.log(position)
     const state = { position, playerId }
     // console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
@@ -97,6 +98,21 @@ export class GameModel{
     gameObject.onCreate = (state) => {
       this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
       this.objects[state.objectId] = gameObject;
+      console.log(this);
+      console.log(gameObject.subType)
+    if(gameObject.subType==='build'){
+      const buildPos = (gameObject as AbstractBuildObject).buildMatrix.map((it, index) => {
+        //  [0,1,1,0]
+        //[0,1,1,0]
+        return it.map((el, ind) => {
+          if (el > 0) {
+            return new Vector(position.x + ind, position.y + index)
+          }
+          return 0;
+        }).filter(el => el != 0);
+      }).flat() as Vector[];
+      tilesCollection.addBuild(buildPos)
+    }
       this.onUpdate(state, 'create');     
       if (!this._getPrimary(playerId, objectName)&&gameObject instanceof AbstractBuildObject) {
         gameObject.setState((lastState) => {
@@ -126,13 +142,13 @@ export class GameModel{
     return 'add object';
   }
 
-  moveUnits(playerId: string, unitId: string, target: IVector,tileSize:number) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target, tileSize);
+  moveUnits(playerId: string, unitId: string, target: IVector) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target);
     return 'move unit';
   }
 
-  setAttackTarget(playerId: string, unitId: string, targetId: string, tileSize: number) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId, tileSize);
+  setAttackTarget(playerId: string, unitId: string, targetId: string) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
     return 'attack';
   }
 

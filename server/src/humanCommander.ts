@@ -31,10 +31,10 @@ export class HumanCommander{
       return this.playerController.playBuilding(message.content.name)
     }
     if (message.type === 'moveUnit') {
-      return this.playerController.moveUnits(message.content.id, message.content.position, message.content.tileSize);
+      return this.playerController.moveUnits(message.content.id, message.content.position);
     }
     if (message.type === 'attack') {
-      return this.playerController.setAttackTarget(message.content.id, message.content.targetId, message.content.tileSize);
+      return this.playerController.setAttackTarget(message.content.id, message.content.targetId);
     }
     if (message.type === 'addInitialDate') {
       return this.playerController.addInitialDate(message.content.name, message.content.playerId, message.content.position);

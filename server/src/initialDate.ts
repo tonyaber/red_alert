@@ -4,57 +4,57 @@ export const INITIAL_DATE = [
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(225,150))
+      position: (new Vector(1,1))
     },
     {
       name: 'barrack',
-      position: (new Vector(500,225))
+      position: (new Vector(2,6))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(325,400))
+      position: (new Vector(7,5))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(1225,1150))
+      position: (new Vector(21,21))
     },
     {
       name: 'barrack',
-      position: (new Vector(1500,1525))
+      position: (new Vector(22,26))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(1325,1400))
+      position: (new Vector(27,25))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(2225,2150))
+      position: (new Vector(21,1))
     },
     {
       name: 'barrack',
-      position: (new Vector(2500,2525))
+      position: (new Vector(22,6))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(2325,2400))
+      position: (new Vector(27,5))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(425,2350))
+      position: (new Vector(1,21))
     },
     {
       name: 'barrack',
-      position: (new Vector(700,2425))
+      position: (new Vector(2,26))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(525,2600))
+      position: (new Vector(7,25))
     },
   ],
 ];

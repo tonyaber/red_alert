@@ -11,8 +11,8 @@ export class Canvas extends Control{
   onGameMove: () => void;
   onClick: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector, tileSize: number) => void;
-  onAttack: (id: string, targetId: string, tileSize: number) => void;
+  onChangePosition: (id: string, position: Vector) => void;
+  onAttack: (id: string, targetId: string) => void;
   canvas: Control<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   ticker = new RenderTicker();
@@ -79,12 +79,12 @@ export class Canvas extends Control{
     this.renderer.onObjectClick = (id, name, subType) => {
       this.onObjectClick(id, name, subType);
     }
-    this.renderer.onChangePosition = (id, position,tileSize:number)=>{
-      this.onChangePosition(id, position,tileSize)
+    this.renderer.onChangePosition = (id, position)=>{
+      this.onChangePosition(id, position)
     }
 
-    this.renderer.onAttack = (id, idTarget, tileSize) => {
-      this.onAttack(id, idTarget, tileSize);
+    this.renderer.onAttack = (id, idTarget) => {
+      this.onAttack(id, idTarget);
     }
 
     this._resizeHandler = ()=>{

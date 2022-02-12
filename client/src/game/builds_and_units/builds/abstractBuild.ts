@@ -32,6 +32,7 @@ export class AbstractBuild extends InteractiveObject{
     this.primary = data.content.primary;
     this.health = data.content.health;
     this.camera = camera;
+    
     // const tileMap = [
     //   [0,0,0,0],
     //   [0,1,1,0],
