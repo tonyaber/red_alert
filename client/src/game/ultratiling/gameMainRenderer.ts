@@ -26,8 +26,8 @@ export class GameMainRender{
   hoveredObjects: InteractiveObject;
   onAddBuild: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector, tileSize: number) => void;
-  onAttack: (id: string, targetId: string, tileSize: number) => void;
+  onChangePosition: (id: string, position: Vector) => void;
+  onAttack: (id: string, targetId: string) => void;
   explosions: Explosion[]=[];
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
@@ -107,7 +107,7 @@ export class GameMainRender{
   }
 
   addShot(point: Vector) {
-    const explosion = new Explosion(point);
+    const explosion = new Explosion(point.scale(this.camera.getTileSize()));
     
     explosion.onDestroyed = () => {
       this.explosions = this.explosions.filter(it => it != explosion);
@@ -158,9 +158,9 @@ export class GameMainRender{
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);
     } 
     if (action === 'move') {
-      console.log("move",this.camera.position.clone().add(cursor))
+      
         this.cursorStatus.selected.forEach(item=>this.onChangePosition(
-          item.id, this.camera.getTileVector(this.camera.position.clone().add(cursor)),this.camera.getTileSize()))
+          item.id, this.camera.getTileVector(this.camera.position.clone().add(cursor))))
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
@@ -168,7 +168,7 @@ export class GameMainRender{
         this.cursorStatus.selected = [];
     }
     if (action === 'attack') {
-      this.cursorStatus.selected.forEach(item => this.onAttack(item.id, this.hoveredObjects.id, this.camera.getTileSize()));
+      this.cursorStatus.selected.forEach(item => this.onAttack(item.id, this.hoveredObjects.id));
       this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
       this.cursorStatus.selected = [];
     }

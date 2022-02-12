@@ -107,14 +107,14 @@ export class SocketModel implements IClientModel
     return this.client.sendMessage('gameMove', content);
   }
 
-  moveUnit(id: string, position: Vector,tileSize:number):Promise<string>{
-    const content = JSON.stringify({ type: 'moveUnit', content: {id, position, tileSize} });
+  moveUnit(id: string, position: Vector):Promise<string>{
+    const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
     console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
   }
 
-  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
-    const content = JSON.stringify({ type: 'attack', content: {id, targetId, tileSize} });
+  setAttackTarget(id: string, targetId: string):Promise<string>{
+    const content = JSON.stringify({ type: 'attack', content: {id, targetId} });
     return this.client.sendMessage('gameMove', content);
   }
   destroy() {

@@ -133,15 +133,15 @@ export class LocalModel implements IClientModel
     return new Promise(resolve => resolve(result))
   }
 
-  moveUnit(id: string, position: Vector,tileSize:number): Promise<string>{
-    console.log('TILESIZE',tileSize)
+  moveUnit(id: string, position: Vector): Promise<string>{
 
-    const result =  this.myPlayer.moveUnits(id, position,tileSize);
+
+    const result =  this.myPlayer.moveUnits(id, position);
     return new Promise(resolve => resolve(result));
   }
 
-  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
-    const result = this.myPlayer.setAttackTarget(id, targetId,tileSize);// , tileSize
+  setAttackTarget(id: string, targetId: string):Promise<string>{
+    const result = this.myPlayer.setAttackTarget(id, targetId);// , tileSize
     return new Promise(resolve => resolve(result));
   }
 

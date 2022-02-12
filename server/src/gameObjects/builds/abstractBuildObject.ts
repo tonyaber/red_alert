@@ -30,7 +30,7 @@ export class AbstractBuildObject extends GameObject{
     this.objectId = objectId;
     this.buildMatrix = [
       [0,1,1,0],
-      [0,1,1,0],
+      [1,1,1,1],
       [1,1,1,1],
       [1,1,1,1],
     ];

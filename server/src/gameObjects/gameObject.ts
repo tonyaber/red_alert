@@ -56,12 +56,12 @@ export class GameObject {
     // }, this.subType); 
   }
 
-  moveUnit(target: IVector,tileSize:number) {
+  moveUnit(target: IVector) {
     //this.target = Vector.fromIVector(target);
     //this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
 
-  attack(targetId: string, tileSize: number){
+  attack(targetId: string){
     
   }
 

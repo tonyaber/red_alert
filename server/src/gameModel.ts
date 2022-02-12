@@ -87,7 +87,7 @@ export class GameModel{
     // console.log('addGameObjectServer')
     //mapObject
     //проверка, можно ли его добавлять
-    console.log(position)
+    //console.log(position)
     const state = { position, playerId }
     // console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
@@ -142,13 +142,13 @@ export class GameModel{
     return 'add object';
   }
 
-  moveUnits(playerId: string, unitId: string, target: IVector,tileSize:number) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target, tileSize);
+  moveUnits(playerId: string, unitId: string, target: IVector) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target);
     return 'move unit';
   }
 
-  setAttackTarget(playerId: string, unitId: string, targetId: string, tileSize: number) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId, tileSize);
+  setAttackTarget(playerId: string, unitId: string, targetId: string) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
     return 'attack';
   }
 

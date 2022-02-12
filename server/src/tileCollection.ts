@@ -159,7 +159,7 @@ export class TilesCollection {
   getTilesMap(){
     return this.tilesMap
   }
-  getTilesArray(){
+  getTilesArray() {
     return this.arrayTiles
   }
 
