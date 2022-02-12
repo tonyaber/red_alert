@@ -2,7 +2,7 @@ import { BotCommander } from "../../../server/src/botCommander";
 import { IRegisteredPlayerInfo } from "../../../server/src/dto";
 import { GameModel } from "../../../server/src/gameModel";
 import { PlayerController } from "../../../server/src/playerController";
-import { IChatMsg, IGameUpdateResponse } from './dto';
+import { IChatMsg, IUserItem, IGameUpdateResponse } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
 import {Vector} from '../../../common/vector'
@@ -18,6 +18,7 @@ export class LocalModel implements IClientModel
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
   onChatMsg: (msg: IChatMsg) => void;
+  onUsersList: (msg: IUserItem[]) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
@@ -119,6 +120,7 @@ export class LocalModel implements IClientModel
   }
 
   chatSend():Promise<string>{ return new Promise((r)=>r(''))}
+  getUsersList():Promise<string>{ return new Promise((r)=>r(''))}
 
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{

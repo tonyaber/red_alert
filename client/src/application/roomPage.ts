@@ -1,7 +1,7 @@
 import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import style from './roomPage.css'
-import { IChatMsg } from '../game/dto'
+import { IChatMsg, IUserItem } from '../game/dto'
 import session from './session';
 
 export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
@@ -11,6 +11,18 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     super(parentNode, 'div', style['room_main'], 'Room Page');
     const lobby = new Control(this.node, 'div', style['lobby_wrapper'], 'lobby-room');
     const wrapperPlayers = new Control(lobby.node, 'div', style['players_wrapper'], 'Players');
+    socket.getUsersList().then(
+      _=>{
+        console.log('send get userList')
+      }
+    )
+    socket.onUsersList = (msg:IUserItem[] ) => {    
+      wrapperPlayers.node.innerHTML='';  
+      msg.forEach(x => {
+        const user = new Control(wrapperPlayers.node, 'div', style['user_item'], x.name); 
+        console.log(x);        
+      });
+    }
     const wrapperChat = new Control(lobby.node, 'div', style['chat_wrapper'], 'Chat');
     const chat = new Control(wrapperChat.node, 'div', style['chat'], 'bla bla bla');
     // тут вставил текстарию... хотя не имеет значение как вносить значение
@@ -25,7 +37,7 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     const btnCreateMap = new Control(this.node, 'button', style['btn_map'], 'Create game');
     btnCreateMap.node.onclick = () => {
       this.onCreateGame();
-    }
+    }    
     const btnRegister = new Control(this.node, 'button', style['btn_register'], 'Register');
     btnRegister.node.onclick = () => {
       socket.registerGamePlayer()

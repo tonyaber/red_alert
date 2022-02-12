@@ -6,8 +6,10 @@ import {
   IServerResponseMessage,
   IGameUpdateResponse,
   IChatMsg,
+  IUserItem,
 } from "./dto";
 import { IClientModel } from "./IClientModel";
+import session from "../application/session";
 export class SocketModel implements IClientModel {
   onSideUpdate: (data: { sidePanelData: IObjectInfo[]; money: number }) => void;
   onCanvasObjectUpdate: (response: IGameUpdateResponse) => void;
@@ -18,6 +20,8 @@ export class SocketModel implements IClientModel {
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
   onChatMsg: (msg: IChatMsg) => void;  
+  onUsersList: (msg: IUserItem[]) => void;  
+
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
@@ -50,6 +54,9 @@ export class SocketModel implements IClientModel {
       if (message.type === "chatMsg") {
         this.onChatMsg(JSON.parse(message.content));
       }
+      if (message.type === "usersList") {
+        this.onUsersList(JSON.parse(message.content));
+      }
     };
     this.client.onMessage.add(this.messageHandler);
   }
@@ -64,7 +71,7 @@ export class SocketModel implements IClientModel {
   }
 
   addUser() {
-    this.client.sendMessage("auth", "user" + Math.floor(Math.random() * 100));
+    this.client.sendMessage("auth", JSON.stringify({ user:session.get('user') }));
   }
 
   registerGamePlayer() {
@@ -168,6 +175,10 @@ export class SocketModel implements IClientModel {
   chatSend(msg: IChatMsg): Promise<string> {
     const content = JSON.stringify(msg);
     return this.client.sendMessage("chatSend", content);
+  }
+  getUsersList(msg: IChatMsg): Promise<string> {
+    const content = JSON.stringify(msg);
+    return this.client.sendMessage("getUsersList", content);
   }
 
   destroy() {

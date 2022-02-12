@@ -73,3 +73,7 @@ export interface IChatMsg{
   user: string;
   msg: string;
 }
+export interface IUserItem{
+  name: string;
+  id: string;
+}

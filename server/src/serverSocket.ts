@@ -52,6 +52,7 @@ export class ServerSocket {
           if (msg.type === "auth") {
             //id
             // this.connections.set(connection, msg.content);
+            // console.log(msg);
             this.connections.set(msg.sessionID, new Session(msg, connection));
             connection.sendUTF(
               JSON.stringify({ type: "auth", content: msg.content })
@@ -67,7 +68,6 @@ export class ServerSocket {
             };
             connection.sendUTF(JSON.stringify(response));
           }
-
           if (msg.type === "gameMove") {
             // const playerId = this.connections.get(connection);
             const playerId = msg.sessionID;
@@ -100,6 +100,24 @@ export class ServerSocket {
                 sessionID: key,
                 type: "chatMsg",
                 content: msg.content,
+                requestId: msg.requestId,
+              };
+              this.response(response);
+            });
+          }
+          if (msg.type === "getUsersList") {
+            // const usersList = this.connections.keys().map((value, key) => {})
+            const usersList = Array.from(this.connections.entries()).map(
+              (x) => {
+                const user = { name: x[1].user.name, id: x[0] };
+                return user;
+              }
+            );
+            this.connections.forEach((value, key) => {
+              const response: IServerResponseMessage = {
+                sessionID: key,
+                type: "usersList",
+                content: JSON.stringify(usersList),
                 requestId: msg.requestId,
               };
               this.response(response);

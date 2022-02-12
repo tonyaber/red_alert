@@ -1,5 +1,5 @@
 import { Vector } from "../../../common/vector";
-import { IGameUpdateResponse, IChatMsg } from "./dto";
+import { IGameUpdateResponse, IChatMsg, IUserItem} from "./dto";
 import { IGameObjectData, IObjectInfo } from "./dto";
 
 export class IClientModel
@@ -13,6 +13,7 @@ export class IClientModel
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
   onChatMsg: (msg: IChatMsg) => void;
+  onUsersList: (msg: IUserItem[]) => void;
   addUser: () => void;
 
   registerGamePlayer: () => void;
@@ -34,5 +35,6 @@ export class IClientModel
   setAttackTarget:(id: string, targetId: string,tileSize:number)=>Promise<string>;
   registerSpectator: () => void;
   chatSend: (msg?: IChatMsg)=>Promise<string>;
+  getUsersList: (msg?: IChatMsg)=>Promise<string>;
   //all game player methods
 }
