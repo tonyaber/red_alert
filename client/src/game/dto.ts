@@ -67,3 +67,8 @@ export interface IGameUpdateResponse{
   type: 'update' | 'delete' | 'create';
   data: IGameObjectData;
 }
+
+export interface IChatMsg{
+  user: string;
+  msg: string;
+}

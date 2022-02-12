@@ -2,7 +2,7 @@ import { BotCommander } from "../../../server/src/botCommander";
 import { IRegisteredPlayerInfo } from "../../../server/src/dto";
 import { GameModel } from "../../../server/src/gameModel";
 import { PlayerController } from "../../../server/src/playerController";
-import { IGameUpdateResponse } from './dto';
+import { IChatMsg, IGameUpdateResponse } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
 import {Vector} from '../../../common/vector'
@@ -17,6 +17,7 @@ export class LocalModel implements IClientModel
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
+  onChatMsg: (msg: IChatMsg) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
