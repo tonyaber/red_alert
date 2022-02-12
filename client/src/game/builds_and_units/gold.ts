@@ -23,9 +23,9 @@ export class Gold extends InteractiveObject{
     this.id = data.objectId;
     this.infoLayer = infoLayer;   
     this.camera = camera;
-    this.position = data.content.position;
-    
-    this.info = new GoldInfoView(data.content.position, res["goldFull"], camera.getTileSize());
+    this.position = Vector.fromIVector(data.content.position);
+   
+    this.info = new GoldInfoView(this.position, res["goldFull"], camera.getTileSize());
     this.info.update();
     this.infoLayer.addObject(this.info);  
   }

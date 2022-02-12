@@ -25,7 +25,7 @@ export class Rock extends InteractiveObject{
     this.id = data.objectId;
     this.infoLayer = infoLayer;    
     
-    this.info = new GoldInfoView(data.content.position, res["rocks"], camera.getTileSize());
+    this.info = new GoldInfoView(Vector.fromIVector(data.content.position), res["rocks"], camera.getTileSize());
     this.info.update();
     this.infoLayer.addObject(this.info);
     
