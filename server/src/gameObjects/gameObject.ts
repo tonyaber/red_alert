@@ -23,6 +23,7 @@ export class GameObject {
   type: string;
   direction: Vector;
   target: Vector;
+   buildMatrix: number[][];
 
   constructor(/*objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }*/) {
     // this.data.position = Vector.fromIVector(state.position);

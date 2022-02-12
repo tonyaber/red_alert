@@ -21,7 +21,7 @@ const tileMap = [
       [1,1,1,1],
       [1,1,0,0],
     ];
-    const pos = camera.getTileVector(data.content.position)
+    const pos = data.content.position
 
     this.info = new BuildingInfoView(pos.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
     this.info.update();

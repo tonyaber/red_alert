@@ -16,7 +16,7 @@ export class BigEnergyPlant extends AbstractBuild{
       [1,1,1,1],
       [0,1,1,0],
     ];
-    const pos = camera.getTileVector(data.content.position)
+    const pos = data.content.position
 
     this.info = new BuildingInfoView(pos.clone(), res["energy"], this.name, this.health, this.playerId, this.primary);
     this.info.update();

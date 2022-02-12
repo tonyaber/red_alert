@@ -22,7 +22,7 @@ export class AbstractUnitObject extends GameObject {
 
   objects: Record<string, GameObject>;
 attackRadius:number = 3;
-  subType: string;
+  subType: string = 'unit';
   type: string;
   direction: Vector;
   action: string;

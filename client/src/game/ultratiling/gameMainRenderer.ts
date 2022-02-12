@@ -11,6 +11,7 @@ import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
 import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
 import { Explosion } from '../builds_and_units/explosion';
+import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -103,10 +104,6 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
      const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    if(interactiveObject.subType==='build'){
-      const buildPos=interactiveObject.tiles.map(e=>e.getPosition())
-      tilesCollection.addBuild(buildPos)
-    }
   }
 
   addShot(point: Vector) {
@@ -153,8 +150,8 @@ export class GameMainRender{
     this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
     const action = this.cursorStatus.getAction();
     // console.log(action)
-     if (action === 'build') {
-        this.onAddBuild?.(this.camera.position.clone().add(cursor));
+    if (action === 'build') {
+        this.onAddBuild?.(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
         this.cursorStatus.planned = null;
     }
     if (action === 'primary') {
@@ -163,7 +160,7 @@ export class GameMainRender{
     if (action === 'move') {
       console.log("move",this.camera.position.clone().add(cursor))
         this.cursorStatus.selected.forEach(item=>this.onChangePosition(
-          item.id, this.camera.position.clone().add(cursor),this.camera.getTileSize()))
+          item.id, this.camera.getTileVector(this.camera.position.clone().add(cursor)),this.camera.getTileSize()))
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
