@@ -134,9 +134,12 @@ export class LocalModel implements IClientModel
   }
 
   moveUnit(id: string, position: Vector): Promise<string>{
-
-
     const result =  this.myPlayer.moveUnits(id, position);
+    return new Promise(resolve => resolve(result));
+  }
+
+  createMap(map: number[][]):Promise<string> {
+    const result = this.myPlayer.addInitialMap(map);
     return new Promise(resolve => resolve(result));
   }
 

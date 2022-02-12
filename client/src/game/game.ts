@@ -6,7 +6,8 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
-import {INITIAL_DATE} from '../../../server/src/initialDate';
+import { INITIAL_DATE } from '../../../server/src/initialDate';
+import { getImageData, getMapFromImageData } from './tracer';
 
 export class Game extends Control{
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
@@ -22,6 +23,7 @@ export class Game extends Control{
         }
       })
     }
+
    
     const wrapperGameControls = new Control(this.node, 'div', red['wrap_game_controls']);
     const exit = new Control(wrapperGameControls.node, 'button', red['exit_game'], 'exit');
@@ -97,13 +99,18 @@ export class Game extends Control{
       })
     }
     
-    sidePanelInfo.players.map((it, index) => {
-      if (sidePanelInfo.type != 'spectator') {
-        INITIAL_DATE[index].forEach(el => {
-          socket.addInitialDate(el.name, el.position, it)
-        })
-      }      
-    });
+    // sidePanelInfo.players.map((it, index) => {
+    //   if (sidePanelInfo.type != 'spectator') {
+    //     INITIAL_DATE[index].forEach(el => {
+    //       socket.addInitialDate(el.name, el.position, it)
+    //     })
+    //   }      
+    // });
+
+    const imageData = getImageData(res.map)
+    const mapGame = getMapFromImageData(imageData);
+
+    socket.createMap(mapGame);
 
     this.node.onclick = ()=>{
       this.node.requestFullscreen();

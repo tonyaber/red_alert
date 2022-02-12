@@ -39,6 +39,9 @@ export class HumanCommander{
     if (message.type === 'addInitialDate') {
       return this.playerController.addInitialDate(message.content.name, message.content.playerId, message.content.position);
     }
+    if (message.type === 'initialMap') {
+      return this.playerController.addInitialMap(message.content.map);
+    }
   }
 
   sendMessage(type: string, message: string) {

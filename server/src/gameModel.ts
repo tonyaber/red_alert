@@ -82,6 +82,35 @@ export class GameModel{
     return this.gameObjects.map(item=>item.getState());
   }
 
+  addInitialObject(playerId:string, objectName:string, position:IVector){
+    const state = { position, playerId }
+    const gameObjectConstructor = gameObjects[objectName];
+    const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
+    gameObject.onUpdate = (state)=>{
+      this.onUpdate(state, 'update');
+    }
+    gameObject.onCreate = (state) => {      
+      this.objects[state.objectId] = gameObject;
+      this.onUpdate(state, 'create');     
+    }
+    gameObject.onDelete = (state) => {
+      delete this.objects[state.objectId];
+      this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
+      this.onUpdate(state, 'delete'); 
+    }
+
+    gameObject.onDamageTile = (targetId, point) => {
+      this.gameObjects.find(it => it.objectId === targetId).damage(point);
+      this.onShot(point);
+      //gameObjects
+    }
+    gameObject.create();
+    this.gameObjects.push(gameObject);
+    //this.tickList.add(gameObject);
+  
+    return 'add object';
+  }
+
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
     // console.log('addGameObjectServer')
@@ -98,10 +127,9 @@ export class GameModel{
     gameObject.onCreate = (state) => {
       this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
       this.objects[state.objectId] = gameObject;
-      console.log(this);
-      console.log(gameObject.subType)
+      
     if(gameObject.subType==='build'){
-      const buildPos = (gameObject as AbstractBuildObject).buildMatrix.map((it, index) => {
+      const buildPos = (gameObject as AbstractBuildObject).data.buildMatrix.map((it, index) => {
         //  [0,1,1,0]
         //[0,1,1,0]
         return it.map((el, ind) => {
@@ -172,11 +200,22 @@ export class GameModel{
     return 'set primary'
   }
 
-  _getPrimary(playerId: string, name: string) {
-    return this.gameObjects.find(item => item.type === name && item.data.primary && item.data.playerId === playerId);
+  createMap(map: number[][]) {
+    map.forEach((el, indX) => {
+      el.forEach((it, indY) => {
+        if (it === 1) {
+          this.addInitialObject('initial', 'gold', new Vector(indX, indY))
+         
+        }
+        else if (it === 2) {
+          this.addInitialObject('initial', 'rock', new Vector(indX, indY))
+        }
+      })
+    })
+    return 'add Initial date'
   }
 
-  //
-
- 
+  _getPrimary(playerId: string, name: string) {
+    return this.gameObjects.find(item => item.type === name && item.data.primary && item.data.playerId === playerId);
+  } 
 }

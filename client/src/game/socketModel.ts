@@ -121,5 +121,10 @@ export class SocketModel implements IClientModel
     this.client.onMessage.remove(this.messageHandler);
    }
 
+  createMap(map: number[][]):Promise<string> {
+    const content = JSON.stringify({ type: 'initialMap', content: { map } });
+    return this.client.sendMessage('gameMove', content);
+  }
+
   //all game player methods
 }

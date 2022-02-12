@@ -32,6 +32,6 @@ export class IClientModel
 
   setAttackTarget:(id: string, targetId: string)=>Promise<string>;
   registerSpectator: () => void;
-
+  createMap: (map: number[][]) => Promise<string>;
   //all game player methods
 }
