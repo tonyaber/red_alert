@@ -122,9 +122,9 @@ const carFactory = {
 
 const bigEnergyPlant = {
   deps: ['buildingCenter', 'energyPlant'],
-  desc: ['energyCenter'],
+  desc: ['bigEnergyPlant'],
   spawn: [""],
-  name: 'energyCenter',
+  name: 'bigEnergyPlant',
   energy: -12,
   cost: 400,
   subType: 'build',

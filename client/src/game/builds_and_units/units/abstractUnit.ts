@@ -19,7 +19,7 @@ export class AbstractUnit extends InteractiveObject{
   position: Vector;
   name: string;
   primary: boolean = false;
-  health: number = 100;
+  health: number;
   info: UnitInfoView;
   infoLayer: BoundingLayer;
   camera: Camera;
@@ -30,6 +30,7 @@ export class AbstractUnit extends InteractiveObject{
     this.infoLayer = infoLayer;
     this.position = data.content.position;
     this.playerId = data.content.playerId;
+    this.health = data.content.health;
     this.camera = camera;
     //this.updateObject(data.content)
     // const tileMap = [
@@ -111,10 +112,13 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
   updateObject(data: IGameObjectContent) {
+    //console.log("UPD")
     this.position = data.position;
     this.playerId = data.playerId;
+    this.health = data.health;
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
     this.info.position = this.camera.getTileVector(data.position.clone());
+    this.info.health = data.health;
     this.info.update();
     this.infoLayer.updateObject(this.info)
   }
@@ -122,7 +126,7 @@ export class AbstractUnit extends InteractiveObject{
   inShape(tile: Vector, cursor: Vector): boolean {
     
     let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
-     if (pos.abs()<15){
+     if (pos.abs()<30){
        console.log(true)
        return true;
        

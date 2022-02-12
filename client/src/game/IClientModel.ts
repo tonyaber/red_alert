@@ -10,7 +10,8 @@ export class IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
-
+  onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   addUser: () => void;
 
   registerGamePlayer: () => void;
@@ -24,10 +25,13 @@ export class IClientModel
   //to map
   addBuild: (name: string, position: Vector, playerId: string) => Promise<string>;
 
-  setPrimary: (id: string, name: string) => Promise<string>;
-  moveUnit: (id: string, position: Vector)=> Promise<string>;
+  addInitialDate: (name: string, position: Vector, playerId: string) => Promise<string>;
 
-  setAttackTarget:(id: string, targetId: string)=>Promise<string>;
+  setPrimary: (id: string, name: string) => Promise<string>;
+  moveUnit: (id: string, position: Vector,tileSize:number)=> Promise<string>;
+
+  setAttackTarget:(id: string, targetId: string,tileSize:number)=>Promise<string>;
   registerSpectator: () => void;
+
   //all game player methods
 }

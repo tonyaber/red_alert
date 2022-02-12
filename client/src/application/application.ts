@@ -10,7 +10,8 @@ import { RoomPage } from './roomPage';
 import { SoundManager } from '../game/soundManager'
 import { resourceLoader, resources } from '../game/resources';
 import StatisticsPage from './statisticsPage'
-import {SettingsPage} from './settingsPage'
+import {SettingsPage} from './settingsPageSingle'
+import { Settings } from './settingsPageMulti';
 import style from './application.css'
 import PopupPage from './popup'
 
@@ -28,47 +29,87 @@ export class Application extends Control{
     startPage.onSinglePlay = () => {
       startPage.destroy();
       this.socket = new LocalModel();
-      this.gameCycle();
+      //this.gameCycle();
+      this.singleCycle();
     }
     startPage.onMultiPlay = () => {
       startPage.destroy();
       const clientSocket = new ClientSocket('ws://localhost:3000/');
       this.socket = new SocketModel(clientSocket);
-      this.gameCycle();      
+      this.multiCycle();      
     }
   }
 
-  gameCycle() {
+  singleCycle(){
+    const settings = new SettingsPage(this.node, this.socket);
+    // settings.onAuth = (name) => {
+     
+    //   } 
+    settings.onStartGame = (data) =>{
+        settings.destroy();
+        this.gameCycle(settings.nameUser, data)
+        
+    }
+    
+    
+  }
+
+  multiCycle() {
     const authorization = new Authorization(this.node, this.socket);//ответ с именем
     authorization.onAuth = (name) => {
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       
       const roomPage = new RoomPage(this.node, this.socket);
+      roomPage.onCreateGame = () => {
+        const settings = new Settings(this.node);
+        settings.onCreate = (data) => {
+          //записываем данные созданной игры 
+          settings.destroy();
+        }
+      }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
         roomPage.destroy();
-        resourceLoader.load(resources).then(res=>{
-          const game = new Game(this.node, this.socket, name, data, res.textures);
-          game.onExit = () => {
-            //TODO сделать выход всех игроков, оповещение
-            game.destroy();
-            this.finishCycle();
-          } 
-          game.onPause = () => {
-            const pause = new PopupPage(this.node, 'Game paused ||', 'You stay game on pause. Your competitors wait you. Harry up!');
-            //TODO сделать паузу для всех игроков, оповещение
-            pause.onBack = () => {
-              pause.destroy();
-            }
-          }
-        })
+        this.gameCycle(name, data)
+        // resourceLoader.load(resources).then(res=>{
+        //   const game = new Game(this.node, this.socket, name, data, res.textures);
+        //   game.onExit = () => {
+        //     //TODO сделать выход всех игроков, оповещение
+        //     game.destroy();
+        //     this.finishCycle();
+        //   } 
+        //   game.onPause = () => {
+        //     const pause = new PopupPage(this.node, 'Game paused ||', 'You stay game on pause. Your competitors wait you. Harry up!');
+        //     //TODO сделать паузу для всех игроков, оповещение
+        //     pause.onBack = () => {
+        //       pause.destroy();
+        //     }
+        //   }
+        // })
       }
     }
-
     authorization.onHome = () => {
       authorization.destroy();
       this.mainCycle();
     }
+  }
+
+  gameCycle(name:string, data:any){  ///TODO type??
+    resourceLoader.load(resources).then(res=>{
+      const game = new Game(this.node, this.socket, name, data, res.textures);
+      game.onExit = () => {
+        //TODO сделать выход всех игроков, оповещение
+        game.destroy();
+        this.finishCycle();
+      } 
+      game.onPause = () => {
+        const pause = new PopupPage(this.node, 'Game paused ||', 'You stay game on pause. Your competitors wait you. Harry up!');
+        //TODO сделать паузу для всех игроков, оповещение
+        pause.onBack = () => {
+          pause.destroy();
+        }
+      }
+    })
   }
 
   finishCycle() {

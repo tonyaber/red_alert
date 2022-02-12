@@ -70,34 +70,40 @@ export class SettingsPage extends Control {
   //mapImage: HTMLImageElement;
   credit: number;
   onStartGame: (players: string) => void;
+  onAuth: (name:string) => void;
+  nameUser: string;
 
   constructor(parentNode: HTMLElement, socket: IClientModel){//, initialSettings: IGameOptions/*, maps: IMapsData[]*/) {
     
     super(parentNode, 'div', style["main_wrapper"]);// TODO сделать анимацию страницы //{default: style["main_wrapper"], hidden: style["hide"]});    
-    
+   // this.socket = socket;
+    socket.onAuth = (name) => {
+      //this.onAuth(name);
+      this.nameUser = name;
+    }
+
     socket.onStartGame = (data: string) => {
       this.onStartGame(data);
     }
     
-    
-    
-    this.credit = 10000;/*initialSettings.credits;*/
-    // this.loadMapsData().then(result => {
-    //   this.map = this.maps[0];
-    //   this.render();
-    // });
-    this.map = {
-      size: '64x64',
-      players: 4,
-      name: 'some map',
-      src: '../assets/png/gold_min.png'
-    }
 
-    this.render();
+    this.credit = 10000;/*initialSettings.credits;*/
+     this.loadMapsData().then(result => {
+      this.map = this.maps[0];
+       this.render(socket);
+    });
+    // this.map = {
+    //   size: '64x64',
+    //   players: 4,
+    //   name: 'some map',
+    //   src: '../assets/png/gold_min.png'
+    // }
+
+    // this.render();
 
 
   }
-  render(){
+  render(socket:IClientModel){
     const settingsWrapper = new Control(this.node, 'div', style['settings_wrapper']);
 
     const basicSettingsWrapper = new Control(settingsWrapper.node, 'div', style['basic_settings_wrapper']);
@@ -147,7 +153,7 @@ export class SettingsPage extends Control {
     
     imageWrapper.node.append(imageMap);
 
-   // this.setImageMap(imageMap);
+    this.setImageMap(imageMap);
     const nameMap = new Control(imageWrapper.node, 'div', style["name_map"], `${this.map.name}`)
     const prevButton = new Control(mapSlider.node, 'button', style["prev_slider_button"], `&#10094;`);
     prevButton.node.onclick = () => {
@@ -182,11 +188,15 @@ export class SettingsPage extends Control {
 
     const playButton = new Control(buttonsWrapper.node, 'button', '', 'play');
     playButton.node.onclick = () => {
-      const settings:IGameOptions = {
-        map: imageMap,//this.mapImage,
-        credits: this.credit
-      };
-      this.onPlay(settings);
+      // const settings:IGameOptions = {
+      //   map: imageMap,//this.mapImage,
+      //   credits: this.credit
+      // };
+      // socket.onAuth = (name) => {
+      //   this.onAuth(name);
+      // }
+      socket.addUser();
+      //this.onPlay(settings);
     }
 
   }

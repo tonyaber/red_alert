@@ -10,6 +10,7 @@ export class PlayerController{
     this.playerId = playerId;
   }
 
+  //  на сайд панели постройку запускает
   startBuilding(objectType: string) {
    return this.gameModel.startBuilding(this.playerId, objectType);
   }
@@ -22,12 +23,14 @@ export class PlayerController{
     return this.gameModel.playBuilding(this.playerId, objectType);
   }
 
-  addGameObject(objectType:string, position:IVector){
+  // Добавление объекта на канвас
+  addGameObject(objectType: string, position: IVector) {
+    console.log("%c"+this.playerId+ ' строит '+ objectType+ ': '+position.x+': '+position.y, 'color: blue')
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
-  moveUnits(unitId:string, target:IVector){
-    return this.gameModel.moveUnits(this.playerId, unitId, target);
+  moveUnits(unitId:string, target:IVector,tileSize:number){
+    return this.gameModel.moveUnits(this.playerId, unitId, target,tileSize);
   }
 
   updateSidePanel(targetId: string) {
@@ -43,12 +46,18 @@ export class PlayerController{
     return this.gameModel.getObjects();
   }
 
-  setAttackTarget(unitId:string, targetId:string){
-    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
+  setAttackTarget(unitId:string, targetId:string, tileSize: number){
+    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId, tileSize)
   }
 
   setPrimary(buildId: string, name: string) {    
     return this.gameModel.setPrimary(this.playerId, buildId, name);
+  }
+  addInitialDate(name: string, playerId: string, position: IVector) {
+    console.log(playerId)
+    if (playerId === this.playerId) {
+      return this.gameModel.addGameObject(this.playerId,name, position)
+    }
   }
 
 }

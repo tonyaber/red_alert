@@ -15,8 +15,11 @@ export class LocalModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
+  onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   myPlayer: PlayerController;
   player: string;
+  game: GameModel;
 
   constructor(){
 
@@ -56,8 +59,12 @@ export class LocalModel implements IClientModel
       if (action === 'create') {
         this.onAddObject(data);
       }
-      if(action === 'delete'){
+      if (action === 'delete') {
+        this.onDeleteObject(data);
       }
+    }
+    game.onShot = (point) => {
+      this.onShot(point);
     }
 
     // game.onUpdate = (id, data)=>{
@@ -79,8 +86,10 @@ export class LocalModel implements IClientModel
     this.onStartGame(JSON.stringify({ players: allPlayers, sidePanel, type:'human' }));
     bots.forEach(item => {       
       const sidePanel = game.getState(item.playerController.playerId);      
-      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type:'bot' }))
+      item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type: 'bot' }))
+      
     })
+    this.game = game;
   }
 
   //side
@@ -114,19 +123,25 @@ export class LocalModel implements IClientModel
     const result = this.myPlayer.addGameObject(name, position);
     return new Promise(resolve => resolve(result))
   }
+  addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+    const result = this.game.addGameObject(playerId,name, position);
+    return new Promise(resolve => resolve(result))
+  }
 
   setPrimary(id: string, name: string):Promise<string>{
     const result = this.myPlayer.setPrimary(id, name);
     return new Promise(resolve => resolve(result))
   }
 
-  moveUnit(id: string, position: Vector): Promise<string>{
-    const result =  this.myPlayer.moveUnits(id, position);
+  moveUnit(id: string, position: Vector,tileSize:number): Promise<string>{
+    console.log('TILESIZE',tileSize)
+
+    const result =  this.myPlayer.moveUnits(id, position,tileSize);
     return new Promise(resolve => resolve(result));
   }
 
-  setAttackTarget(id: string, targetId: string):Promise<string>{
-    const result = this.myPlayer.setAttackTarget(id, targetId);
+  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
+    const result = this.myPlayer.setAttackTarget(id, targetId,tileSize);// , tileSize
     return new Promise(resolve => resolve(result));
   }
 

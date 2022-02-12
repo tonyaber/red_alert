@@ -45,9 +45,13 @@ export class GameServer {
       if (action === 'create') {
         this.players.forEach(player => player.sendMessage('create', JSON.stringify(data)));
       }
-      if(action === 'delete'){
+      if (action === 'delete') {
+        this.players.forEach(player=> player.sendMessage('delete', JSON.stringify(data)));
 
       }     
+    }
+    this.gameModel.onShot = (point) => {
+      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify(point)));
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])

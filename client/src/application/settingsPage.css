@@ -1,5 +1,7 @@
 .main_wrapper{
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   transition-duration: 500ms;
   left: 0;
   background-color: #000;

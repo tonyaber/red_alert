@@ -14,6 +14,7 @@ export class GameModel{
   onUpdate: (state: IGameObjectData, action: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
+  onShot: (point: Vector) => void;
   tickList: TickList;
   gameObjects: GameObject[] = [];
   nextId: () => string;
@@ -39,6 +40,7 @@ export class GameModel{
   }
   //player side methods
   startBuilding(playerId: string, objectType: string) {
+    // console.log(playerId,'--',objectType)
     this.playersSides.find(item => item.id === playerId).startBuilding(objectType);
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
@@ -61,9 +63,12 @@ export class GameModel{
   }
 
   private _addUnit(type: string, spawn: string, playerId: string) {
-    const position = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary).data.position;
-    const newPosition = position.clone().add(new Vector(25,25));
-    this.addGameObject(playerId, type, newPosition);
+    const el = this.gameObjects.find(item => item.data.playerId === playerId && item.type === spawn && item.data.primary);
+    if(el){
+      const position = el.data.position;
+      const newPosition = position.clone().add(new Vector(25, 25));
+      this.addGameObject(playerId, type, newPosition);
+    }
     //position for primary
     //this.addGameObject()
   }
@@ -78,9 +83,12 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
+    // console.log('addGameObjectServer')
     //mapObject
     //проверка, можно ли его добавлять
+    console.log(position)
     const state = { position, playerId }
+    // console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
     const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
     gameObject.onUpdate = (state)=>{
@@ -100,8 +108,16 @@ export class GameModel{
       }
     }
     gameObject.onDelete = (state) => {
-       this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+      this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+      delete this.objects[state.objectId];
+      this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
       this.onUpdate(state, 'delete'); 
+    }
+
+    gameObject.onDamageTile = (targetId, point) => {
+      this.gameObjects.find(it => it.objectId === targetId).damage(point);
+      this.onShot(point);
+      //gameObjects
     }
     gameObject.create();
     this.gameObjects.push(gameObject);
@@ -110,21 +126,13 @@ export class GameModel{
     return 'add object';
   }
 
-  moveUnits(playerId: string, unitId: string, target: IVector) {
-   this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target)
-    // if (unit) {
-    //     unit.setState(data => {
-    //       data.position = Vector.fromIVector(target);
-    //       return data;
-    //      })
-    
-    // }
+  moveUnits(playerId: string, unitId: string, target: IVector,tileSize:number) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target, tileSize);
     return 'move unit';
-    //objectt.. setState
   }
 
-  setAttackTarget(playerId: string, unitId: string, targetId: string) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
+  setAttackTarget(playerId: string, unitId: string, targetId: string, tileSize: number) {
+    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId, tileSize);
     return 'attack';
   }
 
