@@ -17,7 +17,7 @@ export class SocketModel implements IClientModel {
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
-  onChatMsg: (msg: IChatMsg) => void;
+  onChatMsg: (msg: IChatMsg) => void;  
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
@@ -165,6 +165,11 @@ export class SocketModel implements IClientModel {
     });
     return this.client.sendMessage("gameMove", content);
   }
+  chatSend(msg: IChatMsg): Promise<string> {
+    const content = JSON.stringify(msg);
+    return this.client.sendMessage("chatSend", content);
+  }
+
   destroy() {
     this.client.onMessage.remove(this.messageHandler);
   }

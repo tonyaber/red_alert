@@ -1,6 +1,7 @@
 import { createIdGenerator } from "./createIdGenerator";
 import { IServerRequestMessage, IServerResponseMessage } from "./dto";
 import Signal from '../../../common/signal';
+import session from "../application/session";
 export class ClientSocket{
   onMessage: Signal<IServerResponseMessage> = new Signal();
   private _websocket: WebSocket;
@@ -16,13 +17,13 @@ export class ClientSocket{
 
   sendMessage(type: string, data: string) {   
     const requestMessage = {
+      sessionID: session.id,
       type: type,
       content: data,
       requestId: this.nextId()
     }
     const result = new Promise<string>((resolve)=>{
-      const privateMessageHandler = (message:IServerResponseMessage)=>{
-        
+      const privateMessageHandler = (message:IServerResponseMessage)=>{        
         if (message.requestId == requestMessage.requestId &&'privateResponse' == message.type){
           this.onMessage.remove(privateMessageHandler);console.log('private checker', message);
           resolve(message.content);

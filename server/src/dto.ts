@@ -1,11 +1,13 @@
 import { Vector } from "../../common/vector";
 
 export interface IServerResponseMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;
 }
 export interface IServerRequestMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;

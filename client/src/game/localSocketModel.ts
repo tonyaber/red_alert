@@ -111,13 +111,14 @@ export class LocalModel implements IClientModel
   }
 
   cancelBuild(){
-
   }
   registerGamePlayer() {
   }
   registerSpectator() {
-    
+  
   }
+
+  chatSend():Promise<string>{ return new Promise((r)=>r(''))}
 
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{

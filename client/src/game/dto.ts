@@ -34,6 +34,7 @@ export interface IServerRequestMessage {
 }
 
 export interface IServerResponseMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;

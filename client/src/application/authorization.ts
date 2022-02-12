@@ -1,6 +1,7 @@
 import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import style from './authorization.css'
+import session from './session'
 
 export class Authorization extends Control{
   onAuth: (name: string) => void;
@@ -17,7 +18,17 @@ export class Authorization extends Control{
 
     const content = new Control(body.node, 'div', style['content'], `authorization form`);
 
-    const userName = new Control(content.node, 'div', style['user_name'], `!!!user name!!!`);
+    // const userName = new Control(content.node, 'div', style['user_name'], `!!!user name!!!`);
+    if(!session.has('user')){
+      session.set('user',{name: 'user'+Math.floor(Math.random()*100)})
+    }
+    const userName = new Control<HTMLInputElement>(content.node, 'input', style['user_name'],'' );
+    userName.node.type='text';
+    userName.node.value=session.get('user').name;
+    userName.node.onchange = (e) =>{
+      session.get('user').name = userName.node.value;
+      session.save();
+    }
 
     const play = new Control(content.node, 'button', style['play_btn'], 'Start play');
     play.node.onclick = () => {

@@ -33,6 +33,6 @@ export class IClientModel
 
   setAttackTarget:(id: string, targetId: string,tileSize:number)=>Promise<string>;
   registerSpectator: () => void;
-
+  chatSend: (msg?: IChatMsg)=>Promise<string>;
   //all game player methods
 }
