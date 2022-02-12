@@ -204,15 +204,15 @@ export class GameModel{
     map.forEach((el, indX) => {
       el.forEach((it, indY) => {
         if (it === 1) {
-          this.addInitialObject('initial', 'gold', new Vector(indX, indY))
+          this.addInitialObject('initial', 'gold', {x:indX, y: indY})
          
         }
         else if (it === 2) {
-          this.addInitialObject('initial', 'rock', new Vector(indX, indY))
+          this.addInitialObject('initial', 'rock', {x:indX, y: indY})
         }
       })
     })
-    return 'add Initial date'
+    return 'add Initial data'
   }
 
   _getPrimary(playerId: string, name: string) {

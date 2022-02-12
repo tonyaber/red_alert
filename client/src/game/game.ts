@@ -6,7 +6,7 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
-import { INITIAL_DATE } from '../../../server/src/initialDate';
+import { INITIAL_DATA } from '../../../server/src/initialData';
 import { getImageData, getMapFromImageData } from './tracer';
 
 export class Game extends Control{
@@ -101,8 +101,8 @@ export class Game extends Control{
     
     // sidePanelInfo.players.map((it, index) => {
     //   if (sidePanelInfo.type != 'spectator') {
-    //     INITIAL_DATE[index].forEach(el => {
-    //       socket.addInitialDate(el.name, el.position, it)
+    //     INITIAL_DATA[index].forEach(el => {
+    //       socket.addInitialData(el.name, el.position, it)
     //     })
     //   }      
     // });

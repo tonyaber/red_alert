@@ -75,7 +75,7 @@ export class GameServer {
     return (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
   }
 
-  sendMessage(connection: connection, msg: string, date: string) {
-    connection.sendUTF(JSON.stringify({ msg, date }));
+  sendMessage(connection: connection, msg: string, data: string) {
+    connection.sendUTF(JSON.stringify({ msg, data }));
   }
 }
