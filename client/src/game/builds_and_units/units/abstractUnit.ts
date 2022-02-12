@@ -111,7 +111,7 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
   updateObject(data: IGameObjectContent) {
-    console.log("UPD")
+    //console.log("UPD")
     this.position = data.position;
     this.playerId = data.playerId;
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
@@ -124,7 +124,6 @@ export class AbstractUnit extends InteractiveObject{
     
     let pos = cursor.clone().sub(new Vector(this.position.x, this.position.y));
      if (pos.abs()<15){
-       console.log(true)
        return true;
        
     }

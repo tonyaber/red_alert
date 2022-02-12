@@ -50,18 +50,25 @@ attackRadius:number = 3;
   // })
   // //
   tick(delta: number) {
-    if ((this.action === 'move'||this.action === 'moveToAttack') && this.target) {
+   if ((this.action === 'move'||this.action === 'moveToAttack') && this.target) {
+    // console.log('this.data.position',this.data.position)
+    // console.log('this.target',this.target)
       //todo tileSize подумасть пока костыль this.tileSize
      if (Math.abs(Math.floor(this.data.position.x) - this.target.x) <= 10
-          && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10) {
-        const step = this.path.pop()
+          && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10){
+
+
+     //  this.data.position=this.target
+      const step = this.path.pop()
+       console.log("SPET-tick",step)
         if (!step) {
+          console.log("SPET-NOTTTTTTTTTTT",step)
           this.target = null
           if(this.action === 'moveToAttack'){
             this.action='attack'
           }
         }
-        else {
+        else{
           this.target = new Vector(step.x * this.tileSize, step.y * this.tileSize)
         }
       }
@@ -132,20 +139,18 @@ attackRadius:number = 3;
   }
 tracePath(target: IVector, tileSize: number,action:string){
   const traceMap = this.getTraceMap(target, tileSize)
-  //console.log("TRR",traceMap)
   const targetToTile = {x: Math.floor(target.x / tileSize), y: Math.floor(target.y / tileSize)}
   const positionToTile = {
     x: Math.floor(this.data.position.x / tileSize),
     y: Math.floor(this.data.position.y / tileSize)
   }
-  if (this.path.length == 0) {
+  console.log('---->',targetToTile,positionToTile)
+  console.log(this.path.length,'LENG')
+  if (this.path.length == 0 ) {
     //todo если будет становиться пустым то не пересчитывать опять
     tracePath(traceMap,
       new Vector(positionToTile.x, positionToTile.y), new Vector(targetToTile.x, targetToTile.y), (path) => {
-        //console.log("PATHES",path)
-        //console.log('pos',this.data.position)
-
-        this.path = path
+       this.path = [new Vector(targetToTile.x,targetToTile.y),...path]
         if(action==='moveToTile'){
           this.path =path.filter(p=>{
             if(p.x+this.attackRadius<target.x || p.y+this.attackRadius<target.y){
@@ -154,8 +159,9 @@ tracePath(target: IVector, tileSize: number,action:string){
           })
         }
         this.tileSize = tileSize
+        console.log(this.path,'^^^')
         const step = this.path.pop()
-        //  console.log(step.x*tileSize,step.y*tileSize,step.x,step.y)
+          console.log('step',step)
         this.target = new Vector(step.x * tileSize, step.y * tileSize)
       })
   }
@@ -171,6 +177,8 @@ tracePath(target: IVector, tileSize: number,action:string){
 }
   moveUnit(target: IVector, tileSize: number) {
     this.action = 'move';
+    this.path=[]
+    console.log("MOVE",target)
    this.tracePath(target, tileSize,this.action)
   }
 
