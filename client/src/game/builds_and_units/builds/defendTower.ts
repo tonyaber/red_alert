@@ -15,12 +15,7 @@ export class DefendTower extends AbstractBuild{
   // primary: boolean;
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, camera, data);
-    const tileMap = [
-      [1,1,1,1],
-      [1,1,1,1],
-      [1,1,1,1],
-      [1,1,1,1],
-    ];
+    const tileMap = data.content.buildMatrix;
     const pos = data.content.position
 
     this.info = new BuildingInfoView(pos.clone(), res["defendedTower"], this.name, this.health, this.playerId, this.primary);

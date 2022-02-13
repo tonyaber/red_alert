@@ -59,7 +59,7 @@ export class SocketModel implements IClientModel
     this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'human'}));
   }
   
-   addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+  addInitialData(name: string, position: Vector, playerId: string):Promise<string>{
       const content = JSON.stringify({ type: 'addInitialDate', content: { name, playerId ,position} })
     return this.client.sendMessage('gameMove', content);
   }
@@ -120,6 +120,11 @@ export class SocketModel implements IClientModel
   destroy() {
     this.client.onMessage.remove(this.messageHandler);
    }
+
+  createMap(map: number[][]):Promise<string> {
+    const content = JSON.stringify({ type: 'initialMap', content: { map } });
+    return this.client.sendMessage('gameMove', content);
+  }
 
   //all game player methods
 }

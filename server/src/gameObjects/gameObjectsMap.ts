@@ -17,6 +17,8 @@ import { RepairStation } from "./builds/repairStation";
 import { OreBarrel } from "./builds/oreBarrel";
 import { OreFactory } from "./builds/oreFactory";
 import { DefendTower } from "./builds/defendTower";
+import { GoldGameObject } from './gold';
+import { RockGameObject } from './rock';
 
 export const gameObjects:Record<string, IGameObjectConstructor> = {
   'soldier': Soldier,
@@ -37,4 +39,6 @@ export const gameObjects:Record<string, IGameObjectConstructor> = {
   'oreBarrel': OreBarrel,
   'oreFactory': OreFactory,
   'defendTower': DefendTower,
+  'gold': GoldGameObject,
+  'rock': RockGameObject,
 };

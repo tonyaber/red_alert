@@ -5,10 +5,10 @@ import {AbstractUnit} from "../../client/src/game/builds_and_units/units/abstrac
 
 export class TilesCollection {
   private tilesMap: Map<string, Tile>;
-  arrayTiles:number[][]
+  _arrayTiles:number[][]
   constructor() {
     this.tilesMap = new Map()
-    this.arrayTiles=[]
+    this._arrayTiles=[]
   }
 
   addTile(coords: Record<string, number>, value: number) {
@@ -153,20 +153,22 @@ export class TilesCollection {
           this.addTile({x:w,y:h},0)
         row.push(Number.MAX_SAFE_INTEGER)
       }
-      this.arrayTiles.push(row)
+      this._arrayTiles.push(row)
     }
   }
   getTilesMap(){
     return this.tilesMap
   }
-  getTilesArray() {
-    return this.arrayTiles
+  get arrayTiles() {
+    //console.log('%^',this.arrayTiles)
+    return JSON.parse(JSON.stringify(this._arrayTiles))
   }
 
   addBuild(buildPos: Vector[]) {
    buildPos.forEach(b=>{
+     //console.log(b.y,b.x,'--',this._arrayTiles[b.y][b.x])
       this.getTileData(`${b.x}-${b.y}`).occupancyRatio=4
-      this.arrayTiles[b.y][b.x]=-1
+      this._arrayTiles[b.y][b.x]=-1
     })
   }
 

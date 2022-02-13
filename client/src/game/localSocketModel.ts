@@ -123,7 +123,7 @@ export class LocalModel implements IClientModel
     const result = this.myPlayer.addGameObject(name, position);
     return new Promise(resolve => resolve(result))
   }
-  addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+  addInitialData(name: string, position: Vector, playerId: string):Promise<string>{
     const result = this.game.addGameObject(playerId,name, position);
     return new Promise(resolve => resolve(result))
   }
@@ -134,9 +134,12 @@ export class LocalModel implements IClientModel
   }
 
   moveUnit(id: string, position: Vector): Promise<string>{
-
-
     const result =  this.myPlayer.moveUnits(id, position);
+    return new Promise(resolve => resolve(result));
+  }
+
+  createMap(map: number[][]):Promise<string> {
+    const result = this.myPlayer.addInitialMap(map);
     return new Promise(resolve => resolve(result));
   }
 

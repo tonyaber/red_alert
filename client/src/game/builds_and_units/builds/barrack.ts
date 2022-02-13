@@ -10,12 +10,7 @@ import { AbstractBuild } from './abstractBuild';
 export class Barrack extends AbstractBuild {
   constructor(layer: TilingLayer, infoLayer: BoundingLayer, res: Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, camera, data);
-    const tileMap = [
-      [0,1,1,0],
-      [0,1,1,0],
-      [1,1,1,1],
-      [1,1,0,0],
-    ];
+    const tileMap = data.content.buildMatrix;
     const pos = data.content.position;
 
     this.info = new BuildingInfoView(data.content.position.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);

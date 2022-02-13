@@ -4,11 +4,12 @@ import { Vector } from "../../../common/vector";
 
 export interface IGameObjectContent{
   position: Vector;
-  health: number;
+  health?: number;
   playerId: string;
   primary?: boolean;
   action?: string;
   target?: Vector; 
+  buildMatrix?: number[][];
 }
 export interface IGameObjectData{  
   type: string;//name

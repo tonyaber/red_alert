@@ -1,6 +1,6 @@
 import { Vector } from "../../common/vector";
 
-export const INITIAL_DATE = [
+export const INITIAL_DATA = [
   [
     {
       name: 'buildingCenter',
