@@ -31,30 +31,36 @@ export class ClientSocket{
     this.nextId = createIdGenerator('socketRequest');
     const batchConnection = new BatchConnection(new Connection(this._websocket));
     batchConnection.onMessage = (message) => {
-      this.onMessage.emit(JSON.parse(message));
+      const msg = JSON.parse(message);
+      if (msg.type && msg.type === "ping") {
+        this.sendMessage("pong", "");
+      }
+      this.onMessage.emit(msg);
     }
    
   }
 
-  sendMessage(type: string, data: string) {   
+  sendMessage(type: string, data: string) {
     const requestMessage = {
       sessionID: session.id,
       type: type,
       content: data,
-      requestId: this.nextId()
-    }
-    const result = new Promise<string>((resolve)=>{
-      const privateMessageHandler = (message:IServerResponseMessage)=>{        
-        if (message.requestId == requestMessage.requestId &&'privateResponse' == message.type){
-          this.onMessage.remove(privateMessageHandler);console.log('private checker', message);
+      requestId: this.nextId(),
+    };
+    const result = new Promise<string>((resolve) => {
+      const privateMessageHandler = (message: IServerResponseMessage) => {
+        if (
+          message.requestId == requestMessage.requestId &&
+          "privateResponse" == message.type
+        ) {
+          this.onMessage.remove(privateMessageHandler);
+          console.log("private checker", message);
           resolve(message.content);
         }
-      }
+      };
       this.onMessage.add(privateMessageHandler);
-    })
+    });
     this._websocket.send(JSON.stringify(requestMessage));
     return result;
   }
 }
-
-
