@@ -9,19 +9,54 @@ interface IUser {
   name: string;
 }
 
+const TIMEOUT = 10000;
+const PINGPERIOD = 5000;
 class Session {
-  _connection: connection;
-  user: IUser | null;
+  private id:string;
+  private _connection: connection;
+  private _user: IUser | null;
+  private _online:boolean = false;
+  private ttl:number;
+  private tm:NodeJS.Timeout | null;
+
   constructor(msg: IServerRequestMessage, connection:connection) {
+    this.id = msg.sessionID;
     this._connection = connection || null;
-    this.user = null;
+    this._user = null;
+    this.tm = null;
+    this.touch();
     try {
       const content = JSON.parse(msg.content);
-      this.user = content.user || null;
+      this._user = content.user || null;
     } catch (e) {}
+    const ping = () =>{
+      if(!this._online) return;
+      const now = new Date().getTime();
+      // console.log('ping ', now - this.ttl, this.id)
+      this.tm = setTimeout(()=>{
+        this._online = false;
+        console.log('TODO disconnect');
+      },TIMEOUT)
+      const response: IServerResponseMessage = {
+        sessionID: this.id,
+        type: "ping",
+        content: JSON.stringify({}),
+        requestId: "socket-ping",
+      };
+      connection.sendUTF(JSON.stringify(response));      
+    }
+    setInterval(()=>ping(),PINGPERIOD)  
   }
-  get connection() {
-    return this._connection;
+  get connection() { return this._connection; }
+  set connection(c) { 
+    this._connection = c;
+    this.touch();
+  }
+  get user(){return this._user;}
+  touch(){ 
+    this.ttl = new Date().getTime();
+    this._online = true;
+    clearTimeout(this.tm);
   }
   sendUTF(r:string ):void {
     return this.connection.sendUTF(r);
@@ -49,11 +84,16 @@ export class ServerSocket {
           const message = _message as IUtf8Message;
           const msg: IServerRequestMessage = JSON.parse(message.utf8Data);
           console.log(msg.type, msg.sessionID);
+          if(this.connections.has(msg.sessionID)){ 
+            const conn = this.connections.get(msg.sessionID)
+            this.connections.get(msg.sessionID).touch();
+          }
           if (msg.type === "auth") {
             //id
             // this.connections.set(connection, msg.content);
             // console.log(msg);
-            this.connections.set(msg.sessionID, new Session(msg, connection));
+            if(!this.connections.has(msg.sessionID))
+              this.connections.set(msg.sessionID, new Session(msg, connection));
             connection.sendUTF(
               JSON.stringify({ type: "auth", content: msg.content })
             );
