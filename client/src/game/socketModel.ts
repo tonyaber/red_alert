@@ -28,6 +28,7 @@ export class SocketModel implements IClientModel {
   constructor(client: ClientSocket) {
     this.client = client;
     this.messageHandler = (message: IServerResponseMessage) => {
+      //console.log(message.type)
       if (message.type === "update") {
         console.log("socketModel", message.content);
         this.onUpdate(JSON.parse(message.content));
@@ -38,7 +39,6 @@ export class SocketModel implements IClientModel {
       if (message.type === "delete") {
         this.onDeleteObject(JSON.parse(message.content));
       }
-
       if (message.type === "updateSidePanel") {
         this.onSideUpdate(JSON.parse(message.content));
       }
@@ -172,7 +172,7 @@ export class SocketModel implements IClientModel {
 
   createMap(map: number[][]):Promise<string> {
     const content = JSON.stringify({map});
-    return this.client.sendMessage('createGame', content);
+    return this.client.sendMessage('createMap', content);
   }
 
   //all game player methods

@@ -1,7 +1,8 @@
 import { Server } from "http";
 import { connection, IUtf8Message, request } from "websocket";
-import { IServerRequestMessage, IServerResponseMessage } from "./dto";
+import { IConnection, IServerRequestMessage, IServerResponseMessage } from "./dto";
 import { GameServer } from "./gameServer";
+import { BatchConnection } from './batchConnection';
 
 const websocket = require("websocket");
 
@@ -10,9 +11,9 @@ interface IUser {
 }
 
 class Session {
-  _connection: connection;
+  _connection: IConnection;
   user: IUser | null;
-  constructor(msg: IServerRequestMessage, connection:connection) {
+  constructor(msg: IServerRequestMessage, connection:IConnection) {
     this._connection = connection || null;
     this.user = null;
     try {
@@ -41,10 +42,11 @@ export class ServerSocket {
     });
     const game = new GameServer();
     wsServer.on("request", (request: request) => {
-      const connection = request.accept(undefined, request.origin);
+      const _connection = request.accept(undefined, request.origin);
+      const connection = new BatchConnection(_connection);
       console.log("ddd^^^");
       // console.log(connection)
-      connection.on("message", (_message) => {
+      _connection.on("message", (_message) => {
         if (_message.type === "utf8") {
           const message = _message as IUtf8Message;
           const msg: IServerRequestMessage = JSON.parse(message.utf8Data);
@@ -53,6 +55,7 @@ export class ServerSocket {
             //id
             // this.connections.set(connection, msg.content);
             // console.log(msg);
+            
             this.connections.set(msg.sessionID, new Session(msg, connection));
             connection.sendUTF(
               JSON.stringify({ type: "auth", content: msg.content })
@@ -67,8 +70,8 @@ export class ServerSocket {
               requestId: "111111111",
             };
             connection.sendUTF(JSON.stringify(response));
-          }
-          if (msg.type === 'createGame') {
+          } 
+          if (msg.type === 'createMap') { 
             
             game.createGame(JSON.parse(msg.content));
 

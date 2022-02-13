@@ -92,6 +92,7 @@ export class LocalModel implements IClientModel
       item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type: 'bot' }))
       
     })
+    game.init();
     this.game = game;
   }
 

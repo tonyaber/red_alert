@@ -26,49 +26,56 @@ export class Application extends Control{
   }
 
   mainCycle() {
-    const startPage = new StartPage(this.node);
-    startPage.onSinglePlay = () => {
-      startPage.destroy();
-      this.socket = new LocalModel();
-      //this.gameCycle();
-      this.singleCycle();
-    }
-    startPage.onMultiPlay = () => {
-      startPage.destroy();
-      const clientSocket = new ClientSocket('ws://localhost:3000/');
-      this.socket = new SocketModel(clientSocket);
-      this.multiCycle();      
-    }
+    resourceLoader.load(resources).then(res => {
+      
+      const startPage = new StartPage(this.node);
+      startPage.onSinglePlay = () => {
+        startPage.destroy();
+        this.socket = new LocalModel();
+        //this.gameCycle();
+        this.singleCycle(res.textures);
+      }
+      startPage.onMultiPlay = () => {
+        startPage.destroy();
+        const clientSocket = new ClientSocket('ws://localhost:3000/');
+        this.socket = new SocketModel(clientSocket);
+        this.multiCycle(res.textures);      
+      }
+    })
+    
   }
 
-  singleCycle(){
+  singleCycle(res: Record<string, HTMLImageElement>){
     const settings = new SettingsPage(this.node, this.socket);
     // settings.onAuth = (name) => {
      
     //   } 
+    const imageData = getImageData(res.map)
+      const mapGame = getMapFromImageData(imageData);
+      this.socket.createMap(mapGame);
+    
     settings.onStartGame = (data) =>{
         settings.destroy();
-        this.gameCycle(settings.nameUser, data)
+        this.gameCycle(settings.nameUser, data, res)
         
     }
     
     
   }
 
-  multiCycle() {
+  multiCycle(res: Record<string, HTMLImageElement>) {
     const authorization = new Authorization(this.node, this.socket);//ответ с именем
     authorization.onAuth = (name) => {
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       
       const roomPage = new RoomPage(this.node, this.socket);
-      resourceLoader.load(resources).then(res => {
-        const imageData = getImageData(res.textures.map)
-        const mapGame = getMapFromImageData(imageData);
-        this.socket.createMap(mapGame);
-       })
+      const imageData = getImageData(res.map)
+      const mapGame = getMapFromImageData(imageData);
+      this.socket.createMap(mapGame);
       roomPage.onCreateGame = () => {
         const settings = new Settings(this.node);
+        
         settings.onCreate = (data) => {
           //записываем данные созданной игры 
           settings.destroy();
@@ -76,7 +83,7 @@ export class Application extends Control{
       }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
         roomPage.destroy();
-        this.gameCycle(name, data)
+        this.gameCycle(name, data, res)
         // resourceLoader.load(resources).then(res=>{
         //   const game = new Game(this.node, this.socket, name, data, res.textures);
         //   game.onExit = () => {
@@ -100,9 +107,9 @@ export class Application extends Control{
     }
   }
 
-  gameCycle(name:string, data:any){  ///TODO type??
-    resourceLoader.load(resources).then(res=>{
-      const game = new Game(this.node, this.socket, name, data, res.textures);
+  gameCycle(name:string, data:any, res: Record<string, HTMLImageElement>){  ///TODO type??
+    
+      const game = new Game(this.node, this.socket, name, data, res);
       game.onExit = () => {
         //TODO сделать выход всех игроков, оповещение
         game.destroy();
@@ -115,7 +122,7 @@ export class Application extends Control{
           pause.destroy();
         }
       }
-    })
+    
   }
 
   finishCycle() {

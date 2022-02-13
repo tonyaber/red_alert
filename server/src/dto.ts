@@ -13,7 +13,10 @@ export interface IServerRequestMessage {
   content: string;
   requestId: string;
 }
-
+export interface IConnection {
+  sendUTF: (data: string) => void;
+  onMessage?:(message:string)=>void;
+}
 export interface IRegisteredPlayerInfo{
   id:string,
   type: 'bot'|'human'|'spectator'
