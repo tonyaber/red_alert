@@ -35,6 +35,7 @@ export interface IServerRequestMessage {
 }
 
 export interface IServerResponseMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;
@@ -67,4 +68,13 @@ export interface IRegisterGamePlayerRequest{
 export interface IGameUpdateResponse{
   type: 'update' | 'delete' | 'create';
   data: IGameObjectData;
+}
+
+export interface IChatMsg{
+  user: string;
+  msg: string;
+}
+export interface IUserItem{
+  name: string;
+  id: string;
 }

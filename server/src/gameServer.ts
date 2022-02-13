@@ -5,6 +5,7 @@ import { BotCommander } from './botCommander';
 import { HumanCommander } from "./humanCommander";
 import { PlayerController } from "./playerController";
 import { SpectatorCommander } from "./spectatorCommander";
+import { Session } from "./serverSocket";
 
 export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
@@ -15,7 +16,7 @@ export class GameServer {
     
   }
 
-  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:connection){
+  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
     this.registeredPlayersInfo.push({ type, id: userId, connection });
     if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
       this.startGame();
@@ -71,7 +72,7 @@ export class GameServer {
     })
   }
  
-  handleMessage(ms: IServerRequestMessage, id) {
+  handleMessage(ms: IServerRequestMessage, id:string) {
     return (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
   }
 

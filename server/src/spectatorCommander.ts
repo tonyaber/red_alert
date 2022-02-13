@@ -11,7 +11,7 @@ export class SpectatorCommander{
     this.targetId = targetId;
   }
 
-  handleClientMessage(message) {     
+  handleClientMessage(message:any) {     
     if (message.type === 'startBuild') {
       //this.playerController.startBuilding(message.content.name);
       this.sendMessage('startBuild', message.content)

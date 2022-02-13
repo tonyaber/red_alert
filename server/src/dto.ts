@@ -1,11 +1,14 @@
 import { Vector } from "../../common/vector";
+import { Session } from "./serverSocket";
 
 export interface IServerResponseMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;
 }
 export interface IServerRequestMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;
@@ -14,7 +17,8 @@ export interface IServerRequestMessage {
 export interface IRegisteredPlayerInfo{
   id:string,
   type: 'bot'|'human'|'spectator'
-  connection?: any;//connection
+  // connection?: any;//connection
+  connection?: Session,
 }
 
 export interface IObject {
