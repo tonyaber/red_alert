@@ -54,7 +54,9 @@ export class Application extends Control{
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
     
-    settings.onStartGame = (data) =>{
+    settings.onStartGame = (data) => {
+    
+      console.log(1)
         settings.destroy();
         this.gameCycle(settings.nameUser, data, res)
         
@@ -82,6 +84,8 @@ export class Application extends Control{
         }
       }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
+        
+        console.log(1)
         roomPage.destroy();
         this.gameCycle(name, data, res)
         // resourceLoader.load(resources).then(res=>{
@@ -108,7 +112,7 @@ export class Application extends Control{
   }
 
   gameCycle(name:string, data:any, res: Record<string, HTMLImageElement>){  ///TODO type??
-    
+
       const game = new Game(this.node, this.socket, name, data, res);
       game.onExit = () => {
         //TODO сделать выход всех игроков, оповещение

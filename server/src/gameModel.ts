@@ -52,7 +52,7 @@ export class GameModel{
   }
 
   init() {
-    this.createMap(this.map);
+    return this.createMap(this.map);
   }
 
   pauseBuilding(playerId:string, objectType:string){
@@ -227,7 +227,7 @@ export class GameModel{
       mapForTrace.push(row)
     })
     tilesCollection.createTilesMap(mapForTrace)
-    return 'add Initial data'
+    return 'addInitialMap'
   }
 
   _getPrimary(playerId: string, name: string) {

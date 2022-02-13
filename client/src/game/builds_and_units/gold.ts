@@ -6,6 +6,7 @@ import { Camera } from '../ultratiling/camera';
 import { TilingLayer } from '../ultratiling/tileLayer';
 import { TileObject } from '../ultratiling/tileObject';
 import { InteractiveObject } from './interactiveObject';
+import { Tile } from '../../../../server/src/tileElement';
 
 export class Gold extends InteractiveObject{
   tiles: Array<TileObject> =[];
@@ -24,10 +25,15 @@ export class Gold extends InteractiveObject{
     this.infoLayer = infoLayer;   
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
-   
-    this.info = new GoldInfoView(this.position, res["goldFull"], camera.getTileSize());
-    this.info.update();
-    this.infoLayer.addObject(this.info);  
+
+    const tile = new TileObject(2, this.position)
+    tile.onUpdate = ()=>{
+      layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
+    }
+    tile.onUpdate();
+    // this.info = new GoldInfoView(this.position, res["goldFull"], camera.getTileSize());
+    // this.info.update();
+    // this.infoLayer.addObject(this.info);  
   }
 
   processMove(cursor:Vector){
@@ -43,9 +49,9 @@ export class Gold extends InteractiveObject{
   }
   
   updateObject(data: IGameObjectContent) {
-    this.info.health = data.health;
-    this.info.update();
-    this.infoLayer.updateObject(this.info)
+    // this.info.health = data.health;
+    // this.info.update();
+    // this.infoLayer.updateObject(this.info)
   }
 
   update(){

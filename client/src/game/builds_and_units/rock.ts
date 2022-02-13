@@ -26,11 +26,14 @@ export class Rock extends InteractiveObject{
     this.infoLayer = infoLayer; 
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
-    
-    this.info = new GoldInfoView(Vector.fromIVector(data.content.position), res["rocks"], camera.getTileSize());
-    this.info.update();
-    this.infoLayer.addObject(this.info);
-    
+    const tile = new TileObject(3, this.position)
+    tile.onUpdate = ()=>{
+      layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
+    }
+    tile.onUpdate();
+    // this.info = new GoldInfoView(Vector.fromIVector(data.content.position), res["rocks"], camera.getTileSize());
+    // this.info.update();
+    // this.infoLayer.addObject(this.info);    
   }
 
   processMove(cursor:Vector){

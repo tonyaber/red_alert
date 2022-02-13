@@ -73,6 +73,7 @@ export class GameServer {
       
     })
     this.gameModel.init();
+  
   }
 
   createGame(data:{map:number[][] } ) {   
