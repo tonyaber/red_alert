@@ -112,7 +112,7 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
   updateObject(data: IGameObjectContent) {
-    //console.log("UPD")
+    
     this.position =  Vector.fromIVector(data.position);
     this.playerId = data.playerId;
     this.health = data.health;

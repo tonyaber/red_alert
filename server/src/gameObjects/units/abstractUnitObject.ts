@@ -73,6 +73,7 @@ export class AbstractUnitObject extends GameObject {
           this.target = new Vector(step.x, step.y)
         }
       }
+      
       this.setState((data) => {
         return {
           ...data,
