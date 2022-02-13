@@ -202,17 +202,24 @@ export class GameModel{
   }
 
   createMap(map: number[][]) {
+    const mapForTrace:number[][]=[]
     map.forEach((el, indX) => {
+      const row:number[]=[]
       el.forEach((it, indY) => {
         if (it === 1) {
           this.addInitialObject('initial', 'gold', {x:indX, y: indY})
-         
+         row.push(Number.MAX_SAFE_INTEGER)
         }
         else if (it === 2) {
           this.addInitialObject('initial', 'rock', {x:indX, y: indY})
+          row.push(-1)
+        }else{
+          row.push(Number.MAX_SAFE_INTEGER)
         }
       })
+      mapForTrace.push(row)
     })
+    tilesCollection.createTilesMap(mapForTrace)
     return 'add Initial data'
   }
 
