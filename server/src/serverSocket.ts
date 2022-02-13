@@ -12,7 +12,7 @@ interface IUser {
 class Session {
   _connection: connection;
   user: IUser | null;
-  constructor(msg: IServerRequestMessage, connection) {
+  constructor(msg: IServerRequestMessage, connection:connection) {
     this._connection = connection || null;
     this.user = null;
     try {
@@ -23,7 +23,7 @@ class Session {
   get connection() {
     return this._connection;
   }
-  sendUTF(r) {
+  sendUTF(r:string ):void {
     return this.connection.sendUTF(r);
   }
 }
@@ -90,7 +90,7 @@ export class ServerSocket {
             //find game by id
 
             const content = JSON.parse(msg.content);
-            game.registerPlayer(content.playerType, playerId, connection);
+            game.registerPlayer(content.playerType, playerId, this.connections.get(playerId));
           }
           if (msg.type === "chatSend") {
             const content = JSON.parse(msg.content);
@@ -131,3 +131,5 @@ export class ServerSocket {
     this.connections.get(response.sessionID).sendUTF(JSON.stringify(response));
   }
 }
+
+export { Session };
