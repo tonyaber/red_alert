@@ -104,13 +104,13 @@ export class Game extends Control{
 
     socket.createMap(mapGame);
 
-    sidePanelInfo.players.map((it, index) => {
-      if (sidePanelInfo.type != 'spectator') {
-        INITIAL_DATA[index].forEach(el => {
-          socket.addInitialData(el.name, el.position, it)
-        })
-      }      
-    });
+    // sidePanelInfo.players.map((it, index) => {
+    //   if (sidePanelInfo.type != 'spectator') {
+    //     INITIAL_DATA[index].forEach(el => {
+    //       socket.addInitialData(el.name, el.position, it)
+    //     })
+    //   }      
+    // });
 
     
 

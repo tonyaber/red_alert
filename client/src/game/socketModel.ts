@@ -60,7 +60,7 @@ export class SocketModel implements IClientModel
   }
   
   addInitialData(name: string, position: Vector, playerId: string):Promise<string>{
-      const content = JSON.stringify({ type: 'addInitialDate', content: { name, playerId ,position} })
+      const content = JSON.stringify({ type: 'addInitialData', content: { name, playerId ,position} })
     return this.client.sendMessage('gameMove', content);
   }
 

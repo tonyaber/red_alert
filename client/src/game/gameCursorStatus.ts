@@ -3,6 +3,7 @@ import { AbstractBuild } from './builds_and_units/builds/abstractBuild';
 import { AbstractUnit } from './builds_and_units/units/abstractUnit';
 import { IObject } from './dto';
 import { InteractiveObject } from './builds_and_units/interactiveObject';
+import { Rock } from './builds_and_units/rock';
 
 export class GameCursorStatus{
   pixelPosition:Vector = new Vector(0, 0);
@@ -40,7 +41,7 @@ export class GameCursorStatus{
       //no selected
       action = 'select';
     } else if (this.selected.find(it => !(it instanceof AbstractUnit)) == null) {
-      if (!this.hovered.length && this.selected[0].playerId === this.playerId) {
+      if (!this.hovered.length && this.selected[0].playerId === this.playerId&&!(this.hovered[0] instanceof Rock)) {
         action = 'move';
       } else if (!this.hovered.length) {
         action = 'select';

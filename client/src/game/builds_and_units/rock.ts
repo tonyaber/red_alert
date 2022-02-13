@@ -23,7 +23,9 @@ export class Rock extends InteractiveObject{
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
-    this.infoLayer = infoLayer;    
+    this.infoLayer = infoLayer; 
+    this.camera = camera;
+    this.position = Vector.fromIVector(data.content.position);
     
     this.info = new GoldInfoView(Vector.fromIVector(data.content.position), res["rocks"], camera.getTileSize());
     this.info.update();
@@ -36,6 +38,10 @@ export class Rock extends InteractiveObject{
   }
 
   inShape(tile: Vector, cursor: Vector): boolean {
+    let pos = this.camera.getTileVector(cursor).clone().sub(new Vector(this.position.x, this.position.y));
+     if (pos.abs()<1){
+       return true;       
+    }
     return false;
   }
   
