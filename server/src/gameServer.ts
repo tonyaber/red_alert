@@ -6,6 +6,8 @@ import { HumanCommander } from "./humanCommander";
 import { PlayerController } from "./playerController";
 import { SpectatorCommander } from "./spectatorCommander";
 import { Session } from "./serverSocket";
+import { INITIAL_DATA } from './initialData';
+
 
 export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
@@ -25,7 +27,7 @@ export class GameServer {
   }
 
   startGame() {
-    this.gameModel = new GameModel(this.registeredPlayersInfo, this.map);
+    this.gameModel = new GameModel(this.registeredPlayersInfo, {map: this.map, builds: INITIAL_DATA} );
     this.players = this.registeredPlayersInfo.map(it=> {
       const playerController = new PlayerController(it.id, this.gameModel);
       if (it.type === 'bot') {
@@ -72,6 +74,7 @@ export class GameServer {
       item.sendMessage('startGame', JSON.stringify(response));
       
     })
+    
     this.gameModel.init();
   
   }

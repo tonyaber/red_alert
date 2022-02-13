@@ -1,4 +1,4 @@
-import { Vector } from "../../../common/vector";
+import { Vector } from "../../common/vector";
 
 export const INITIAL_DATA = [
   [

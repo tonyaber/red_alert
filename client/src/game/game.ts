@@ -6,9 +6,7 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
-import { INITIAL_DATA } from './initialData';
 
-import { getImageData, getMapFromImageData } from './tracer';
 
 export class Game extends Control{
   onExit: () => void;

@@ -20,11 +20,13 @@ export class GameModel{
   gameObjects: GameObject[] = [];
   nextId: () => string;
   map: number[][];
+  builds: any;
   
-  constructor(players: IRegisteredPlayerInfo[], map: number[][]) {
+  constructor(players: IRegisteredPlayerInfo[], state: { map: number[][], builds: any }) {
     this.tickList = new TickList();
     this.players = players;
-    this.map = map;
+    this.map = state.map;
+    this.builds = state.builds;
      this.nextId = createIdGenerator('object');
     this.players.forEach(item => {
       const playerSide = new PlayerSide(item.id);
@@ -52,7 +54,8 @@ export class GameModel{
   }
 
   init() {
-    return this.createMap(this.map);
+    this.createMap(this.map);
+    this.createBuilds(this.builds);
   }
 
   pauseBuilding(playerId:string, objectType:string){
@@ -228,6 +231,14 @@ export class GameModel{
     })
     tilesCollection.createTilesMap(mapForTrace)
     return 'addInitialMap'
+  }
+
+  createBuilds(builds: any) {
+    this.players.forEach((player, index) => {
+      builds[index].forEach((build: any)=> {
+        this.addGameObject(player.id, build.name, build.position)
+      })
+    })
   }
 
   _getPrimary(playerId: string, name: string) {

@@ -49,14 +49,14 @@ export class Application extends Control{
     const settings = new SettingsPage(this.node, this.socket);
     // settings.onAuth = (name) => {
      
-    //   } 
-    const imageData = getImageData(res.map)
+    //   }
+      const imageData = getImageData(res.map)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
     
     settings.onStartGame = (data) => {
     
-      console.log(1)
+  
         settings.destroy();
         this.gameCycle(settings.nameUser, data, res)
         
@@ -85,7 +85,7 @@ export class Application extends Control{
       }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
         
-        console.log(1)
+        
         roomPage.destroy();
         this.gameCycle(name, data, res)
         // resourceLoader.load(resources).then(res=>{

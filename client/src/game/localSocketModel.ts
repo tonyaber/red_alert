@@ -5,7 +5,8 @@ import { PlayerController } from "../../../server/src/playerController";
 import { IChatMsg, IUserItem, IGameUpdateResponse } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
-import {Vector} from '../../../common/vector'
+import { Vector } from '../../../common/vector'
+import { INITIAL_DATA } from "../../../server/src/initialData";
 
 export class LocalModel implements IClientModel
 {
@@ -47,7 +48,7 @@ export class LocalModel implements IClientModel
       id: this.player,
       type: 'human'
     });
-    const game = new GameModel(gamePlayersInfo, this.map);
+    const game = new GameModel(gamePlayersInfo,  {map: this.map, builds: INITIAL_DATA});
     const myPlayerController: PlayerController = new PlayerController(this.player, game);
     this.myPlayer = myPlayerController;
     const bots = playersInfo.map(it=> {
