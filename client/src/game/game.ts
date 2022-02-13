@@ -7,6 +7,7 @@ import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
 import { INITIAL_DATA } from './initialData';
+
 import { getImageData, getMapFromImageData } from './tracer';
 
 export class Game extends Control{
@@ -102,7 +103,7 @@ export class Game extends Control{
     const mapGame = getMapFromImageData(imageData);
 
     socket.createMap(mapGame);
-    
+
     sidePanelInfo.players.map((it, index) => {
       if (sidePanelInfo.type != 'spectator') {
         INITIAL_DATA[index].forEach(el => {

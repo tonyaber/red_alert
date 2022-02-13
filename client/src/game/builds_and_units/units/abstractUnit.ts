@@ -124,10 +124,10 @@ export class AbstractUnit extends InteractiveObject{
   }
 
   inShape(tile: Vector, cursor: Vector): boolean {
-    
+
     let pos = this.camera.getTileVector(cursor).clone().sub(new Vector(this.position.x, this.position.y));
      if (pos.abs()<1){
-       console.log(true)
+
        return true;
        
     }

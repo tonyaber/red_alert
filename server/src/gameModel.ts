@@ -41,7 +41,6 @@ export class GameModel{
   }
   //player side methods
   startBuilding(playerId: string, objectType: string) {
-    // console.log(playerId,'--',objectType)
     this.playersSides.find(item => item.id === playerId).startBuilding(objectType);
     //find by id
     //const playerSide:/*PlayerSide*/ any ={}
@@ -113,7 +112,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
-    // console.log('addGameObjectServer')
+
     //mapObject
     //проверка, можно ли его добавлять
     //console.log(position)
@@ -136,7 +135,7 @@ export class GameModel{
           if (el > 0) {
             return new Vector(position.x + ind, position.y + index)
           }
-          return 0;
+          return el;
         }).filter(el => el != 0);
       }).flat() as Vector[];
       tilesCollection.addBuild(buildPos)
@@ -170,8 +169,10 @@ export class GameModel{
     return 'add object';
   }
 
+
   moveUnits(playerId: string, unitId: string, target: IVector) {
     this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target);
+
     return 'move unit';
   }
 
@@ -201,17 +202,24 @@ export class GameModel{
   }
 
   createMap(map: number[][]) {
+    const mapForTrace:number[][]=[]
     map.forEach((el, indX) => {
+      const row:number[]=[]
       el.forEach((it, indY) => {
         if (it === 1) {
           this.addInitialObject('initial', 'gold', {x:indX, y: indY})
-         
+         row.push(Number.MAX_SAFE_INTEGER)
         }
         else if (it === 2) {
           this.addInitialObject('initial', 'rock', {x:indX, y: indY})
+          row.push(-1)
+        }else{
+          row.push(Number.MAX_SAFE_INTEGER)
         }
       })
+      mapForTrace.push(row)
     })
+    tilesCollection.createTilesMap(mapForTrace)
     return 'add Initial data'
   }
 

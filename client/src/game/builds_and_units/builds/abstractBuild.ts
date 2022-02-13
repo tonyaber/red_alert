@@ -30,6 +30,7 @@ export class AbstractBuild extends InteractiveObject{
     this.position =  Vector.fromIVector(data.content.position);
     this.playerId = data.content.playerId;
     this.primary = data.content.primary;
+
     this.health = data.content.health;
     this.camera = camera;
     const tileMap = data.content.buildMatrix;

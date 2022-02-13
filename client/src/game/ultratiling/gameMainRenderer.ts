@@ -9,6 +9,7 @@ import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
+
 import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
 import { Explosion } from '../builds_and_units/explosion';
 import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
@@ -104,6 +105,7 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
      const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
+
   }
 
   addShot(point: IVector) {
@@ -115,7 +117,7 @@ export class GameMainRender{
       this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
     }
     this.explosions.push(explosion);
-    
+
   }
 
   updateObject(data:IGameObjectData){
@@ -159,7 +161,6 @@ export class GameMainRender{
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);
     } 
     if (action === 'move') {
-      
         this.cursorStatus.selected.forEach(item=>this.onChangePosition(
           item.id, this.camera.getTileVector(this.camera.position.clone().add(cursor))))
         //отправлять на сервер this.cursorPosition
