@@ -3,7 +3,10 @@ import {IGameObjectContent, IGameObjectData} from "../../dto";
 import {PlayerSide} from "../../playerSide";
 import {GameObject} from "../gameObject"
 import {tracePath} from "../../trace";
-import {tilesCollection, TilesCollection} from "../../tileCollection";
+
+import { tilesCollection, TilesCollection } from "../../tileCollection";
+import { AbstractWeapon } from '../weapon/abstractWeapon';
+import { AbstractBullet } from "../bullet/abstractBullet";
 
 export class AbstractUnitObject extends GameObject {
   data: IGameObjectContent = {
@@ -19,14 +22,14 @@ export class AbstractUnitObject extends GameObject {
   objectId: string;
 
   objects: Record<string, GameObject>;
-attackRadius:number = 3;
-  subType: string;
+attackRadius:number = 2;
+  subType: string = 'unit';
   type: string;
   direction: Vector;
   action: string;
   targetId: string;
   private path: Vector[];
-  private tileSize: number;
+  weapon: any;
 
 
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -39,7 +42,10 @@ attackRadius:number = 3;
     this.objectId = objectId;
     this.target = null
     this.path = []
-
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
+    this.weapon.onBulletTarget = (point: Vector) => {
+      this.onDamageTile?.(this.targetId, point);
+    }
   }
 
   // //logic
@@ -50,26 +56,20 @@ attackRadius:number = 3;
   // })
   // //
   tick(delta: number) {
-   if ((this.action === 'move'||this.action === 'moveToAttack') && this.target) {
-    // console.log('this.data.position',this.data.position)
-    // console.log('this.target',this.target)
+    if ((this.action === 'move' || this.action === 'moveToAttack') && this.target) {
+      //console.log(this.data.position)
       //todo tileSize подумасть пока костыль this.tileSize
      if (Math.abs(Math.floor(this.data.position.x) - this.target.x) <= 10
-          && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10){
-
-
-     //  this.data.position=this.target
-      const step = this.path.pop()
-       console.log("SPET-tick",step)
+          && Math.abs(Math.floor(this.data.position.y) - this.target.y) <= 10) {
+        const step = this.path.pop()
         if (!step) {
-          console.log("SPET-NOTTTTTTTTTTT",step)
-          this.target = null
+          //this.target = null
           if(this.action === 'moveToAttack'){
-            this.action='attack'
+            this.action = 'attack';
           }
         }
-        else{
-          this.target = new Vector(step.x * this.tileSize, step.y * this.tileSize)
+        else {
+          this.target = new Vector(step.x, step.y)
         }
       }
 
@@ -79,15 +79,22 @@ attackRadius:number = 3;
           return {
             ...data,
               position: this.data.position.clone().sub(
-              this.data.position.clone().sub(this.target).clone().normalize().scale(2))
+
+              this.data.position.clone().sub(this.target).clone().normalize().scale(delta * 0.001))
           };
         })
       }
     }
-    //написать логику движения до врага
-
     if (this.action === 'attack') {
-      //to do something
+      if (this.objects[this.targetId]) {
+       // this.weapon.position = this.data.position;
+        this.weapon.position = this.data.position;
+        this.weapon.tryShot(this.target);
+        this.weapon.step(delta);
+      } else {
+        this.targetId = null;
+        this.action = 'idle';
+      }
     }
   }
 
@@ -99,12 +106,13 @@ attackRadius:number = 3;
     });
   }
 
-  getTraceMap(target: IVector, tileSize: number) {
+  getTraceMap(target: IVector) {
     const tilesArray = tilesCollection.getTilesArray().map(e => e)
-    const targetToTile = {x: Math.floor(target.x / tileSize), y: Math.floor(target.y / tileSize)}
+    
+    const targetToTile = {x: Math.floor(target.x ), y: Math.floor(target.y )}
     const positionToTile = {
-      x: Math.floor(this.data.position.x / tileSize),
-      y: Math.floor(this.data.position.y / tileSize)
+      x: Math.floor(this.data.position.x ),
+      y: Math.floor(this.data.position.y)
     }
     const steps = [
       {x: -1, y: 0}, {x: 1, y: 0}, {
@@ -137,37 +145,39 @@ attackRadius:number = 3;
     inxs(1)
     return tilesArray
   }
-tracePath(target: IVector, tileSize: number,action:string){
-  const traceMap = this.getTraceMap(target, tileSize)
-  const targetToTile = {x: Math.floor(target.x / tileSize), y: Math.floor(target.y / tileSize)}
+  tracePathToTarget(target: IVector, action: string) {
+    const traceMap = this.getTraceMap(target);
+    console.log(traceMap)
+  //console.log("TRR",traceMap)
+  const targetToTile = {x: Math.floor(target.x ), y: Math.floor(target.y )}
   const positionToTile = {
-    x: Math.floor(this.data.position.x / tileSize),
-    y: Math.floor(this.data.position.y / tileSize)
+    x: Math.floor(this.data.position.x ),
+    y: Math.floor(this.data.position.y )
   }
-  console.log('---->',targetToTile,positionToTile)
-  console.log(this.path.length,'LENG')
-  if (this.path.length == 0 ) {
+  if (this.path.length == 0) {
     //todo если будет становиться пустым то не пересчитывать опять
-    tracePath(traceMap,
+    tracePath(traceMap, 
       new Vector(positionToTile.x, positionToTile.y), new Vector(targetToTile.x, targetToTile.y), (path) => {
-       this.path = [new Vector(targetToTile.x,targetToTile.y),...path]
-        if(action==='moveToTile'){
+        //console.log("PATHES",path)
+        //console.log('pos',this.data.position)
+       
+        this.path = path
+        if(action==='moveToAttack'){
           this.path =path.filter(p=>{
             if(p.x+this.attackRadius<target.x || p.y+this.attackRadius<target.y){
               return p
             }
           })
-        }
-        this.tileSize = tileSize
-        console.log(this.path,'^^^')
-        const step = this.path.pop()
-          console.log('step',step)
-        this.target = new Vector(step.x * tileSize, step.y * tileSize)
+       }
+       console.log('PATH', path)
+       
+        
+        const step = this.path.pop();
+
+        //  console.log(step.x*tileSize,step.y*tileSize,step.x,step.y)
+        this.target = new Vector(step.x , step.y )
       })
   }
-  //  console.log(this.target,'TARGET')
-
-
   this.setState((data) => {
     return {
       ...data,
@@ -175,17 +185,20 @@ tracePath(target: IVector, tileSize: number,action:string){
     }
   })
 }
-  moveUnit(target: IVector, tileSize: number) {
+  moveUnit(target: IVector) {
     this.action = 'move';
-    this.path=[]
-    console.log("MOVE",target)
-   this.tracePath(target, tileSize,this.action)
+    console.log(target);
+   this.tracePathToTarget(target, this.action)
   }
 
   attack(targetId: string) {
     this.action = 'moveToAttack'; //attack
+
+    this.targetId = targetId;
     const target = this.objects[targetId].data.position;
-   this.tracePath(target, 50,this.action)
+    
+    console.log('TARGETT', target)
+   this.tracePathToTarget(target,this.action)
   }
 
   setState(callback: (data: IGameObjectContent) => IGameObjectContent) {

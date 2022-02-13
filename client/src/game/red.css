@@ -1,0 +1,309 @@
+*{
+  box-sizing: border-box;
+  /*border: solid 1px; */
+}
+/**/
+.global_wrapper{
+  margin: 3px;
+}
+
+.global_main{
+  display: flex;
+  height: calc(100vh - 6px);  
+  position: relative;
+}
+
+.global_header{
+  height: 0px;
+  display: flex; 
+  border: 0px;
+}
+
+.game_field{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: solid 1px;  
+}
+
+.game_side{
+  width: 250px;
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: solid 1px;  
+}
+
+.game_radar{
+  width: 100%;
+  height: 201px;
+  flex-shrink: 0;
+  background: url("../assets/img/aside/asid-logo.jpg") no-repeat 50% 50%/cover;
+  filter: grayscale(.6);
+}
+
+.aside-top-panel{
+  background: url("../assets/img/aside/fon-metall.jpg") no-repeat center center;
+  color: #fff;
+  border: none;
+  padding: 3px;
+  filter: grayscale(1);
+  font-size: 18px;  
+  border-radius: 3px;
+  border: 1px solid #777;  
+}
+/*
+.game_builds{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
+  background: url("../assets/img/aside/fon-metall.jpg") no-repeat center top;
+}
+*/
+.wrapper_controls{
+  height: 50px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: url("../assets/img/aside/fon-metall.jpg") no-repeat center top;
+}
+
+.repair_button,
+.cash_button,
+.map_button{
+  width: 25%;
+  height: 90%;
+  border: 1px solid #666;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 3px 3px 4px #666;
+  background-color: black;
+  color: #999;
+  transition-duration: 0.3s;
+}
+
+.repair_button{
+  background: black url('../assets/img/aside/tool.svg') no-repeat 50% 50%/contain;
+  
+}
+.cash_button{
+  background: black url('../assets/img/aside/cash_1.svg') no-repeat 50% 50%/contain;
+}
+.map_button{
+  background: black url('../assets/img/aside/map.svg') no-repeat 50% 50%/contain;
+  
+}
+
+
+
+.repair_button:hover,
+.cash_button:hover,
+.map_button:hover{
+  transform: scale(0.95);
+  transition-duration: 0.3s;
+}
+
+.wrapper_equipment{
+  display: flex;
+ /* margin-top: 10px;*/
+  
+}
+
+.energy{
+/*  width: 20%;
+  background-color: rgb(133, 45, 10);
+  border: grey 2px;*/
+}
+
+ /*       
+.builds_items{
+  display: flex;
+  width: 95%;
+  box-shadow: 3px #666;
+  height: 100%;
+  overflow: hidden;
+  background-color: #111;
+  color:#fff;
+  border:none;
+}
+*/
+.builds_item{
+  width: 90%;
+  height: 100px;
+  margin: 7px;
+  cursor: pointer;
+  border: 1px solid #666;
+  box-shadow: 3px 3px 4px #666;
+  overflow: hidden; 
+  transition-duration: 0.3s;
+  position: relative;
+    
+}
+.builds_item:hover{
+  border: 1px solid #999;
+  transform: scale(1.01);
+  box-shadow: 3px 3px 4px #999;  
+  transition-duration: 0.3s;
+}
+
+.builds_item__ready{
+  border: 1px solid #009933;
+  box-shadow: 3px 3px 4px #009933; 
+}
+.builds_item__ready:hover{
+  border: 1px solid #006600;
+  box-shadow: 3px 3px 4px #006600; 
+}
+
+.barrack{
+  background: url('../assets/png/barrack.png') no-repeat 0 0/cover;
+}
+
+.buildingCenter{
+  background: url('../assets/png/buildingCenter.png') no-repeat 0 0/cover;
+}
+.energyPlant{
+  background: url('../assets/png/energy.png') no-repeat 50% 50%/contain;
+
+}
+.carFactory{
+  background: url('../assets/png/carFactory.png') no-repeat 50% 50%/contain;
+}
+
+.defendTower{
+  background: url('../assets/png/defendedTower.png') no-repeat 50% 50%/contain;
+}
+
+.oreFactory{
+  background: url('../assets/png/plant.png') no-repeat 50% 50%/contain;
+}
+
+.radar{
+  background: url('../assets/png/radar.png') no-repeat 50% 50%/contain;
+}
+
+   /* techCenter,
+    radar,
+    repairStation,
+    oreBarrel,
+    
+    
+    soldier,
+    truck,
+    bomber,
+    tank,
+    heavyTank,
+    dog
+
+*/
+
+.builds_column{
+  width: 100%;
+  height: 380px; /*задать нормально высоту....*/
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  border: none;
+  color: #999;
+  border-right: 1px solid #666;
+  position: relative;
+  background-color: rgb(8, 8, 8); 
+}
+
+.column_items{
+  width: 100%;
+  border: none;
+  /* height: calc(100vh - 300px); */
+  position: absolute;
+  top:0;
+}
+
+.column_footer{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  flex-shrink: 0;
+  border:none;
+  position: absolute;
+  bottom: 0;
+  background:  url("../assets/img/aside/fon-metall.jpg") no-repeat center top;
+}
+.button{
+  width: 40%;
+  height: 25px;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 3px 3px 2px rgb(189, 142, 23);
+}
+.button_up{
+  background: black url("../assets/img/aside/arrow-down.png") no-repeat center center;
+  background-size: contain;
+}
+.button_down{ 
+  background: black url("../assets/img/aside/arrow-up.png") no-repeat center center;
+  background-size: contain;
+}
+.button__inactive{
+  filter: grayscale(1);
+  cursor: default;
+}
+
+.name_item{
+  width: 100%;
+  height: 20px;
+  background-color: black;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 1px solid #666;
+}
+
+.progress{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(169, 169, 169, 0.308);
+}
+
+
+/*game*/
+.wrap_game_controls{
+  position: absolute;
+  top: 5px;
+  left: 20%;
+  width: 150px;
+  height: 30px;
+  background: url('../assets/img/aside/fon-metall.jpg');
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.exit_game, 
+.pause_game{
+  width: 40%;
+  height: 25px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: black;
+  color: #999;
+  border: none;
+  box-shadow: 3px 3px 2px rgb(151, 126, 61);
+  transition-duration: 0.3s;
+}
+
+.exit_game:hover, 
+.pause_game:hover{
+  filter: brightness(3);
+  transform: scale(0.95);
+  transition-duration: 0.3s;
+}
+
+

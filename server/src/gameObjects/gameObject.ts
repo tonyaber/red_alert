@@ -13,7 +13,8 @@ export class GameObject {
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
-  onDelete:(state: IGameObjectData) => void;
+  onDelete: (state: IGameObjectData) => void;
+  onDamageTile: (targetId: string, point: Vector) => void;
   objectId: string;
 
   objects: Record<string, GameObject> = {}
@@ -22,6 +23,7 @@ export class GameObject {
   type: string;
   direction: Vector;
   target: Vector;
+   buildMatrix: number[][];
 
   constructor(/*objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }*/) {
     // this.data.position = Vector.fromIVector(state.position);
@@ -54,7 +56,7 @@ export class GameObject {
     // }, this.subType); 
   }
 
-  moveUnit(target: IVector,tileSize:number) {
+  moveUnit(target: IVector) {
     //this.target = Vector.fromIVector(target);
     //this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
@@ -69,7 +71,7 @@ export class GameObject {
   }
 
   getState() {
-    //return this.data;
+    return this.data;
   }
   
   protected update() {
@@ -78,5 +80,27 @@ export class GameObject {
     //   objectId: this.objectId,
     //   content: this.getState(),
     // });    
+  }
+  damage(point: Vector) {
+    
+    if (this.data.health === 0) {
+      this.destroy();
+    } else if(this.data.health>0){
+      console.log(this.data.health)
+      this.setState((data) => {
+        return {
+          ...data,
+          health:this.data.health-10,
+        }
+      })
+    } 
+  }
+
+  destroy() {
+    this.onDelete({
+       type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });  
   }
 }

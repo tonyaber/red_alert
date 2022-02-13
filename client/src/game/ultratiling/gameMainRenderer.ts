@@ -9,7 +9,10 @@ import { InteractiveObject } from "../builds_and_units/interactiveObject";
 import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
-import {tilesCollection, TilesCollection} from "../../../../server/src/tileCollection";
+
+import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
+import { Explosion } from '../builds_and_units/explosion';
+import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -24,7 +27,9 @@ export class GameMainRender{
   hoveredObjects: InteractiveObject;
   onAddBuild: (position: Vector) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
-  onChangePosition: (id: string, position: Vector,tileSize:number) => void;
+  onChangePosition: (id: string, position: Vector) => void;
+  onAttack: (id: string, targetId: string) => void;
+  explosions: Explosion[]=[];
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
@@ -64,6 +69,7 @@ export class GameMainRender{
 
   tick(delta:number){
     this.debugInfoView.tick(delta);
+    
     /*this.tilingLayer.update(this.camera.position, this.tilingLayer.map.map(it=>it.map(jt=>{
       return (Math.random()<0.005? 1-jt: jt);
     })))*/
@@ -77,6 +83,8 @@ export class GameMainRender{
     ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
     ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
     this.debugInfoView.render(ctx);
+    this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
+    
     this.cursorStatus.render(ctx, new Vector(0,0));
   }
 
@@ -97,15 +105,28 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
      const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    if(interactiveObject.subType==='build'){
-      const buildPos=interactiveObject.tiles.map(e=>e.getPosition())
-      tilesCollection.addBuild(buildPos)
+
+  }
+
+  addShot(point: Vector) {
+    const explosion = new Explosion(point.scale(this.camera.getTileSize()));
+    
+    explosion.onDestroyed = () => {
+      this.explosions = this.explosions.filter(it => it != explosion);
+      this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
     }
+    this.explosions.push(explosion);
+
   }
 
   updateObject(data:IGameObjectData){
     //console.log('%^',data)
    this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
+  }
+
+  deleteObject(data: IGameObjectData) {
+    this.interactiveList.list.find(item => item.id === data.objectId).destroy();
+    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
   }
 
   setPlannedBuild(object:IObject) {
@@ -130,26 +151,36 @@ export class GameMainRender{
     this.interactiveList.list.forEach(item => item.selected = false);
     this.interactiveList.handleClick(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor))
     const action = this.cursorStatus.getAction();
-    console.log(action)
-     if (action === 'build') {
-        this.onAddBuild?.(this.camera.position.clone().add(cursor));
+    // console.log(action)
+    if (action === 'build') {
+        this.onAddBuild?.(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
         this.cursorStatus.planned = null;
     }
     if (action === 'primary') {
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);
     } 
     if (action === 'move') {
-      console.log("move",this.camera.position.clone().add(cursor))
         this.cursorStatus.selected.forEach(item=>this.onChangePosition(
-          item.id, this.camera.position.clone().add(cursor),this.camera.getTileSize()))
+          item.id, this.camera.getTileVector(this.camera.position.clone().add(cursor))))
         //отправлять на сервер this.cursorPosition
         //когда приходит ответ - запускать патч
         //this.cursorStatus.selected.forEach(item => (item as AbstractUnit).moveUnit(this.cursorPosition))
         this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
         this.cursorStatus.selected = [];
     }
+    if (action === 'attack') {
+      this.cursorStatus.selected.forEach(item => this.onAttack(item.id, this.hoveredObjects.id));
+      this.interactiveList.list.filter(item => item.selected===true).map(item=>item.selected=false);
+      this.cursorStatus.selected = [];
+    }
+    
     //console.log(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
    // console.log(this.camera.position.clone().add(cursor));
+  }
+
+  public resizeViewPort(width:number, height:number){
+    this.tilingLayer.resizeViewPort(width, height);
+    this.boundingLayer.resizeViewPort(width, height);
   }
 
 }

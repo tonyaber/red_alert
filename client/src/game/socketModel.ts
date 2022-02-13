@@ -10,6 +10,8 @@ export class SocketModel implements IClientModel
   onAuth: (data: string) => void;
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
+  onDeleteObject: (data: IGameObjectData) => void;
+  onShot: (point: Vector) => void;
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
 
@@ -23,6 +25,9 @@ export class SocketModel implements IClientModel
       if (message.type === 'create') {
         this.onAddObject(JSON.parse(message.content));
       }
+      if (message.type === 'delete') {
+        this.onDeleteObject(JSON.parse(message.content));
+      }
 
       if (message.type === 'updateSidePanel') {
         this.onSideUpdate(JSON.parse(message.content));
@@ -33,6 +38,9 @@ export class SocketModel implements IClientModel
       if (message.type === 'auth') {
         this.onAuth(message.content);
       }      
+      if (message.type === 'shot') {
+        this.onShot(JSON.parse(message.content));
+      }
     }
     this.client.onMessage.add(this.messageHandler)
   }
@@ -49,6 +57,11 @@ export class SocketModel implements IClientModel
 
   registerGamePlayer() {
     this.client.sendMessage('registerGamePlayer', JSON.stringify({ playerType: 'human'}));
+  }
+  
+   addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+      const content = JSON.stringify({ type: 'addInitialDate', content: { name, playerId ,position} })
+    return this.client.sendMessage('gameMove', content);
   }
 
   startBuild(name: string, playerId: string) :Promise<string>{
@@ -94,7 +107,7 @@ export class SocketModel implements IClientModel
     return this.client.sendMessage('gameMove', content);
   }
 
-  moveUnit(id: string, position: Vector,tileSize:number):Promise<string>{
+  moveUnit(id: string, position: Vector):Promise<string>{
     const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
     console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
