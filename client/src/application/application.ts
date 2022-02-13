@@ -14,6 +14,7 @@ import {SettingsPage} from './settingsPageSingle'
 import { Settings } from './settingsPageMulti';
 import style from './application.css'
 import PopupPage from './popup'
+import { getImageData, getMapFromImageData } from '../game/tracer';
 
 
 export class Application extends Control{
@@ -61,6 +62,11 @@ export class Application extends Control{
       //const settings = new SettingsPage(this.node, this.socket);
       
       const roomPage = new RoomPage(this.node, this.socket);
+      resourceLoader.load(resources).then(res => {
+        const imageData = getImageData(res.textures.map)
+        const mapGame = getMapFromImageData(imageData);
+        this.socket.createMap(mapGame);
+       })
       roomPage.onCreateGame = () => {
         const settings = new Settings(this.node);
         settings.onCreate = (data) => {

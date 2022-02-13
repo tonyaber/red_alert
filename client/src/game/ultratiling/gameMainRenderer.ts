@@ -103,9 +103,10 @@ export class GameMainRender{
   }
 
   addObject(data: IGameObjectData) {
-     const BuildConstructor = builds[data.type];
-    const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-
+    const BuildConstructor = builds[data.type];
+    //if(!interactiveList.list.find(it=>it.id===data.objectId)){
+      const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
+    //}
   }
 
   addShot(point: IVector) {

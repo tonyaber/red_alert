@@ -19,10 +19,12 @@ export class GameModel{
   tickList: TickList;
   gameObjects: GameObject[] = [];
   nextId: () => string;
+  map: number[][];
   
-  constructor(players: IRegisteredPlayerInfo[]) {
+  constructor(players: IRegisteredPlayerInfo[], map: number[][]) {
     this.tickList = new TickList();
     this.players = players;
+    this.map = map;
      this.nextId = createIdGenerator('object');
     this.players.forEach(item => {
       const playerSide = new PlayerSide(item.id);
@@ -38,6 +40,7 @@ export class GameModel{
       }     
       this.playersSides.push(playerSide);
     })
+    
   }
   //player side methods
   startBuilding(playerId: string, objectType: string) {
@@ -46,6 +49,10 @@ export class GameModel{
     //const playerSide:/*PlayerSide*/ any ={}
    // return 'private'
     return 'start building'
+  }
+
+  init() {
+    this.createMap(this.map);
   }
 
   pauseBuilding(playerId:string, objectType:string){

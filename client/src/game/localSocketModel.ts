@@ -22,6 +22,7 @@ export class LocalModel implements IClientModel
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
+  map: number[][];
 
   constructor(){
 
@@ -46,7 +47,7 @@ export class LocalModel implements IClientModel
       id: this.player,
       type: 'human'
     });
-    const game = new GameModel(gamePlayersInfo);
+    const game = new GameModel(gamePlayersInfo, this.map);
     const myPlayerController: PlayerController = new PlayerController(this.player, game);
     this.myPlayer = myPlayerController;
     const bots = playersInfo.map(it=> {
@@ -142,9 +143,11 @@ export class LocalModel implements IClientModel
     return new Promise(resolve => resolve(result));
   }
 
-  createMap(map: number[][]):Promise<string> {
-    const result = this.myPlayer.addInitialMap(map);
-    return new Promise(resolve => resolve(result));
+  createMap(map: number[][]): Promise<string> {
+    this.map = map;
+
+   // const result = this.myPlayer.addInitialMap(map);
+    return new Promise((r) => r('createMap'));
   }
 
   setAttackTarget(id: string, targetId: string):Promise<string>{

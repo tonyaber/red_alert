@@ -108,10 +108,12 @@ export class Game extends Control{
         console.log(result)
       })
     }
-    const imageData = getImageData(res.map)
-    const mapGame = getMapFromImageData(imageData);
 
-    socket.createMap(mapGame);
+    
+    // const imageData = getImageData(res.map)
+    // const mapGame = getMapFromImageData(imageData);
+
+    // socket.createMap(mapGame);
 
     // sidePanelInfo.players.map((it, index) => {
     //   if (sidePanelInfo.type != 'spectator') {

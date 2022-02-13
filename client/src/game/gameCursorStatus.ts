@@ -41,7 +41,7 @@ export class GameCursorStatus{
       //no selected
       action = 'select';
     } else if (this.selected.find(it => !(it instanceof AbstractUnit)) == null) {
-      if (!this.hovered.length && this.selected[0].playerId === this.playerId&&!(this.hovered[0] instanceof Rock)) {
+      if (!this.hovered.length && this.selected[0].playerId === this.playerId) {
         action = 'move';
       } else if (!this.hovered.length) {
         action = 'select';

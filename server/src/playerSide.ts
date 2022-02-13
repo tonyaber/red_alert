@@ -26,7 +26,7 @@ export class PlayerSide{
     }).map(item => {
       return {
         object: item,
-        status: 'available',
+        status: 'notAvailable',
         progress: 0,
       }
     });

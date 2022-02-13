@@ -68,6 +68,18 @@ export class ServerSocket {
             };
             connection.sendUTF(JSON.stringify(response));
           }
+          if (msg.type === 'createGame') {
+            
+            game.createGame(JSON.parse(msg.content));
+
+            const response: IServerResponseMessage = {
+              sessionID: msg.sessionID,
+              type: "privateResponse",
+              content: JSON.stringify('ok'),
+              requestId: msg.requestId,
+            };
+            connection.sendUTF(JSON.stringify(response));
+          }
           if (msg.type === "gameMove") {
             // const playerId = this.connections.get(connection);
             const playerId = msg.sessionID;

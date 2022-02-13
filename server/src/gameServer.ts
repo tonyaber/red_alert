@@ -12,6 +12,7 @@ export class GameServer {
 
   players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
+  map: number[][] =[];
   constructor(){
     
   }
@@ -24,7 +25,7 @@ export class GameServer {
   }
 
   startGame() {
-    this.gameModel = new GameModel(this.registeredPlayersInfo);
+    this.gameModel = new GameModel(this.registeredPlayersInfo, this.map);
     this.players = this.registeredPlayersInfo.map(it=> {
       const playerController = new PlayerController(it.id, this.gameModel);
       if (it.type === 'bot') {
@@ -61,6 +62,7 @@ export class GameServer {
       this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
       
     }
+   
     ///start to game, fix it later
     const allPlayers = this.registeredPlayersInfo.map(it => it.id);
     this.players.forEach(item => {
@@ -70,6 +72,13 @@ export class GameServer {
       item.sendMessage('startGame', JSON.stringify(response));
       
     })
+    this.gameModel.init();
+  }
+
+  createGame(data:{map:number[][] } ) {   
+    this.map = data.map;
+    
+   // this.gameModel.createMap()
   }
  
   handleMessage(ms: IServerRequestMessage, id:string) {

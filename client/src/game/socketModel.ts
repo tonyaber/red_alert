@@ -91,6 +91,7 @@ export class SocketModel implements IClientModel {
       type: "startBuild",
       content: { name, playerId },
     });
+    console.log('socketModel', name, playerId)
     //если будет объект, то
     // const result = this.client.sendMessage('gameMove', content).then((r)=>{
     //  const data:ТИП = JSON.stringify(r);
@@ -170,8 +171,8 @@ export class SocketModel implements IClientModel {
   }
 
   createMap(map: number[][]):Promise<string> {
-    const content = JSON.stringify({ type: 'initialMap', content: { map } });
-    return this.client.sendMessage('gameMove', content);
+    const content = JSON.stringify({map});
+    return this.client.sendMessage('createGame', content);
   }
 
   //all game player methods
