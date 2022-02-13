@@ -57,7 +57,7 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     // Отправка сообщений.Отдельная функция что бы проще было вешать событие кнопок.
     const fn_chatSend = ()=>{
       const msg ={
-        user: session.get('user').name,
+        user: session.user.name,
         msg: inputChat.node.value,
       }
       inputChat.node.value='';

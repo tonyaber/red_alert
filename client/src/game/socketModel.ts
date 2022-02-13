@@ -71,7 +71,7 @@ export class SocketModel implements IClientModel {
   }
 
   addUser() {
-    this.client.sendMessage("auth", JSON.stringify({ user:session.get('user') }));
+    this.client.sendMessage("auth", JSON.stringify({ user:session.user }));
   }
 
   registerGamePlayer() {

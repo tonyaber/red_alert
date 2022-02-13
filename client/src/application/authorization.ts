@@ -1,44 +1,63 @@
-import Control from '../../../common/control';
-import { IClientModel } from '../game/IClientModel';
-import style from './authorization.css'
-import session from './session'
+import Control from "../../../common/control";
+import { IClientModel } from "../game/IClientModel";
+import style from "./authorization.css";
+import session, { IStoreUser } from "./session";
 
-export class Authorization extends Control{
+export class Authorization extends Control {
   onAuth: (name: string) => void;
   onHome: () => void;
-  
+
   constructor(parentNode: HTMLElement, socket: IClientModel) {
-    super(parentNode, 'div', style['main'], 'AUTHORIZTION');
-    
+    super(parentNode, "div", style["main"], "AUTHORIZTION");
+
     socket.onAuth = (name) => {
       this.onAuth(name);
-    }
+    };
 
-    const body = new Control(this.node, 'div', style['body'], ``);
+    const body = new Control(this.node, "div", style["body"], ``);
 
-    const content = new Control(body.node, 'div', style['content'], `authorization form`);
+    const content = new Control(
+      body.node,
+      "div",
+      style["content"],
+      `authorization form`
+    );
 
     // const userName = new Control(content.node, 'div', style['user_name'], `!!!user name!!!`);
-    if(!session.has('user')){
-      session.set('user',{name: 'user'+Math.floor(Math.random()*100)})
+    if (!session.has("user")) {
+      session.user.name =  "user" + Math.floor(Math.random() * 100);
     }
-    const userName = new Control<HTMLInputElement>(content.node, 'input', style['user_name'],'' );
-    userName.node.type='text';
-    userName.node.value=session.get('user').name;
-    userName.node.onchange = (e) =>{
-      session.get('user').name = userName.node.value;
+    const userName = new Control<HTMLInputElement>(
+      content.node,
+      "input",
+      style["user_name"],
+      ""
+    );
+    userName.node.type = "text";
+    userName.node.value = session.user.name;
+    userName.node.onchange = (e) => {
+      session.user.name = userName.node.value;
       session.save();
-    }
+    };
 
-    const play = new Control(content.node, 'button', style['play_btn'], 'Start play');
+    const play = new Control(
+      content.node,
+      "button",
+      style["play_btn"],
+      "Start play"
+    );
     play.node.onclick = () => {
       socket.addUser();
-    }
+    };
 
-    const cancel = new Control(content.node, 'button', style['cancel_btn'], 'Cancel');
+    const cancel = new Control(
+      content.node,
+      "button",
+      style["cancel_btn"],
+      "Cancel"
+    );
     cancel.node.onclick = () => {
       this.onHome();
-    }
-    
+    };
   }
 }
