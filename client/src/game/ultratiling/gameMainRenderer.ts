@@ -13,6 +13,7 @@ import { GameCursorStatus } from '../gameCursorStatus';
 import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
 import { Explosion } from '../builds_and_units/explosion';
 import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
+import { mod } from "./mod";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -80,8 +81,16 @@ export class GameMainRender{
 
   render(ctx: CanvasRenderingContext2D){
     //ctx.drawImage(this.tilingLayer.canvas, this.camera.position.x, this.camera.position.y);
-    ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
-    ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
+    // ctx.drawImage(this.tilingLayer.canvas1, 0, 0);
+    // ctx.drawImage(this.boundingLayer.canvas1, 0, 0);
+    ctx.drawImage(this.tilingLayer.canvas, 
+      -mod(this.camera.position.x, this.camera.getTileSize())*1, 
+      -mod(this.camera.position.y, this.camera.getTileSize())*1
+    );
+    ctx.drawImage(this.boundingLayer.canvas, 
+      -mod(this.camera.position.x, this.camera.getTileSize())*1 - this.camera.getTileSize() * 4, 
+      -mod(this.camera.position.y, this.camera.getTileSize())*1 - this.camera.getTileSize() * 4
+    ); 
     this.debugInfoView.render(ctx);
     this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
     

@@ -10,8 +10,6 @@ export class BoundingLayer{
   registred: Array<CanvasImageSource> = [];
   tileSize: number;
   lastCamera: Vector;
-  ctx1: CanvasRenderingContext2D;
-  canvas1: any;
   lastCacheCamera: Vector = new Vector(0, 0);
   camera: Vector;
   objects: Array<CachedSprite> = [];
@@ -23,11 +21,6 @@ export class BoundingLayer{
     this.canvas.width = 1100;
     this.canvas.height = 900;
     this.ctx = this.canvas.getContext('2d');
-
-    this.canvas1 = document.createElement('canvas');
-    this.canvas1.width = 800;//width*tileSize;
-    this.canvas1.height = 600;//height*tileSize;
-    this.ctx1 = this.canvas1.getContext('2d');
 
     let newMap:Array<Array<number>> = new Array(height).fill(0).map(it=> new Array(width).fill(0));
     this.map = newMap;
@@ -41,12 +34,6 @@ export class BoundingLayer{
       this.lastCamera = camera.clone();
     }
     this.updateCache(camera, tileSize);
-
-    this.ctx1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
-    this.ctx1.drawImage(this.canvas, 
-      -mod(camera.x, tileSize)*1, 
-      -mod(camera.y, tileSize)*1
-    );
   }
 
   updateCacheTile(camera:Vector, tileX:number, tileY:number, value:number){
@@ -100,9 +87,10 @@ export class BoundingLayer{
 
   getTileCamera(camera:Vector, tileSize:number){
     const tileCamera = new Vector(
-      Math.floor(camera.x / tileSize),
-      Math.floor(camera.y / tileSize)
+      Math.floor(camera.x / tileSize) - 4,
+      Math.floor(camera.y / tileSize) - 4
     );  
+
     return tileCamera;
   }
 
@@ -117,8 +105,8 @@ export class BoundingLayer{
     const viewTileHeight = Math.floor(this.canvas.height / tileSize);
     const viewTileWidth =  Math.floor(this.canvas.width / tileSize);
     return new Vector(
-      tilingCamera.x + viewTileWidth - 1,
-      tilingCamera.y + viewTileHeight - 1
+      tilingCamera.x + viewTileWidth - 4,
+      tilingCamera.y + viewTileHeight - 4
     );
   }
 
@@ -216,11 +204,9 @@ export class BoundingLayer{
   }
 
   public resizeViewPort(width:number, height:number){
-    const safeZone = this.tileSize * 4;
+    const safeZone = this.tileSize * 4 * 2;
     this.canvas.width = width + safeZone;
     this.canvas.height = height + safeZone;
-    this.canvas1.width = width;
-    this.canvas1.height = height;
     copier.canvas.width = width + safeZone;
     copier.canvas.height = height + safeZone
     const tileCamera = this.getTileCamera(this.camera, this.tileSize);

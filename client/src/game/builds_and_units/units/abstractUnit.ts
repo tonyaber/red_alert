@@ -127,7 +127,6 @@ export class AbstractUnit extends InteractiveObject{
 
     let pos = this.camera.getTileVector(cursor).clone().sub(new Vector(this.position.x, this.position.y));
      if (pos.abs()<1){
-
        return true;
        
     }
