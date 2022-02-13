@@ -1,9 +1,9 @@
-import { Vector } from "../../../common/vector";
+import { IVector, Vector } from "../../../common/vector";
 
 //action: add/delete/atack/move
 
 export interface IGameObjectContent{
-  position: Vector;
+  position: IVector;
   health?: number;
   playerId: string;
   primary?: boolean;

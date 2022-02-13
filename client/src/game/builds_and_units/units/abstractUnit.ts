@@ -28,7 +28,7 @@ export class AbstractUnit extends InteractiveObject{
     this.id = data.objectId;
     this.name = data.type;
     this.infoLayer = infoLayer;
-    this.position = data.content.position;
+    this.position = Vector.fromIVector(data.content.position);
     this.playerId = data.content.playerId;
     this.health = data.content.health;
     this.camera = camera;
@@ -36,7 +36,7 @@ export class AbstractUnit extends InteractiveObject{
     // const tileMap = [
     //   [1],
     // ];
-    const pos = data.content.position;
+    const pos =  Vector.fromIVector(data.content.position);
     /*const infos = new CachedSprite(tileSize*4, tileSize*4, pos.clone().scale(tileSize));
     infos.ctx.drawImage(res['buildingCenter'], 0, 0, tileSize*4, tileSize*4);
     infoLayer.addItem(infos);
@@ -113,11 +113,11 @@ export class AbstractUnit extends InteractiveObject{
   }
   updateObject(data: IGameObjectContent) {
     //console.log("UPD")
-    this.position = data.position;
+    this.position =  Vector.fromIVector(data.position);
     this.playerId = data.playerId;
     this.health = data.health;
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
-    this.info.position = data.position.clone();
+    this.info.position = Vector.fromIVector(data.position);
     this.info.health = data.health;
     this.info.update();
     this.infoLayer.updateObject(this.info)

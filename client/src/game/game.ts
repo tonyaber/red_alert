@@ -6,7 +6,7 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
-import { INITIAL_DATA } from '../../../server/src/initialData';
+import { INITIAL_DATA } from './initialData';
 import { getImageData, getMapFromImageData } from './tracer';
 
 export class Game extends Control{
@@ -98,19 +98,20 @@ export class Game extends Control{
         console.log(result)
       })
     }
-    
-    // sidePanelInfo.players.map((it, index) => {
-    //   if (sidePanelInfo.type != 'spectator') {
-    //     INITIAL_DATA[index].forEach(el => {
-    //       socket.addInitialData(el.name, el.position, it)
-    //     })
-    //   }      
-    // });
-
     const imageData = getImageData(res.map)
     const mapGame = getMapFromImageData(imageData);
 
     socket.createMap(mapGame);
+    
+    sidePanelInfo.players.map((it, index) => {
+      if (sidePanelInfo.type != 'spectator') {
+        INITIAL_DATA[index].forEach(el => {
+          socket.addInitialData(el.name, el.position, it)
+        })
+      }      
+    });
+
+    
 
     this.node.onclick = ()=>{
       this.node.requestFullscreen();

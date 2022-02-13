@@ -1,4 +1,4 @@
-import { Vector } from "../../../../common/vector";
+import { IVector, Vector } from "../../../../common/vector";
 import { Camera } from "./camera";
 import { GameDebugInfoView } from "./gameDebugInfoView";
 import { TilingLayer } from "./tileLayer";
@@ -106,8 +106,9 @@ export class GameMainRender{
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
   }
 
-  addShot(point: Vector) {
-    const explosion = new Explosion(point.scale(this.camera.getTileSize()));
+  addShot(point: IVector) {
+    const pointPosition =  Vector.fromIVector(point)
+    const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
     explosion.onDestroyed = () => {
       this.explosions = this.explosions.filter(it => it != explosion);

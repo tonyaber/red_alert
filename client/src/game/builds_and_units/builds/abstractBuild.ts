@@ -27,12 +27,39 @@ export class AbstractBuild extends InteractiveObject{
     this.id = data.objectId;
     this.name = data.type;
     this.infoLayer = infoLayer;
-    this.position = data.content.position;
+    this.position =  Vector.fromIVector(data.content.position);
     this.playerId = data.content.playerId;
     this.primary = data.content.primary;
     this.health = data.content.health;
     this.camera = camera;
+    const tileMap = data.content.buildMatrix;
+    const pos =  Vector.fromIVector(data.content.position);
+
+    this.info = new BuildingInfoView(pos, res["barrack"], this.name, this.health, this.playerId, this.primary);
+    this.info.update();
+    this.infoLayer.addObject(this.info);
     
+    tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
+      const tilePos = pos.clone().add(new Vector(j, i));
+      if (!tileMap[i][j]){
+        return;
+      }     
+      const tile = new TileObject(1, tilePos);
+      tile.onMouseEnter = ()=>{
+        this.hovBalance+=1;
+      }
+
+      tile.onMouseLeave = ()=>{
+        this.hovBalance -= 1;
+      }
+
+      tile.onUpdate = ()=>{
+        layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
+      }
+      tile.onUpdate();
+      
+      this.tiles.push(tile);
+    }));
     // const tileMap = [
     //   [0,0,0,0],
     //   [0,1,1,0],
@@ -123,7 +150,6 @@ export class AbstractBuild extends InteractiveObject{
   }
   
   updateObject(data: IGameObjectContent) {
-    this.position = data.position;
     this.playerId = data.playerId;
     this.primary = data.primary;
     this.health = data.health;

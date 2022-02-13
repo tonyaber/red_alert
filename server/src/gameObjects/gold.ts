@@ -13,7 +13,7 @@ export class GoldGameObject extends GameObject{
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super();
     this.data.position = Vector.fromIVector(state.position);
-    console.log(this.data.position)
+  
     this.objectId = objectId;
     this.type = type;
     this.data.playerId = 'gold';

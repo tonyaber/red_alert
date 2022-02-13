@@ -10,33 +10,33 @@ import { AbstractBuild } from './abstractBuild';
 export class Barrack extends AbstractBuild {
   constructor(layer: TilingLayer, infoLayer: BoundingLayer, res: Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData) {
     super(layer, infoLayer, res, camera, data);
-    const tileMap = data.content.buildMatrix;
-    const pos = data.content.position;
+    // const tileMap = data.content.buildMatrix;
+    // const pos = data.content.position;
 
-    this.info = new BuildingInfoView(data.content.position.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
-    this.info.update();
-    this.infoLayer.addObject(this.info);
+    // this.info = new BuildingInfoView(data.content.position.clone(), res["barrack"], this.name, this.health, this.playerId, this.primary);
+    // this.info.update();
+    // this.infoLayer.addObject(this.info);
     
-    tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
-      const tilePos = pos.clone().add(new Vector(j, i));
-      if (!tileMap[i][j]){
-        return;
-      }     
-      const tile = new TileObject(1, tilePos);
-      tile.onMouseEnter = ()=>{
-        this.hovBalance+=1;
-      }
+    // tileMap.forEach((it,i)=>it.forEach((jt, j)=>{
+    //   const tilePos = pos.clone().add(new Vector(j, i));
+    //   if (!tileMap[i][j]){
+    //     return;
+    //   }     
+    //   const tile = new TileObject(1, tilePos);
+    //   tile.onMouseEnter = ()=>{
+    //     this.hovBalance+=1;
+    //   }
 
-      tile.onMouseLeave = ()=>{
-        this.hovBalance -= 1;
-      }
+    //   tile.onMouseLeave = ()=>{
+    //     this.hovBalance -= 1;
+    //   }
 
-      tile.onUpdate = ()=>{
-        layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
-      }
-      tile.onUpdate();
+    //   tile.onUpdate = ()=>{
+    //     layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
+    //   }
+    //   tile.onUpdate();
       
-      this.tiles.push(tile);
-    }));
+    //   this.tiles.push(tile);
+    // }));
   }
 }
