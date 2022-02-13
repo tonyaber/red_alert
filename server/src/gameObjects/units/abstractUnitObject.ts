@@ -76,15 +76,15 @@ export class AbstractUnitObject extends GameObject {
       this.setState((data) => {
         return {
           ...data,
-          position: this.data.position.clone().sub(
-            this.data.position.clone().sub(this.target).clone().normalize().scale(delta * 0.001))
+          position: this.data.position.sub(
+            this.data.position.sub(this.target).normalize().scale(delta * 0.001))
         };
       })
     }
     if (this.action === 'attack') {
       if (this.objects[this.targetId]) {
         // this.weapon.position = this.data.position;
-        this.weapon.position = this.data.position;
+        this.weapon.position = Vector.fromIVector(this.data.position) 
         this.weapon.tryShot(this.target);
         this.weapon.step(delta);
       }

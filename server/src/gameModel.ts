@@ -112,7 +112,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId:string, objectName:string, position:IVector){
-
+    console.log('addGameObject', playerId)
     //mapObject
     //проверка, можно ли его добавлять
     //console.log(position)

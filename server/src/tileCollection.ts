@@ -146,7 +146,7 @@ export class TilesCollection {
   }
 
   createTilesMap(map: Array<Array<number>>) {
-    console.log('-->',map)
+    //console.log('-->',map)
     this.tilesMap=new Map()
     for(let h=0;h<map.length;h++){
       const row=[]
@@ -167,7 +167,7 @@ export class TilesCollection {
 
   addBuild(buildPos: Vector[]) {
    buildPos.forEach(b=>{
-     console.log(b.y,b.x,'--',this._arrayTiles[b.y][b.x])
+     //console.log(b.y,b.x,'--',this._arrayTiles[b.y][b.x])
       //this.getTileData(`${b.x}-${b.y}`).occupancyRatio=4
       this._arrayTiles[b.y][b.x]=-1
     })
