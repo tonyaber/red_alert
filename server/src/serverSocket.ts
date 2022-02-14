@@ -85,7 +85,7 @@ export class ServerSocket {
         if (_message.type === "utf8") {
           const message = _message as IUtf8Message;
           const msg: IServerRequestMessage = JSON.parse(message.utf8Data);
-          console.log(msg.type, msg.sessionID);
+          // console.log(msg.type, msg.sessionID);
           if(this.connections.has(msg.sessionID)){ 
             const conn = this.connections.get(msg.sessionID)
             this.connections.get(msg.sessionID).touch();

@@ -37,13 +37,23 @@ export class ClientSocket{
       }
       this.onMessage.emit(msg);
     }
-   
+    this._websocket.onclose = (_) => {
+      console.log("Socket is closed. Reconnect will be attempted in 1 second.");
+      console.log('TODO disconnect')
+      setTimeout(() => {
+        // this.connect();
+        console.log('TODO reconnect')
+      }, 1000);
+    }
+    this._websocket.onerror = (err) => {
+      console.error("Socket encountered error: ", err, "Closing socket");
+    }
   }
 
   sendMessage(type: string, data: string) {
     const requestMessage = {
       sessionID: session.id,
-      type: type,
+      type: type, 
       content: data,
       requestId: this.nextId(),
     };
