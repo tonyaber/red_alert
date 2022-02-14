@@ -15,10 +15,12 @@ export class GameServer {
   players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
   map: number[][] =[];
-  constructor(){
-    
+  private _id:number;
+  constructor(id:number){
+    this._id = id;
   }
-
+  get id(){ return this._id };
+  
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
     this.registeredPlayersInfo.push({ type, id: userId, connection });
     if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
