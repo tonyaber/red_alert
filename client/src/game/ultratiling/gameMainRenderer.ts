@@ -10,7 +10,6 @@ import { InteractiveList } from "../interactiveList";
 import { interactiveList } from "../builds_and_units/interactiveObject";
 import { GameCursorStatus } from '../gameCursorStatus';
 
-import { tilesCollection, TilesCollection } from "../../../../server/src/tileCollection";
 import { Explosion } from '../builds_and_units/explosion';
 import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
 import { mod } from "./mod";

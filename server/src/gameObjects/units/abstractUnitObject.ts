@@ -4,7 +4,7 @@ import {PlayerSide} from "../../playerSide";
 import {GameObject} from "../gameObject"
 import {tracePath} from "../../trace";
 
-import {tilesCollection, TilesCollection} from "../../tileCollection";
+import {TilesCollection} from "../../tileCollection";
 import {AbstractWeapon} from '../weapon/abstractWeapon';
 import {AbstractBullet} from "../bullet/abstractBullet";
 
@@ -48,6 +48,8 @@ export class AbstractUnitObject extends GameObject {
     }
   }
 
+  
+
   // //logic
   // this.objects.forEach(it => {
   //   if (it) {
@@ -74,14 +76,16 @@ export class AbstractUnitObject extends GameObject {
           this.target = new Vector(step.x, step.y)
         }
       }
+      if (this.target) {
+        this.setState((data) => {
+          return {
+            ...data,
+            position: this.data.position.clone().sub(
+              this.data.position.clone().sub(this.target).normalize().scale(delta * 0.001))
+          };
+        })
+      }
       
-      this.setState((data) => {
-        return {
-          ...data,
-          position: this.data.position.clone().sub(
-            this.data.position.clone().sub(this.target).normalize().scale(delta * 0.001))
-        };
-      })
     }
     if (this.action === 'attack') {
       if (this.objects[this.targetId]) {
@@ -106,7 +110,7 @@ export class AbstractUnitObject extends GameObject {
   }
 
   getTraceMap(target: IVector) {
-    const tilesArray = tilesCollection.arrayTiles
+    const tilesArray = this.traceMap.arrayTiles
     const targetToTile = {x: Math.floor(target.x), y: Math.floor(target.y)}
     const positionToTile = {
       x: Math.floor(this.data.position.x),

@@ -6,7 +6,7 @@ import { PlayerSide } from "./playerSide";
 import { TickList } from "./tickList";
 import { gameObjects } from "./gameObjects/gameObjectsMap";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
-import { tilesCollection } from "./tileCollection";
+import { TilesCollection } from "./tileCollection";
 
 
 const BUILDS = ["buildingCenter",
@@ -36,9 +36,11 @@ export class GameModel{
   builds: any;
   mapForTrace: number[][];
   mapForBuilds: number[][];
+  tilesCollection: TilesCollection;
   
   constructor(players: IRegisteredPlayerInfo[], state: { map: number[][], builds: any }) {
     this.tickList = new TickList();
+    this.tilesCollection=new TilesCollection()
     this.players = players;
     this.map = state.map;
     this.builds = state.builds;
@@ -110,7 +112,9 @@ export class GameModel{
     const state = { position, playerId }
     const gameObjectConstructor = gameObjects[objectName];
     const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
+    gameObject.setMap(this.tilesCollection)
     this.mapForBuilds[position.x][position.y] = -1;
+    
     if(objectName==='rock'){
       this.mapForTrace[position.y][position.x] = -1;
     }
@@ -145,6 +149,8 @@ export class GameModel{
       const state = { position, playerId }
       const gameObjectConstructor = gameObjects[objectName];
       const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
+      gameObject.setMap(this.tilesCollection)
+
       gameObject.onUpdate = (state)=>{
         this.onUpdate(state, 'update');
       }
@@ -154,7 +160,7 @@ export class GameModel{
         
         if(gameObject.subType==='build'){        
           this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position);
-          tilesCollection.addBuild((gameObject as AbstractBuildObject).data.buildMatrix, position)
+          this.tilesCollection.addBuild((gameObject as AbstractBuildObject).data.buildMatrix, position)
         }
         this.onUpdate(state, 'create');     
         if (!this._getPrimary(playerId, objectName)&&gameObject instanceof AbstractBuildObject) {
@@ -212,10 +218,8 @@ export class GameModel{
           this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
         }        
       }
-    }
-    
+    }    
   }
-
 
   moveUnits(playerId: string, unitId: string, target: IVector) {
     this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).moveUnit(target);
@@ -269,9 +273,7 @@ export class GameModel{
         }
       });
     });
-    
-    tilesCollection.createTilesMap(this.mapForTrace)
-    console.log(this.mapForBuilds);
+    this.tilesCollection.createTilesMap(this.mapForTrace)
     return 'addInitialMap'
   }
 

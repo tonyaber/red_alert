@@ -146,16 +146,27 @@ export class TilesCollection {
   }
 
   createTilesMap(map: Array<Array<number>>) {
-    //console.log('-->',map)
-    this.tilesMap=new Map()
+    this.tilesMap = new Map()
+    this._arrayTiles = [];
     for(let h=0;h<map.length;h++){
       const row=[]
       for(let w=0;w<map[0].length;w++){
-          this.addTile({x:w,y:h},0)
-        row.push(Number.MAX_SAFE_INTEGER)
+          this.addTile({x:w,y:h},map[h][w])
+        row.push(map[h][w])
       }
-      this._arrayTiles.push(row)
-    }
+      this._arrayTiles.push(row);
+    
+    }  console.log(this._arrayTiles)
+    //console.log('-->',map)
+    // this.tilesMap=new Map()
+    // for(let h=0;h<map.length;h++){
+    //   const row=[]
+    //   for(let w=0;w<map[0].length;w++){
+    //       this.addTile({x:w,y:h},0)
+    //     row.push(Number.MAX_SAFE_INTEGER)
+    //   }
+    //   this._arrayTiles.push(row)
+    // }
   }
   getTilesMap(){
     return this.tilesMap
@@ -184,4 +195,4 @@ export class TilesCollection {
   }
 
 }
-export const tilesCollection=new TilesCollection()
+

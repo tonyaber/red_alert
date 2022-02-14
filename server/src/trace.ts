@@ -1,5 +1,5 @@
 import {IVector, Vector} from "../../common/vector";
-import {tilesCollection} from "./tileCollection";
+
 export const steps = [
   {x: -1, y: 0}, {x: 1, y: 0}, {
     x: 0,
