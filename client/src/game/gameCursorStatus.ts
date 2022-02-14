@@ -58,6 +58,7 @@ export class GameCursorStatus{
         // }
       }
     }
+    console.log(this.hovered, this.selected, this.playerId,action )
     return action;
   }
 

@@ -179,7 +179,8 @@ export class AbstractUnitObject extends GameObject {
 
   moveUnit(target: IVector) {
     this.action = 'move';
-    this.path.length = 0
+    this.path.length = 0;
+    console.log(target)
     this.tracePathToTarget(target, this.action)
   }
 

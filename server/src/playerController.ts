@@ -50,7 +50,7 @@ export class PlayerController{
     return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
   }
 
-  setPrimary(buildId: string, name: string) {    
+  setPrimary(buildId: string, name: string) {   
     return this.gameModel.setPrimary(this.playerId, buildId, name);
   }
   

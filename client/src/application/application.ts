@@ -15,7 +15,7 @@ import { Settings } from './settingsPageMulti';
 import style from './application.css'
 import PopupPage from './popup'
 import { getImageData, getMapFromImageData } from '../game/tracer';
-
+import session from './session';
 
 export class Application extends Control{
   socket: IClientModel;
@@ -68,6 +68,7 @@ export class Application extends Control{
   multiCycle(res: Record<string, HTMLImageElement>) {
     const authorization = new Authorization(this.node, this.socket);//ответ с именем
     authorization.onAuth = (name) => {
+      console.log(name)
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       
@@ -85,9 +86,9 @@ export class Application extends Control{
       }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
         
-        
+        const id = session.id;
         roomPage.destroy();
-        this.gameCycle(name, data, res)
+        this.gameCycle(id, data, res)
         // resourceLoader.load(resources).then(res=>{
         //   const game = new Game(this.node, this.socket, name, data, res.textures);
         //   game.onExit = () => {
@@ -112,7 +113,7 @@ export class Application extends Control{
   }
 
   gameCycle(name:string, data:any, res: Record<string, HTMLImageElement>){  ///TODO type??
-
+  
       const game = new Game(this.node, this.socket, name, data, res);
       game.onExit = () => {
         //TODO сделать выход всех игроков, оповещение
