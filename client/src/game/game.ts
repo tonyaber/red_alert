@@ -68,12 +68,6 @@ export class Game extends Control{
         })
       } else if (selected === 'onIsReadyClick') {
         canvas.setPlannedBuild(object.object);
-        canvas.onClick = (position) => {
-          canvas.onClick = null;
-          socket.addBuild(object.object.name, position, id).then((result) => {
-            console.log(result);
-          });
-        }
       } else if (selected === 'onInprogressClick') {
         socket.pauseBuilding(object.object.name, id).then((result) => {
           console.log(result);
@@ -94,6 +88,12 @@ export class Game extends Control{
       if (subType === 'unit') {
         //canvas.setSelected(id);
       }
+    }
+
+    canvas.onClick = (position, name) => {
+        socket.addBuild(name, position, id).then((result) => {
+          console.log(result);
+      });
     }
 
     canvas.onChangePosition = (id: string, position: Vector) => {

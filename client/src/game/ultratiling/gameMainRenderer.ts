@@ -26,7 +26,7 @@ export class GameMainRender{
   cursorStatus: GameCursorStatus;
   cursorPosition: Vector;
   hoveredObjects: InteractiveObject;
-  onAddBuild: (position: Vector) => void;
+  onAddBuild: (position: Vector, name: string) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
   onChangePosition: (id: string, position: Vector) => void;
   onAttack: (id: string, targetId: string) => void;
@@ -116,6 +116,9 @@ export class GameMainRender{
     //if(!interactiveList.list.find(it=>it.id===data.objectId)){
       const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
     //}
+    if (interactiveObject instanceof AbstractBuild) {
+      this.cursorStatus.planned = null;
+    }
   }
 
   addShot(point: IVector) {
@@ -164,8 +167,7 @@ export class GameMainRender{
     const action = this.cursorStatus.getAction();
     // console.log(action)
     if (action === 'build') {
-        this.onAddBuild?.(this.camera.getTileVector(this.camera.position.clone().add(cursor)));
-        this.cursorStatus.planned = null;
+      this.onAddBuild?.(this.camera.getTileVector(this.camera.position.clone().add(cursor)),this.cursorStatus.planned.name);
     }
     if (action === 'primary') {
         this.onObjectClick(this.hoveredObjects.id, this.hoveredObjects.name, this.hoveredObjects.subType);

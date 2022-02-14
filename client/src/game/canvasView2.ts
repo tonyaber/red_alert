@@ -9,7 +9,7 @@ import red from './red.css'
 
 export class Canvas extends Control{
   onGameMove: () => void;
-  onClick: (position: Vector) => void;
+  onClick: (position: Vector, name: string) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
   onChangePosition: (id: string, position: Vector) => void;
   onAttack: (id: string, targetId: string) => void;
@@ -72,8 +72,8 @@ export class Canvas extends Control{
     this.ticker.startRender();
     this.renderer.setCameraPosition(new Vector(-200, -200));
 
-    this.renderer.onAddBuild = (position)=>{
-      this.onClick(position);
+    this.renderer.onAddBuild = (position, name)=>{
+      this.onClick(position, name);
     }
 
     this.renderer.onObjectClick = (id, name, subType) => {

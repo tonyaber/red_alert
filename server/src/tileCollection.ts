@@ -1,5 +1,5 @@
 import {Tile} from "./tileElement";
-import {Vector} from "../../common/vector";
+import {IVector, Vector} from "../../common/vector";
 import {AbstractUnit} from "../../client/src/game/builds_and_units/units/abstractUnit";
 
 
@@ -165,7 +165,17 @@ export class TilesCollection {
     return JSON.parse(JSON.stringify(this._arrayTiles))
   }
 
-  addBuild(buildPos: Vector[]) {
+  addBuild(buildMax: number[][], position: IVector) {
+    const buildPos = buildMax.map((it, index) => {
+          //  [0,1,1,0]
+          //[0,1,1,0]
+          return it.map((el, ind) => {
+            if (el > 0) {
+              return new Vector(position.x + ind, position.y + index)
+            }
+            return el;
+          }).filter(el => el != 0);
+        }).flat() as Vector[];
    buildPos.forEach(b=>{
      //console.log(b.y,b.x,'--',this._arrayTiles[b.y][b.x])
       //this.getTileData(`${b.x}-${b.y}`).occupancyRatio=4

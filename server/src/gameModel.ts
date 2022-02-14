@@ -8,6 +8,19 @@ import { gameObjects } from "./gameObjects/gameObjectsMap";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
 import { tilesCollection } from "./tileCollection";
 
+
+const BUILDS = ["buildingCenter",
+  "barrack",
+  "energyPlant",
+  "bigEnergyPlant",
+  "dogHouse",
+  "carFactory",
+  "techCenter",
+  "radar",
+  "repairStation",
+  "oreBarrel",
+  "oreFactory",
+  "defendTower"];
 export class GameModel{
   players: IRegisteredPlayerInfo[] = [];
   objects: Record<string, GameObject> = {};
@@ -21,6 +34,8 @@ export class GameModel{
   nextId: () => string;
   map: number[][];
   builds: any;
+  mapForTrace: number[][];
+  mapForBuilds: number[][];
   
   constructor(players: IRegisteredPlayerInfo[], state: { map: number[][], builds: any }) {
     this.tickList = new TickList();
@@ -95,6 +110,10 @@ export class GameModel{
     const state = { position, playerId }
     const gameObjectConstructor = gameObjects[objectName];
     const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
+    this.mapForBuilds[position.x][position.y] = -1;
+    if(objectName==='rock'){
+      this.mapForTrace[position.y][position.x] = -1;
+    }
     gameObject.onUpdate = (state)=>{
       this.onUpdate(state, 'update');
     }
@@ -121,62 +140,70 @@ export class GameModel{
   }
 
   //player methods
-  addGameObject(playerId:string, objectName:string, position:IVector){
-    console.log('addGameObject', playerId)
-    //mapObject
-    //проверка, можно ли его добавлять
-    //console.log(position)
-    const state = { position, playerId }
-    // console.log(objectName)
-     const gameObjectConstructor = gameObjects[objectName];
-    const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
-    gameObject.onUpdate = (state)=>{
-      this.onUpdate(state, 'update');
+  addGameObject(playerId: string, objectName: string, position: IVector) {
+    if (this.checkBuilding(position) || !BUILDS.includes(objectName)) {
+      const state = { position, playerId }
+      const gameObjectConstructor = gameObjects[objectName];
+      const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
+      gameObject.onUpdate = (state)=>{
+        this.onUpdate(state, 'update');
+      }
+      gameObject.onCreate = (state) => {
+        this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
+        this.objects[state.objectId] = gameObject;
+        
+        if(gameObject.subType==='build'){        
+          this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position);
+          tilesCollection.addBuild((gameObject as AbstractBuildObject).data.buildMatrix, position)
+        }
+        this.onUpdate(state, 'create');     
+        if (!this._getPrimary(playerId, objectName)&&gameObject instanceof AbstractBuildObject) {
+          gameObject.setState((lastState) => {
+            return {
+              ...lastState,
+            primary: true,
+            }
+          })
+        }
+      }
+      gameObject.onDelete = (state) => {
+        this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
+        delete this.objects[state.objectId];
+        this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
+        this.onUpdate(state, 'delete'); 
+      }
+
+      gameObject.onDamageTile = (targetId, point) => {
+        this.gameObjects.find(it => it.objectId === targetId).damage(point);
+        this.onShot(point);
+        //gameObjects
+      }
+      gameObject.create();
+      this.gameObjects.push(gameObject);
+      this.tickList.add(gameObject);
+    
+      return 'add object';
     }
-    gameObject.onCreate = (state) => {
-      this.playersSides.find(item => item.id === playerId).setBuilding(objectName);
-      this.objects[state.objectId] = gameObject;
-      
-    if(gameObject.subType==='build'){
-      const buildPos = (gameObject as AbstractBuildObject).data.buildMatrix.map((it, index) => {
-        //  [0,1,1,0]
-        //[0,1,1,0]
-        return it.map((el, ind) => {
-          if (el > 0) {
-            return new Vector(position.x + ind, position.y + index)
-          }
-          return el;
-        }).filter(el => el != 0);
-      }).flat() as Vector[];
-      tilesCollection.addBuild(buildPos)
-    }
-      this.onUpdate(state, 'create');     
-      if (!this._getPrimary(playerId, objectName)&&gameObject instanceof AbstractBuildObject) {
-        gameObject.setState((lastState) => {
-          return {
-            ...lastState,
-          primary: true,
-          }
-        })
+    return 'false';
+  }
+
+  checkBuilding(position: IVector) {
+    for (let i = 0; i <4; i++){
+      for (let j = 0; j < 4; j++){
+        if (this.mapForBuilds[position.x + i][position.y + j] === -1) {
+          return false;
+        }
       }
     }
-    gameObject.onDelete = (state) => {
-      this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
-      delete this.objects[state.objectId];
-      this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
-      this.onUpdate(state, 'delete'); 
-    }
+    return true;
+  }
 
-    gameObject.onDamageTile = (targetId, point) => {
-      this.gameObjects.find(it => it.objectId === targetId).damage(point);
-      this.onShot(point);
-      //gameObjects
+  addMapBuild(buildMatrix: number[][], position: IVector) {
+    for (let i = 0; i < buildMatrix.length + 2; i++){
+      for (let j = 0; j < buildMatrix[0].length + 2; j++){
+        this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
+      }
     }
-    gameObject.create();
-    this.gameObjects.push(gameObject);
-    this.tickList.add(gameObject);
-  
-    return 'add object';
   }
 
 
@@ -215,24 +242,26 @@ export class GameModel{
   }
 
   createMap(map: number[][]) {
-    const mapForTrace:number[][]=[]
+    this.mapForTrace = new Array(map.length).fill(null).map((it)=>new Array(map[0].length).fill(null).map((el)=>Number.MAX_SAFE_INTEGER));
+    this.mapForBuilds = new Array(map.length).fill(null).map((it)=>new Array(map[0].length).fill(null).map((el)=>0));
     map.forEach((el, indX) => {
-      const row:number[]=[]
       el.forEach((it, indY) => {
+        if (indY === 0 || indX === 0 ||
+              indY === this.mapForBuilds[0].length - 1 ||          
+              indX === this.mapForBuilds[0].length - 1) {
+          this.mapForBuilds[indX][indY] = -1;
+        }
         if (it === 1) {
-          this.addInitialObject('initial', 'gold', {x:indX, y: indY})
-         row.push(Number.MAX_SAFE_INTEGER)
+          this.addInitialObject('initial', 'gold', { x: indX, y: indY })
         }
         else if (it === 2) {
-          this.addInitialObject('initial', 'rock', {x:indX, y: indY})
-          row.push(-1)
-        }else{
-          row.push(Number.MAX_SAFE_INTEGER)
+          this.addInitialObject('initial', 'rock', { x: indX, y: indY });
         }
-      })
-      mapForTrace.push(row)
-    })
-    tilesCollection.createTilesMap(mapForTrace)
+      });
+    });
+    
+    tilesCollection.createTilesMap(this.mapForTrace)
+    console.log(this.mapForBuilds);
     return 'addInitialMap'
   }
 
