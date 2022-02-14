@@ -56,9 +56,10 @@ export class AbstractUnitObject extends GameObject {
   // })
   // //
   tick(delta: number) {
+ 
     if ((this.action === 'move' || this.action === 'moveToAttack') && this.target) {
       if (this.target && Math.abs(this.target.x - this.data.position.x) < 0.2 && Math.abs(this.target.y - this.data.position.y) < 0.2) {
-        const step = this.path.pop()
+        const step = this.path.pop();
         if (!step) {
           if (Math.abs(this.data.position.x - this.target.x) < 0.3
               && Math.abs(this.data.position.y - this.target.y) < 0.3) {
@@ -77,8 +78,8 @@ export class AbstractUnitObject extends GameObject {
       this.setState((data) => {
         return {
           ...data,
-          position: this.data.position.sub(
-            this.data.position.sub(this.target).normalize().scale(delta * 0.001))
+          position: this.data.position.clone().sub(
+            this.data.position.clone().sub(this.target).normalize().scale(delta * 0.001))
         };
       })
     }
@@ -169,6 +170,7 @@ export class AbstractUnitObject extends GameObject {
           this.target = new Vector(step.x, step.y)
         })
     }
+   
     this.setState((data) => {
       return {
         ...data,
@@ -186,7 +188,7 @@ export class AbstractUnitObject extends GameObject {
 
   attack(targetId: string) {
     this.action = 'moveToAttack'; //attack
-
+    this.path.length = 0;
     this.targetId = targetId;
     const target = this.objects[targetId].data.position;
 

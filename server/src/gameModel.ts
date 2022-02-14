@@ -190,7 +190,11 @@ export class GameModel{
   checkBuilding(position: IVector) {
     for (let i = 0; i <4; i++){
       for (let j = 0; j < 4; j++){
-        if (this.mapForBuilds[position.x + i][position.y + j] === -1) {
+        if (position.x + j >= this.mapForBuilds.length||
+          position.y + i >= this.mapForBuilds[0].length||
+          position.x + j < 0 ||
+          position.y + i < 0 ||
+          this.mapForBuilds[position.x + i][position.y + j] === -1) {
           return false;
         }
       }
@@ -201,9 +205,15 @@ export class GameModel{
   addMapBuild(buildMatrix: number[][], position: IVector) {
     for (let i = 0; i < buildMatrix.length + 2; i++){
       for (let j = 0; j < buildMatrix[0].length + 2; j++){
-        this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
+        if (position.x - 1 + j > 0 &&
+          position.y - 1 + i > 0 &&
+          position.x - 1 + j < this.mapForBuilds.length &&
+          position.y - 1 + i < this.mapForBuilds[0].length) {
+          this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
+        }        
       }
     }
+    
   }
 
 
@@ -243,14 +253,14 @@ export class GameModel{
 
   createMap(map: number[][]) {
     this.mapForTrace = new Array(map.length).fill(null).map((it)=>new Array(map[0].length).fill(null).map((el)=>Number.MAX_SAFE_INTEGER));
-    this.mapForBuilds = new Array(map.length).fill(null).map((it)=>new Array(map[0].length).fill(null).map((el)=>0));
+    this.mapForBuilds = new Array(map.length+4).fill(null).map((it)=>new Array(map[0].length+4).fill(null).map((el)=>0));
     map.forEach((el, indX) => {
       el.forEach((it, indY) => {
-        if (indY === 0 || indX === 0 ||
-              indY === this.mapForBuilds[0].length - 1 ||          
-              indX === this.mapForBuilds[0].length - 1) {
-          this.mapForBuilds[indX][indY] = -1;
-        }
+        // if (indY === 0 || indX === 0 ||
+        //       indY === this.mapForBuilds[0].length - 1 ||          
+        //       indX === this.mapForBuilds[0].length - 1) {
+        //   this.mapForBuilds[indX][indY] = -1;
+        // }
         if (it === 1) {
           this.addInitialObject('initial', 'gold', { x: indX, y: indY })
         }
