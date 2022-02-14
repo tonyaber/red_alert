@@ -9,12 +9,13 @@ export class GameObject {
     playerId: null,
     primary: false,
     action: null,
-    target: null
+    target: null,
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
   onDelete: (state: IGameObjectData) => void;
   onDamageTile: (targetId: string, point: Vector) => void;
+
   objectId: string;
 
   objects: Record<string, GameObject> = {}
@@ -32,6 +33,7 @@ export class GameObject {
     // this.type = type;
     // this.objectId = objectId;
   }
+
 
   tick(delta: number) {
     // if (Math.round(this.data.position.x) !== this.target.x && Math.round(this.data.position.y) !== this.target.y){
@@ -60,8 +62,7 @@ export class GameObject {
     //this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
 
-  attack(targetId: string, tileSize: number){
-    
+  attack(targetId: string, tileSize: number) {
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {

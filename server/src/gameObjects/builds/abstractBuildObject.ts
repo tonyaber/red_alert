@@ -9,6 +9,7 @@ export class AbstractBuildObject extends GameObject{
     health: null,
     playerId: null,
     primary: false,
+    buildMatrix: [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]]
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData) => void;

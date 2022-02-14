@@ -21,7 +21,7 @@ export class AbstractUnitObject extends GameObject {
   objectId: string;
 
   objects: Record<string, GameObject>;
-attackRadius:number = 3;
+  attackRadius:number = 3;
   subType: string;
   type: string;
   direction: Vector;
@@ -46,7 +46,7 @@ attackRadius:number = 3;
     this.weapon.onBulletTarget = (point: Vector) => {
       this.onDamageTile?.(this.targetId, point);
     }
-
+    this.action = 'idle'; // бездействие юнитов
   }
 
   // //logic

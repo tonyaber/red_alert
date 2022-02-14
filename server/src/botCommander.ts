@@ -2,6 +2,10 @@ import { PlayerController } from "./playerController";
 import { IGameObjectData, IStartGameResponse, IUpdateSidePanel } from './dto';
 import { Vector, IVector } from "../../common/vector";
 import { TickList } from "./tickList";
+import { findClosestBuild, findClosestUnit } from "./distance"
+import { AbstractUnitObject } from "./gameObjects/units/abstractUnitObject";
+import { Soldier } from "./gameObjects/units/soldier";
+import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
 
 export class BotCommander{
   playerController: PlayerController;
@@ -16,6 +20,7 @@ export class BotCommander{
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 4; // Минимально допустимое расстояние для постройки
   objectData: Array<IGameObjectData> = [];
+  ataka: Boolean = false; // Находится ли бот в состоянии Атака
   
   constructor(playerController:PlayerController){
     this.playerController = playerController;
@@ -92,6 +97,7 @@ export class BotCommander{
         if (availableBuilds.length) {
           this.playerController.startBuilding(availableBuilds[Math.floor(Math.random() * availableBuilds.length)].object.name);
         }
+        console.log('this.objectData: ', this.objectData)
       // строим юнита
       } else if (random < 1) {
         const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
@@ -101,10 +107,34 @@ export class BotCommander{
 
       //add to attack or some 
       // console.log('attac this.objectData: ',typeof this.objectData, this.objectData)
-      let arr = this.objectData.filter(item => item.type == 'soldier' && item.content.playerId === this.playerController.playerId)
-      console.log('arr: ', arr)
-      if(arr.length >= 10){
-        console.log(this.playerController.playerId + '---------- Пора атаковать-----------')
+        
+        // Выбрать бездействующих солдат текущего бота
+        let arrMySoldiers = (this.objectData).filter(item =>
+          // item instanceof  AbstractUnitObject
+          item instanceof  Soldier
+          && item.content.playerId === this.playerController.playerId
+          && item.action === 'idle'
+        )
+        // Выбрать ближайшего врага
+        let arrEnemy = (this.objectData).filter(item =>
+          item instanceof AbstractBuildObject
+          && item.content.playerId !== this.playerController.playerId
+        )
+        
+
+        console.log('arrMySoldiers: ', arrMySoldiers)
+        if (arr.length >= 10) {
+          // Послать в атаку каждого юнита
+          arr.forEach((item) => {
+            // idБлижайшегог врага
+            this.playerController.playerId 
+            // // playerPosition:Vector, builds:Array<AbstractBuildObject>
+            // const builds = this.getObjects().list.filter(it => it.player === player&& it instanceof MapObject) as MapObject[];
+            const closestBuild = findClosestBuild(arrMySoldiers[0].content.position.clone(), arrEnemy);
+            // this.playerController.setAttackTarget(item.objectId, idБлижайшего врага, 1) // 1 - временно, т.к. в новом коде это убрали
+          })
+          console.log(this.playerController.playerId + '---------- Пора атаковать-----------')
+          
       }
       // console.log(this.playerController.getObjects()) 
       // это все объекты на карте {health: 100  playerId: "bot13"   position: Vector {x: 225, y: 150} primary: true
