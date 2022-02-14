@@ -17,13 +17,12 @@ export class GameObject {
   onDamageTile: (targetId: string, point: Vector) => void;
 
   objectId: string;
-
   objects: Record<string, GameObject> = {}
-
   subType: string;
   type: string;
   direction: Vector;
   target: Vector;
+  buildMatrix: number[][]
 
   constructor(/*objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }*/) {
     // this.data.position = Vector.fromIVector(state.position);
@@ -32,6 +31,7 @@ export class GameObject {
     // this.data.health = 100;
     // this.type = type;
     // this.objectId = objectId;
+    this.buildMatrix = [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]];
   }
 
 

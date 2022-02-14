@@ -2,11 +2,13 @@ import { PlayerController } from "./playerController";
 import { IGameObjectData, IStartGameResponse, IUpdateSidePanel } from './dto';
 import { Vector, IVector } from "../../common/vector";
 import { TickList } from "./tickList";
-import { findClosestBuild, findClosestUnit } from "./distance"
+import { findClosestBuild } from "./distance"; // , findClosestUnit
 import { AbstractUnitObject } from "./gameObjects/units/abstractUnitObject";
 import { Soldier } from "./gameObjects/units/soldier";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
+import { GameObject } from "./gameObjects/gameObject";
 
+  
 export class BotCommander{
   playerController: PlayerController;
   tickList: TickList;
@@ -19,9 +21,8 @@ export class BotCommander{
   startAngle: number = 4; // угол отклонения при расчете точек на окружности
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 4; // Минимально допустимое расстояние для постройки
-  objectData: Array<IGameObjectData> = [];
-  ataka: Boolean = false; // Находится ли бот в состоянии Атака
-  
+  objectData: Record<string, IGameObjectData> = {}; // IGameObjectData
+
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
@@ -32,32 +33,23 @@ export class BotCommander{
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
-     // IGameObjectData - это все данные о здании, включая айди игрока, которому оно принадлежит
+    // this.objectData - это все данные о здании, включая айди игрока, которому оно принадлежит
     if(type === 'create'){
-      let parse = JSON.parse(message);
-      // console.log(JSON.parse(message))
-      this.objectData.push(JSON.parse(message)); // получить созданные ботом здания 
-      // console.log('this.objectData: ',this.objectData)
+      let parsedObject: IGameObjectData = JSON.parse(message);
+      this.objectData[parsedObject.objectId] = parsedObject; // получить созданные ботом здания 
     }
     if(type === 'update'){
-      async () =>{
-        let parse = JSON.parse(message);
-        let updObject: IGameObjectData = await this.objectData.find(item => item.content.playerId === parse.content.playerId && item.objectId === parse.objectId)
-        updObject.content = parse.content;
-      }
+      let parsedObject: IGameObjectData = JSON.parse(message);
+      this.objectData[parsedObject.objectId] = parsedObject; // получить созданные ботом здания 
     }
     if(type === 'delete'){
-      async () =>{
-        let parse = JSON.parse(message);      
-        let delObject: IGameObjectData = await this.objectData.find(item => item.content.playerId === parse.content.playerId && item.objectId === parse.objectId)
-        let delIndex = this.objectData.indexOf(delObject)
-        this.objectData.splice(delIndex, 1)
-      }
+      let parsedObject: IGameObjectData = JSON.parse(message);
+      delete this.objectData[parsedObject.objectId]
     }
 
     if (type === 'addBuild' && !this.startPoint) {
-      let parse = JSON.parse(message);
-      this.startPoint = parse.content.position;
+      let parsedObject = JSON.parse(message);
+      this.startPoint = parsedObject.content.position;
     }
     if (type === 'startGame') {
       let parse = JSON.parse(message);
@@ -97,7 +89,7 @@ export class BotCommander{
         if (availableBuilds.length) {
           this.playerController.startBuilding(availableBuilds[Math.floor(Math.random() * availableBuilds.length)].object.name);
         }
-        console.log('this.objectData: ', this.objectData)
+        
       // строим юнита
       } else if (random < 1) {
         const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
@@ -107,33 +99,43 @@ export class BotCommander{
 
       //add to attack or some 
       // console.log('attac this.objectData: ',typeof this.objectData, this.objectData)
-        
+      
+      
         // Выбрать бездействующих солдат текущего бота
-        let arrMySoldiers = (this.objectData).filter(item =>
-          // item instanceof  AbstractUnitObject
-          item instanceof  Soldier
-          && item.content.playerId === this.playerController.playerId
-          && item.action === 'idle'
+        const arr = Object.values(this.objectData)
+        console.log('arr: ', arr)
+        let arrIdleSoldiers = arr.filter(item => {
+            // item instanceof  AbstractUnitObject
+            // (item instanceof  Soldier)
+            //  
+            // && 
+            return item.type === 'soldier' 
+              && item.content.playerId === this.playerController.playerId 
+              && item.content.action === null //todo после добавления в стейт изменить на 'idle'
+          }
         )
         // Выбрать ближайшего врага
-        let arrEnemy = (this.objectData).filter(item =>
-          item instanceof AbstractBuildObject
-          && item.content.playerId !== this.playerController.playerId
-        )
+        // let arrEnemy = (this.objectData).filter(item =>
+        //   item instanceof AbstractBuildObject
+        //   && item.data.playerId !== this.playerController.playerId
+        // )
         
 
-        console.log('arrMySoldiers: ', arrMySoldiers)
-        if (arr.length >= 10) {
+        console.log('arrIdleSoldiers: ', arrIdleSoldiers)
+        if (arrIdleSoldiers.length >= 10) {
+          console.log(this.playerController.playerId + '---------- Пора атаковать-----------')
           // Послать в атаку каждого юнита
-          arr.forEach((item) => {
+          arrIdleSoldiers.forEach((item) => {
             // idБлижайшегог врага
             this.playerController.playerId 
             // // playerPosition:Vector, builds:Array<AbstractBuildObject>
             // const builds = this.getObjects().list.filter(it => it.player === player&& it instanceof MapObject) as MapObject[];
-            const closestBuild = findClosestBuild(arrMySoldiers[0].content.position.clone(), arrEnemy);
+            // const vector = arrIdleSoldiers[0].data.position; 
+            // const closestBuild = findClosestBuild(vector.clone().add(vector), arrEnemy);
+            // console.log('Блиайшее здание: ', closestBuild)
             // this.playerController.setAttackTarget(item.objectId, idБлижайшего врага, 1) // 1 - временно, т.к. в новом коде это убрали
           })
-          console.log(this.playerController.playerId + '---------- Пора атаковать-----------')
+          
           
       }
       // console.log(this.playerController.getObjects()) 
