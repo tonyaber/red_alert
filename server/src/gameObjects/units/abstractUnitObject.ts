@@ -13,7 +13,7 @@ export class AbstractUnitObject extends GameObject {
     position: null,
     health: null,
     playerId: null,
-    action: null,
+    action: "idle",
     target: null
   };
   onUpdate: (state: IGameObjectData) => void;
@@ -26,7 +26,6 @@ export class AbstractUnitObject extends GameObject {
   subType: string = 'unit';
   type: string;
   direction: Vector;
-  action: string;
   targetId: string;
   private path: Vector[] = [];
   weapon: any;
@@ -60,7 +59,7 @@ export class AbstractUnitObject extends GameObject {
   // //
   tick(delta: number) {
  
-    if ((this.action === 'move' || this.action === 'moveToAttack') && this.target) {
+    if ((this.data.action === 'move' || this.data.action === 'moveToAttack') && this.target) {
       if (this.target && Math.abs(this.target.x - this.data.position.x) < 0.2 && Math.abs(this.target.y - this.data.position.y) < 0.2) {
         const step = this.path.pop();
         if (!step) {
@@ -69,8 +68,8 @@ export class AbstractUnitObject extends GameObject {
             this.target = null
            // console.log(tilesCollection.arrayTiles)
           }
-          if (this.action === 'moveToAttack') {
-            this.action = 'attack';
+          if (this.data.action === 'moveToAttack') {
+            this.data.action = 'attack';
           }
         }
         else {
@@ -88,7 +87,7 @@ export class AbstractUnitObject extends GameObject {
       }
       
     }
-    if (this.action === 'attack') {
+    if (this.data.action === 'attack') {
       if (this.objects[this.targetId]) {
         // this.weapon.position = this.data.position;
         this.weapon.position = Vector.fromIVector(this.data.position);
@@ -97,7 +96,7 @@ export class AbstractUnitObject extends GameObject {
       }
       else {
         this.targetId = null;
-        this.action = 'idle';
+        this.data.action = 'idle';
       }
     }
   }
@@ -185,20 +184,20 @@ export class AbstractUnitObject extends GameObject {
   }
 
   moveUnit(target: IVector) {
-    this.action = 'move';
+    this.data.action = 'move';
     this.path.length = 0;
     console.log(target)
-    this.tracePathToTarget(target, this.action)
+    this.tracePathToTarget(target, this.data.action)
   }
 
   attack(targetId: string) {
-    this.action = 'moveToAttack'; //attack
+    this.data.action = 'moveToAttack'; //attack
     this.path.length = 0;
     this.targetId = targetId;
     const target = this.objects[targetId].data.position;
     this.targetHit = Vector.fromIVector(target);
     //console.log('TARGETT', target)
-    this.tracePathToTarget(target, this.action)
+    this.tracePathToTarget(target, this.data.action)
   }
 
   setState(callback: (data: IGameObjectContent) => IGameObjectContent) {

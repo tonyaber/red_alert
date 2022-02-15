@@ -73,11 +73,11 @@ export class GameCursorStatus{
   
     const builds = this.getObjects().list.filter(it => it.playerId === this.playerId&& it instanceof AbstractBuild) as AbstractBuild[];
 
-    //const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
-    // if (!(!builds.length /*|| closestBuild.distance <= 6*/)) { 
-    //   // console.log('redMask: ', redMask);
-    //   return redMask;
-    // }
+    const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
+    if (!(!builds.length /*|| closestBuild.distance <= 6*/)) { 
+      // console.log('redMask: ', redMask);
+      return redMask;
+    }
     // console.log('mask: ', mask);
     return mask;
 

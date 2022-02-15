@@ -127,16 +127,17 @@ export class GameMainRender{
 
   addObject(data: IGameObjectData) {
     const BuildConstructor = builds[data.type];
-    //if(!interactiveList.list.find(it=>it.id===data.objectId)){
-      const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    //}
-    if (interactiveObject instanceof AbstractBuild) {
-      this.cursorStatus.planned = null;
-    }
+    const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
+    
+    this.changeBuildsMap(interactiveObject, data);
+  }
+
+  changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData) {
     if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
       this.buildsMap[data.content.position.y][data.content.position.x] = 1;
     }
     if (interactiveObject instanceof AbstractBuild) {
+      this.cursorStatus.planned = null;
        for (let i = 0; i < data.content.buildMatrix.length + 2; i++){
         for (let j = 0; j <  data.content.buildMatrix[0].length + 2; j++){
           if (data.content.position.x - 1 + j > 0 &&
@@ -146,8 +147,7 @@ export class GameMainRender{
             this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = 1;
           }        
         }
-      }  
-     
+      }       
     }
   }
 
