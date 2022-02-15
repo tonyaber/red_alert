@@ -7,6 +7,7 @@ import {
   IGameUpdateResponse,
   IChatMsg,
   IUserItem,
+  ISendItemGame,
 } from "./dto";
 import { IClientModel } from "./IClientModel";
 import session from "../application/session";
@@ -21,6 +22,7 @@ export class SocketModel implements IClientModel {
   onShot: (point: Vector) => void;
   onChatMsg: (msg: IChatMsg) => void;  
   onUsersList: (msg: IUserItem[]) => void;  
+  onGamesList: (msg: ISendItemGame[]) => void;  
 
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
@@ -56,6 +58,9 @@ export class SocketModel implements IClientModel {
       }
       if (message.type === "usersList") {
         this.onUsersList(JSON.parse(message.content));
+      }
+      if (message.type === "gamesList") {
+        this.onGamesList(JSON.parse(message.content));
       }
     };
     this.client.onMessage.add(this.messageHandler);

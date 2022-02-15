@@ -102,7 +102,8 @@ export class ServerSocket {
           // console.log(msg.type,'--*', msg.sessionID);
           if (this.connections.has(msg.sessionID)) {
             const conn = this.connections.get(msg.sessionID);
-            this.connections.get(msg.sessionID).touch();
+            conn.connection = connection;
+            conn.touch();
           }
           if (msg.type === "auth") {
             //id
@@ -123,6 +124,7 @@ export class ServerSocket {
               requestId: "111111111",
             };
             connection.sendUTF(JSON.stringify(response));
+            this.sendGamesList();
           }
           if (msg.type === "createMap") {
             game.createGame(JSON.parse(msg.content));
@@ -162,6 +164,7 @@ export class ServerSocket {
               playerId,
               this.connections.get(playerId)
             );
+            this.sendGamesList();
           }
           if (msg.type === "chatSend") {
             const content = JSON.parse(msg.content);
@@ -183,9 +186,6 @@ export class ServerSocket {
       });
     });
   }
-  sendGamesList() {
-
-  }
   sendUsersList() {
     const usersList = Array.from(this.connections.entries()).map(
       (x) => {
@@ -195,6 +195,10 @@ export class ServerSocket {
     );
     this.responseAll("usersList",JSON.stringify(usersList),'"usersList"')
   }
+  sendGamesList() {
+    this.responseAll("gamesList",JSON.stringify(this.games.getList()),'"gameList"')
+  }
+
   responseAll(type: string, content: string, requestId: string) {
     this.connections.forEach((value, key) => {
       const response: IServerResponseMessage = {

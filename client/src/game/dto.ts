@@ -78,3 +78,7 @@ export interface IUserItem{
   name: string;
   id: string;
 }
+export interface ISendItemGame {
+  id: number;
+  name: string;
+}

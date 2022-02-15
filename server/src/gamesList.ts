@@ -1,5 +1,4 @@
-import GamesListItem from "./gamesListItem";
-
+import GamesListItem, { ISendItem } from "./gamesListItem";
 export default class GamesList {
   private _list: GamesListItem[] = [];
   createGame() {
@@ -9,6 +8,9 @@ export default class GamesList {
   get(id: number): GamesListItem {
     return this._list[id];
   }
+  getList():ISendItem[]{
+    return this._list.map(x=>x.getItem());
+  }
 }
 // const gamesList = new GamesList();
-// export {gamesList};
+

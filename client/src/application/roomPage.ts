@@ -1,7 +1,7 @@
 import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import style from './roomPage.css'
-import { IChatMsg, IUserItem } from '../game/dto'
+import { IChatMsg, IUserItem, ISendItemGame } from '../game/dto'
 import session from './session';
 
 export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
@@ -38,6 +38,14 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     const btnSendMsg = new Control(wrapperChat.node, 'button', style['btn_send'], 'Send');
 
     const wrapperGames = new Control(lobby.node, 'div', style['games_wrapper'], 'Games');
+    socket.onGamesList = (msg:ISendItemGame[]):void => {      
+      wrapperGames.node.innerHTML='';  
+      msg.forEach(x => {
+        console.log(x.id);        
+        const game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.name);
+      });
+    }
+
     const btnCreateMap = new Control(this.node, 'button', style['btn_map'], 'Create game');
     btnCreateMap.node.onclick = () => {
       this.onCreateGame();
@@ -55,7 +63,8 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     }
     // Это обрабатываются события Чата
     // Получение сообщений
-    socket.onChatMsg = (msg: IChatMsg) => {      
+    socket.onChatMsg = (msg: IChatMsg) => {    
+      if(!msg.msg.trim())  return;
       const newMsg = new Control(chat.node,'div','chat_msg','<b>'+msg.user+': </b>'+msg.msg);
       
       if(msg.user === 'system') {

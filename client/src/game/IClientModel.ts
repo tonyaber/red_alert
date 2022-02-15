@@ -1,6 +1,6 @@
 import { Vector } from "../../../common/vector";
 import { IGameUpdateResponse, IChatMsg, IUserItem} from "./dto";
-import { IGameObjectData, IObjectInfo } from "./dto";
+import { IGameObjectData, IObjectInfo, ISendItemGame } from "./dto";
 
 export class IClientModel
 {
@@ -14,6 +14,7 @@ export class IClientModel
   onShot: (point: Vector) => void;
   onChatMsg: (msg: IChatMsg) => void;
   onUsersList: (msg: IUserItem[]) => void;
+  onGamesList: (msg: ISendItemGame[]) => void;
   addUser: () => void;
 
   registerGamePlayer: () => void;
