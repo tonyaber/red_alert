@@ -50,7 +50,7 @@ export class Application extends Control{
     // settings.onAuth = (name) => {
      
     //   }
-      const imageData = getImageData(res.map)
+      const imageData = getImageData(res.map3)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
     

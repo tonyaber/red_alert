@@ -14,8 +14,10 @@ import barrack from '../assets/png/barrack.png';
 import radar from '../assets/png/radar.png';
 import energy from '../assets/png/energy.png';
 import defendedTower from '../assets/png/defendedTower.png'
-import map from '../assets/png/map96g.png';
-
+import map4 from '../assets/png/map96g.png';
+import map1 from '../assets/png/map1.png';
+import map2 from '../assets/png/map2.png';
+import map3 from '../assets/png/map3.png';
 import explosion from '../assets/png/explosion_1.png'
 
 //import map from '../assets/png/map.png';
@@ -25,7 +27,11 @@ import explosion from '../assets/png/explosion_1.png'
 export const resourceLoader = new ResourceLoader();
 
 export const resources = {
-  map: map,
+  
+  map1: map1,
+  map2: map2,
+  map3: map3,
+  map4: map4,
   grass: grass,
   rocks: rocks, 
   goldFull: goldFull,
