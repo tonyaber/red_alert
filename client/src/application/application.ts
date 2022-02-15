@@ -13,9 +13,11 @@ import StatisticsPage from './statisticsPage'
 import {SettingsPage} from './settingsPageSingle'
 import { Settings } from './settingsPageMulti';
 import style from './application.css'
+//import side from '../game/sideOptions.css'
 import PopupPage from './popup'
 import InfoPage from './infoPage'
 import { getImageData, getMapFromImageData } from '../game/tracer';
+import Side from '../components/side'
 
 
 export class Application extends Control{
@@ -101,18 +103,57 @@ export class Application extends Control{
   gameCycle(name:string, data:any, res: Record<string, HTMLImageElement>){  ///TODO type??
 
       const game = new Game(this.node, this.socket, name, data, res);
-      game.onExit = () => {
-        //TODO сделать выход всех игроков, оповещение
-        game.destroy();
-        this.finishCycle();
-      } 
-      game.onPause = () => {
-        const pause = new PopupPage(this.node, 'Game paused ||', 'You stay game on pause. Your competitors wait you. Harry up!');
-        //TODO сделать паузу для всех игроков, оповещение
-        pause.onBack = () => {
-          pause.destroy();
-        }
+      const options = new Control(this.node, 'button', style['options_btn']);
+      const sideOptions = new Side(this.node);//new Control(this.node, 'div', [side['side'], side['hide']].join(' '));
+      sideOptions.quickOut();
+      options.node.onclick = () => {
+        sideOptions.quickIn();
       }
+      sideOptions.onPause = () => {
+        //TODO сделать паузу для всех игроков, оповещение
+        sideOptions.quickOut();
+        const popupOptions = new PopupPage(this.node, 
+            {
+              title: 'Game on pause',
+              message:`You stay game on pause. </br> Your competitors wait you. </br> Harry up!`,
+              button: 'back to game'
+            });
+          popupOptions.onBack = () => {
+            popupOptions.destroy();
+          }
+      }
+      sideOptions.onExit = () => {
+        sideOptions.quickOut();
+        const popupOptions = new PopupPage(this.node, 
+            {
+              title: 'Exit the game',
+              message:`Do you really want exit this game? </br> If 'yes', press 'exit' and see you later!`,
+              button: 'exit'
+            });
+          popupOptions.onBack = () => {
+            popupOptions.destroy();
+            game.destroy();
+            options.destroy();
+            this.finishCycle();
+          }
+      }
+    
+    //   game.onExit = () => {
+    //     //TODO сделать выход всех игроков, оповещение
+    //     game.destroy();
+    //     this.finishCycle();
+    //   } 
+    //   game.onPause = () => {
+    //     const pause = new PopupPage(this.node, 
+    //       {title: 'Game on pause',
+    //        message:'You stay game on pause. Your competitors wait you. Harry up!',
+    //        button: 'back to game'
+    //       });
+    //     
+    //     pause.onBack = () => {
+    //       pause.destroy();
+    //     }
+    //   }
     
   }
 
