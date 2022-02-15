@@ -29,8 +29,8 @@ export class PlayerController{
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 
-  moveUnits(unitId:string, target:IVector,tileSize:number){
-    return this.gameModel.moveUnits(this.playerId, unitId, target,tileSize);
+  moveUnits(unitId:string, target:IVector){
+    return this.gameModel.moveUnits(this.playerId, unitId, target);
   }
 
   updateSidePanel(targetId: string) {
@@ -46,18 +46,21 @@ export class PlayerController{
     return this.gameModel.getObjects();
   }
 
-  setAttackTarget(unitId:string, targetId:string, tileSize: number){
-    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId, tileSize)
+  setAttackTarget(unitId:string, targetId:string){
+    return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
   }
 
-  setPrimary(buildId: string, name: string) {    
+  setPrimary(buildId: string, name: string) {   
     return this.gameModel.setPrimary(this.playerId, buildId, name);
   }
-  addInitialDate(name: string, playerId: string, position: IVector) {
-    console.log(playerId)
+  
+  addInitialData(name: string, playerId: string, position: IVector) {
     if (playerId === this.playerId) {
       return this.gameModel.addGameObject(this.playerId,name, position)
     }
+  }
+  addInitialMap(map:number[][]){
+    return this.gameModel.createMap(map);
   }
 
 }

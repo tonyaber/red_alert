@@ -80,8 +80,8 @@ export class SidePanel extends Control{
     // Менять состояние кнопок вверх/вниз в зависимости от количества Построек
     let colMarginTop = this.buildNode.node.style.marginTop.replace(/[^0-9,-]/g, "")
     let freeSpace = (window.innerHeight - 300 - (this.buildAvailable.length * 100) - Number(colMarginTop));
-    //console.log('freeSpace', freeSpace);
-    //console.log('this.buildAvailable.length', this.buildAvailable.length);
+   // console.log('freeSpace', freeSpace);
+   // console.log('this.buildAvailable.length', this.buildAvailable.length);
     if (freeSpace > 100) {
       this.buttonFirstColumnUp.node.classList.add(red["button__inactive"]) //перемотка вверх не нужна
     } else {

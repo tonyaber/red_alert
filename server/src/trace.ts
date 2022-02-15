@@ -1,5 +1,5 @@
 import {IVector, Vector} from "../../common/vector";
-import {tilesCollection} from "./tileCollection";
+
 export const steps = [
   {x: -1, y: 0}, {x: 1, y: 0}, {
     x: 0,
@@ -108,7 +108,7 @@ export function findPath(map:Array<Array<number>>, indexPoint:Vector, destPoint:
 
   let path:Array<Vector> = [];
   let currentValue = map[destPoint.y][destPoint.x]
-  console.log("CurrentVal",currentValue)
+  //console.log("CurrentVal",currentValue)
  // console.log(destPoint,'-->',currentValue)
   if (currentValue == Number.MAX_SAFE_INTEGER) {
     return null;
@@ -132,6 +132,6 @@ export function findPath(map:Array<Array<number>>, indexPoint:Vector, destPoint:
   if (crashDetector<0){
     throw new Error('Infinity cycle');
   }
-  console.log("PPPP-->>>",path)
+//  console.log("PPPP-->>>",path)
   return path;
 }

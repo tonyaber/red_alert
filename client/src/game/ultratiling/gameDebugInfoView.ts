@@ -1,3 +1,4 @@
+import { interactiveList } from "../builds_and_units/interactiveObject";
 export class GameDebugInfoView {
   fps: number = 60;
 
@@ -17,5 +18,6 @@ export class GameDebugInfoView {
     ctx.fillStyle = "#fff";
     ctx.fillText('canvas render', 0, 10);
     ctx.fillText('fps: ' + this.fps.toFixed(2), 0, 20);
+    ctx.fillText('Interactive: ' + interactiveList.list.length.toString(), 0 , 30);
   }
 }

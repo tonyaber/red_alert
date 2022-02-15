@@ -8,8 +8,13 @@ export class AbstractBuildObject extends GameObject{
     position: null,
     health: null,
     playerId: null,
+<<<<<<< HEAD
     primary: false,
     buildMatrix: [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]]
+=======
+     primary: false,
+     buildMatrix: null,
+>>>>>>> ffa0ec199f7664a48639760f3c78f4467c50bc85
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData) => void;
@@ -18,7 +23,7 @@ export class AbstractBuildObject extends GameObject{
 
   objects: Record<string, GameObject> = {};
 
-  subType: string;
+  subType: string = 'build';
   type: string;
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -28,6 +33,12 @@ export class AbstractBuildObject extends GameObject{
     this.data.health = 100;
     this.type = type;
     this.objectId = objectId;
+    this.data.buildMatrix = [
+      [0,1,1,0],
+      [1,1,1,1],
+      [1,1,1,1],
+      [1,1,1,1],
+    ];
   }
   
   create() {

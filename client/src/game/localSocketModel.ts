@@ -2,10 +2,11 @@ import { BotCommander } from "../../../server/src/botCommander";
 import { IRegisteredPlayerInfo } from "../../../server/src/dto";
 import { GameModel } from "../../../server/src/gameModel";
 import { PlayerController } from "../../../server/src/playerController";
-import { IGameUpdateResponse } from './dto';
+import { IChatMsg, IUserItem, IGameUpdateResponse } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
-import {Vector} from '../../../common/vector'
+import { Vector } from '../../../common/vector'
+import { INITIAL_DATA } from "../../../server/src/initialData";
 
 export class LocalModel implements IClientModel
 {
@@ -17,9 +18,12 @@ export class LocalModel implements IClientModel
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
   onShot: (point: Vector) => void;
+  onChatMsg: (msg: IChatMsg) => void;
+  onUsersList: (msg: IUserItem[]) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
+  map: number[][];
 
   constructor(){
 
@@ -44,7 +48,7 @@ export class LocalModel implements IClientModel
       id: this.player,
       type: 'human'
     });
-    const game = new GameModel(gamePlayersInfo);
+    const game = new GameModel(gamePlayersInfo,  {map: this.map, builds: INITIAL_DATA});
     const myPlayerController: PlayerController = new PlayerController(this.player, game);
     this.myPlayer = myPlayerController;
     const bots = playersInfo.map(it=> {
@@ -59,7 +63,11 @@ export class LocalModel implements IClientModel
       }
       if (action === 'create') {
         this.onAddObject(data);
+<<<<<<< HEAD
         bots.forEach(item=> item.sendMessage('create', JSON.stringify(data))); // получить боту все здания, которые строятся
+=======
+        bots.forEach(item=> item.sendMessage('create', JSON.stringify(data)));
+>>>>>>> ffa0ec199f7664a48639760f3c78f4467c50bc85
       }
       if (action === 'delete') {
         this.onDeleteObject(data);
@@ -92,6 +100,7 @@ export class LocalModel implements IClientModel
       item.sendMessage('startGame', JSON.stringify({ players: allPlayers, sidePanel, type: 'bot' }))
       
     })
+    game.init();
     this.game = game;
   }
 
@@ -113,20 +122,22 @@ export class LocalModel implements IClientModel
   }
 
   cancelBuild(){
-
   }
   registerGamePlayer() {
   }
   registerSpectator() {
-    
+  
   }
+
+  chatSend():Promise<string>{ return new Promise((r)=>r(''))}
+  getUsersList():Promise<string>{ return new Promise((r)=>r(''))}
 
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{
     const result = this.myPlayer.addGameObject(name, position);
     return new Promise(resolve => resolve(result))
   }
-  addInitialDate(name: string, position: Vector, playerId: string):Promise<string>{
+  addInitialData(name: string, position: Vector, playerId: string):Promise<string>{
     const result = this.game.addGameObject(playerId,name, position);
     return new Promise(resolve => resolve(result))
   }
@@ -136,15 +147,20 @@ export class LocalModel implements IClientModel
     return new Promise(resolve => resolve(result))
   }
 
-  moveUnit(id: string, position: Vector,tileSize:number): Promise<string>{
-    console.log('TILESIZE',tileSize)
-
-    const result =  this.myPlayer.moveUnits(id, position,tileSize);
+  moveUnit(id: string, position: Vector): Promise<string>{
+    const result =  this.myPlayer.moveUnits(id, position);
     return new Promise(resolve => resolve(result));
   }
 
-  setAttackTarget(id: string, targetId: string,tileSize:number):Promise<string>{
-    const result = this.myPlayer.setAttackTarget(id, targetId,tileSize);// , tileSize
+  createMap(map: number[][]): Promise<string> {
+    this.map = map;
+
+   // const result = this.myPlayer.addInitialMap(map);
+    return new Promise((r) => r('createMap'));
+  }
+
+  setAttackTarget(id: string, targetId: string):Promise<string>{
+    const result = this.myPlayer.setAttackTarget(id, targetId);// , tileSize
     return new Promise(resolve => resolve(result));
   }
 

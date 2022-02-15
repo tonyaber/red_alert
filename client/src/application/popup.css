@@ -1,0 +1,39 @@
+.popup{
+position: fixed;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+background-color: rgba(219, 219, 218, 0.8);
+}
+
+.popup_body{
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup_content{
+  background-color: black;
+  color: ghostwhite;
+  max-width: 800px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.popup_title{
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.popup_message{
+  margin-bottom: 25px;
+}
+
+.popup_button{
+
+}

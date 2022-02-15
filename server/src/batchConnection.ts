@@ -1,4 +1,6 @@
-class BatchConnection implements IConnection{
+import { IConnection } from "./dto";
+
+export class BatchConnection implements IConnection{
   private batch:Array<string> = [];
   private connection: IConnection;
 
@@ -7,10 +9,14 @@ class BatchConnection implements IConnection{
   constructor(connection:IConnection){
     this.connection = connection;
     this.connection.onMessage = (batchMsg:string)=>{
-      const batch:Array<string> = JSON.parse(batchMsg);
-      batch.forEach(message=>{
-        this.onMessage(message);
-      })
+      const batch: Array<string> = JSON.parse(batchMsg);
+      if (!(batch instanceof Array)) {
+        this.onMessage(batch);
+      } else {
+        batch.forEach(message=>{
+          this.onMessage(message);
+        })
+      }      
     }
   }
 
@@ -18,14 +24,15 @@ class BatchConnection implements IConnection{
     const isEmpty = this.batch.length==0;
     this.batch.push(message);
     if (isEmpty){
-      setTimeout(()=>{
+      setTimeout(() => {
+        console.log('BATCH')
         this._send(JSON.stringify(this.batch));
         this.batch = [];
       }, 0);
     }
   }
 
-  private _send(batchMsg:string){
+  private _send(batchMsg: string) {
     this.connection.sendUTF(batchMsg);
   }
 }

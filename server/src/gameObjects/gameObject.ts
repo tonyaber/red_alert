@@ -1,6 +1,7 @@
 import { IVector, Vector } from "../../../common/vector";
 import { IGameObjectContent,IGameObjectData } from "../dto";
 import { PlayerSide } from "../playerSide";
+import { TilesCollection } from "../tileCollection";
 
 export class GameObject {
   data: IGameObjectContent = {
@@ -22,7 +23,8 @@ export class GameObject {
   type: string;
   direction: Vector;
   target: Vector;
-  buildMatrix: number[][]
+   buildMatrix: number[][];
+  traceMap: TilesCollection;
 
   constructor(/*objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }*/) {
     // this.data.position = Vector.fromIVector(state.position);
@@ -34,6 +36,9 @@ export class GameObject {
     this.buildMatrix = [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]];
   }
 
+  setMap(traceMap: TilesCollection) {
+    this.traceMap = traceMap;
+  }
 
   tick(delta: number) {
     // if (Math.round(this.data.position.x) !== this.target.x && Math.round(this.data.position.y) !== this.target.y){
@@ -57,12 +62,13 @@ export class GameObject {
     // }, this.subType); 
   }
 
-  moveUnit(target: IVector,tileSize:number) {
+  moveUnit(target: IVector) {
     //this.target = Vector.fromIVector(target);
     //this.direction = Vector.fromIVector(target).clone().sub(this.data.position);  
   }
 
-  attack(targetId: string, tileSize: number) {
+  attack(targetId: string){
+    
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {

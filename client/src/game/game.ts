@@ -6,9 +6,11 @@ import { IClientModel } from "./IClientModel";
 import { SidePanel } from "./sidePanel";
 import { SocketModel } from "./socketModel";
 import red from './red.css'
-import {INITIAL_DATE} from '../../../server/src/initialDate';
+
 
 export class Game extends Control{
+  onExit: () => void;
+  onPause: () => void;
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
     super(parentNode, 'div', red['global_main']);
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
@@ -22,10 +24,18 @@ export class Game extends Control{
         }
       })
     }
+
    
     const wrapperGameControls = new Control(this.node, 'div', red['wrap_game_controls']);
     const exit = new Control(wrapperGameControls.node, 'button', red['exit_game'], 'exit');
+    exit.node.onclick = () => {
+      this.onExit();
+    }
     const pause = new Control(wrapperGameControls.node, 'button', red['pause_game'], 'pause');
+    if(sidePanelInfo.type === 'spectator'){ pause.node.setAttribute('disabled', 'true')}
+    pause.node.onclick = () => {
+      this.onPause(); //TODO сделать попап с паузой
+    }
 
     const canvas = new Canvas(this.node, res, id);//id
     const sidePanel = new SidePanel(this.node);
@@ -58,12 +68,6 @@ export class Game extends Control{
         })
       } else if (selected === 'onIsReadyClick') {
         canvas.setPlannedBuild(object.object);
-        canvas.onClick = (position) => {
-          canvas.onClick = null;
-          socket.addBuild(object.object.name, position, id).then((result) => {
-            console.log(result);
-          });
-        }
       } else if (selected === 'onInprogressClick') {
         socket.pauseBuilding(object.object.name, id).then((result) => {
           console.log(result);
@@ -86,24 +90,38 @@ export class Game extends Control{
       }
     }
 
-    canvas.onChangePosition = (id: string, position: Vector,tileSize:number) => {
-      socket.moveUnit(id, position,tileSize).then((result) => {
+    canvas.onClick = (position, name) => {
+        socket.addBuild(name, position, id).then((result) => {
+          console.log(result);
+      });
+    }
+
+    canvas.onChangePosition = (id: string, position: Vector) => {
+      socket.moveUnit(id, position).then((result) => {
           console.log(result,'UNIT');
         });
     }
-  canvas.onAttack = (id: string, targetId: string, tileSize: number) => {
-      socket.setAttackTarget(id, targetId, tileSize).then((result) => {
+  canvas.onAttack = (id: string, targetId: string) => {
+      socket.setAttackTarget(id, targetId).then((result) => {
         console.log(result)
       })
     }
+
     
-    sidePanelInfo.players.map((it, index) => {
-      if (sidePanelInfo.type != 'spectator') {
-        INITIAL_DATE[index].forEach(el => {
-          socket.addInitialDate(el.name, el.position, it)
-        })
-      }      
-    });
+    // const imageData = getImageData(res.map)
+    // const mapGame = getMapFromImageData(imageData);
+
+    // socket.createMap(mapGame);
+
+    // sidePanelInfo.players.map((it, index) => {
+    //   if (sidePanelInfo.type != 'spectator') {
+    //     INITIAL_DATA[index].forEach(el => {
+    //       socket.addInitialData(el.name, el.position, it)
+    //     })
+    //   }      
+    // });
+
+    
 
     this.node.onclick = ()=>{
       this.node.requestFullscreen();
