@@ -206,10 +206,13 @@ export class GameModel{
         }
       }
     }
-    //const builds = this.gameObjects.filter(it=> it instanceof AbstractBuildObject&&it.data.playerId===playerId)
-    //const closestBuild = findClosestBuild(Vector.fromIVector(position), builds);
-    //console.log(closestBuild)
-    //if (!(!builds.length /*|| closestBuild.distance <= 6*/)) { 
+    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item=>item.getState());
+    
+    const closestBuild = findClosestBuild(Vector.fromIVector(position), builds);
+          
+    if (!(!builds.length || closestBuild.distance <= 6)) { 
+      return false;
+    }
     return true;
   }
 

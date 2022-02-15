@@ -18,6 +18,7 @@ import map4 from '../assets/png/map96g.png';
 import map1 from '../assets/png/map1.png';
 import map2 from '../assets/png/map2.png';
 import map3 from '../assets/png/map3.png';
+import map from '../assets/png/map.png';
 import explosion from '../assets/png/explosion_1.png'
 
 //import map from '../assets/png/map.png';
@@ -32,6 +33,7 @@ export const resources = {
   map2: map2,
   map3: map3,
   map4: map4,
+  map: map,
   grass: grass,
   rocks: rocks, 
   goldFull: goldFull,

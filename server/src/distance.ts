@@ -1,6 +1,8 @@
 import { Vector } from "../../common/vector";
+import { IGameObjectContent, IGameObjectData } from "./dto";
 // import {GameObject, MapObject, AbstractUnit, InteractiveObject} from "./interactives";
 import { GameObject } from "./gameObjects/gameObject";
+import { tech } from "./techTree";
 
 export function getTilingDistance(playerPosition:Vector, tilesPosition:Vector, tiles:Array<Array<number>>){
   let min = Number.MAX_SAFE_INTEGER;
@@ -32,12 +34,13 @@ export function getTilingDistance(playerPosition:Vector, tilesPosition:Vector, t
 //     return {distance: min, unit:units[minIndex]}
 // }
 
-export function findClosestBuild(playerPosition:Vector, builds:Array<GameObject>){
+// export function findClosestBuild(playerPosition:Vector, builds:Array<GameObject>){
+export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObjectContent>){
   let min = Number.MAX_SAFE_INTEGER;
   let minIndex = -1;
   let minTile:Vector = null;
   builds.forEach((it, i) => {
-    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.data.position), it.buildMatrix);
+    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.position), it.buildMatrix);
     if (dist<min){
       min = dist;
       minIndex = i;
@@ -45,7 +48,12 @@ export function findClosestBuild(playerPosition:Vector, builds:Array<GameObject>
     }
   });
   if (minIndex != -1) {
-    minTile = minTile.clone().add(builds[minIndex].data.position);
+    minTile = minTile.clone().add(builds[minIndex].position);
   }
   return { distance: min, unit: builds[minIndex], tile: minTile };
-} 
+}
+
+export function getSubtype(type: string) {
+  const building = tech.object.find(item => item.name === type)
+  return building.subType;
+}
