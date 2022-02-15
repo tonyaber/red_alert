@@ -3,7 +3,7 @@ import style from './popup.css'
 import { IClientModel } from '../game/IClientModel';
 
 export default class InfoPage extends Control{
-  //onBack: () => void;
+  onBack: () => void;
   onStartGame: (data:string) => void;
   constructor(parentNode:HTMLElement, socket: IClientModel/*titleContent:string, messageContent:string*/ ){
     super(parentNode, 'div', style['popup'] );
@@ -14,13 +14,29 @@ export default class InfoPage extends Control{
 
     const body = new Control(this.node, 'div', style['popup_body']);
     const content = new Control(body.node, 'div', style['popup_content']);
-    const title = new Control(content.node, 'div', style['popup_title'], 'title');//`${titleContent}`);
-    const message = new Control(content.node, 'div', style['popup_message'], 'content');//`${messageContent}`);
-    const btnOk = new Control(content.node, 'button', style['popup_button'], 'create');
+    const title = new Control(content.node, 'div', style['popup_title'], 'Сongratulations!');//`${titleContent}`);
+    const message = new Control(content.node, 
+      'div', 
+      style['popup_message'], 
+      `You created new game! </br>
+      There are all options of your game: </br>
+      Credit: </br>
+      Speed: </br>
+      Bot's amount:</br>
+      If all OK, press button 'create'. </br>
+      Good luck!`);//`${messageContent}`);
+    const wrapperButton = new Control(content.node, 'div', style['wrapper_button'], '');
+    const btnOk = new Control(wrapperButton.node, 'button', style['popup_button'], 'create');
     btnOk.node.onclick = () => {
       socket.addUser();
      // this.onBack();
     }
+    const btnCancel = new Control(wrapperButton.node, 'button', style['popup_button'], 'cancel');
+    btnCancel.node.onclick = () => {
+      this.onBack();
+    }
+
+
 
   }
 }

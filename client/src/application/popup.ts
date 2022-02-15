@@ -13,6 +13,5 @@ export default class PopupPage extends Control{
     btnOk.node.onclick = () => {
       this.onBack();
     }
-
   }
 }

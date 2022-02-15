@@ -28,7 +28,8 @@
 
 .game_side{
   width: 250px;
-  height: 100%;
+  /*height: 100%;*/
+  height: calc(100vh - 6px);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -45,6 +46,7 @@
 }
 
 .aside-top-panel{
+  position: relative;
   background: url("../assets/img/aside/fon-metall.jpg") no-repeat center center;
   color: #fff;
   border: none;
@@ -54,6 +56,24 @@
   border-radius: 3px;
   border: 1px solid #777;  
 }
+
+.options_btn{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  height: 100%;
+  width: 10%;
+  border: none;
+  background: url('../assets/svg/carbon_settings.svg') no-repeat 0 0/cover;
+  transition: 0.3s;
+}
+.options_btn:hover{
+  transition: 0.3s;
+  transform: rotate(60deg);
+  cursor: pointer;
+}
+
+
 /*
 .game_builds{
   display: flex;
@@ -195,7 +215,7 @@
     oreBarrel,
     
     
-    soldier,
+    
     truck,
     bomber,
     tank,
@@ -204,9 +224,12 @@
 
 */
 
+
+
 .builds_column{
   width: 100%;
-  height: 380px; /*задать нормально высоту....*/
+  /*height: 380px; задать нормально высоту....*/
+  height: calc(100vh - 6px - 255px);
   display: flex;
   overflow: hidden;
   flex-direction: column;

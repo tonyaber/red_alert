@@ -2,6 +2,8 @@ import Control from "../../../common/control";
 import { IObjectInfo } from "./dto";
 import { buildSidePanel } from './buildSidePanel';
 import red from './red.css'
+import style from './sideOptions.css'
+import OptionsPage from '../application/optionsPage'
 
 export class SidePanel extends Control{
   money: Control;
@@ -21,7 +23,30 @@ export class SidePanel extends Control{
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', red['game_side']); 
-    this.money = new Control(this.node, 'div', red['aside-top-panel']);
+    const wrapperMoney = new Control(this.node, 'div', red['aside-top-panel']);
+    this.money = new Control(wrapperMoney.node, 'div', red['money']);
+
+    const options = new Control(wrapperMoney.node, 'button', red['options_btn']);
+    options.node.onclick = () => {
+      sideOptions.node.classList.remove(style['hide']);
+    }
+    const sideOptions = new Control(this.node, 'div', [style['side'], style['hide']].join(' '));
+    const pause = new Control(sideOptions.node, 'button', style['button'], 'pause');
+    pause.node.onclick = () => {
+      sideOptions.node.classList.add(style['hide']);
+      const popupOptions = new OptionsPage(this.node);
+      popupOptions.onBack = () => {
+        popupOptions.destroy();
+      }
+    }
+
+    const exit = new Control(sideOptions.node, 'button', style['button'], 'exit');
+    const volumeSettings = new Control(sideOptions.node, 'div', style['volume'], 'music and sounds');
+
+
+
+    
+
     const radar = new Control(this.node, 'div', red['game_radar']);
     const wrapperControls = new Control(this.node, 'div', red['wrapper_controls']);
     const repairBtn = new Control(wrapperControls.node, 'button', red['repair_button'] , '')
