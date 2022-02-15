@@ -19,7 +19,16 @@ import map1 from '../assets/png/map1.png';
 import map2 from '../assets/png/map2.png';
 import map3 from '../assets/png/map3.png';
 import map from '../assets/png/map.png';
-import explosion from '../assets/png/explosion_1.png'
+import explosion from '../assets/png/explosion_1.png';
+
+import soldier_top from '../sprites/units/soldier_back_run.png';
+import soldier_bottom from '../sprites/units/soldier_front_run.png';
+import soldier_left from '../sprites/units/soldier_run_left.png';
+import soldier_right from '../sprites/units/soldier_run_right.png';
+import soldier_left_bottom from '../sprites/units/soldier_run_left_bottom.png';
+import soldier_left_top from '../sprites/units/soldier_run_top_left.png';
+import soldier_right_top from '../sprites/units/soldier_run_top_right.png';
+import soldier_right_bottom from '../sprites/units/soldier_run_right_bottom.png';
 
 //import map from '../assets/png/map.png';
 
@@ -47,5 +56,13 @@ export const resources = {
   barrack:barrack,
   defendedTower:defendedTower,
   buildingCenter:buildingCenter,
-  explosion: explosion
+  explosion: explosion,
+  soldier_top,
+  soldier_bottom,
+  soldier_left,
+  soldier_right,
+  soldier_left_bottom,
+  soldier_left_top,
+  soldier_right_top,
+  soldier_right_bottom
 }
