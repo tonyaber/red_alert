@@ -8,25 +8,36 @@ export class Authorization extends Control {
   onHome: () => void;
 
   constructor(parentNode: HTMLElement, socket: IClientModel) {
-    super(parentNode, "div", style["main"], "AUTHORIZTION");
+    super(parentNode, "div", style["main"], "");
 
     socket.onAuth = (name) => {
       this.onAuth(name);
     };
 
-    const body = new Control(this.node, "div", style["body"], ``);
+    const body = new Control(
+      this.node, 
+      "div", 
+      style["body"]
+    );
 
     const content = new Control(
       body.node,
       "div",
       style["content"],
-      `authorization form`
+      ``
     );
 
+    const userNameLabel = new Control<HTMLLabelElement>(
+      content.node,
+      "label",
+      style["user_label"],
+      "This is your name: "
+    );
     // const userName = new Control(content.node, 'div', style['user_name'], `!!!user name!!!`);
     if (!session.has("user")) {
       session.user.name =  "user" + Math.floor(Math.random() * 100);
     }
+
     const userName = new Control<HTMLInputElement>(
       content.node,
       "input",

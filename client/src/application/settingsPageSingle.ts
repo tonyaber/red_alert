@@ -2,6 +2,7 @@ import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import mapsData from '../game/maps.json';
 import style from './settingsPage.css'
+import InfoPage from './infoPage';
 
 export interface IMapsData{
   size: string,
@@ -82,9 +83,9 @@ export class SettingsPage extends Control {
       this.nameUser = name;
     }
 
-    socket.onStartGame = (data: string) => {
-      this.onStartGame(data);
-    }
+  
+    
+    
     
 
     this.credit = 10000;/*initialSettings.credits;*/
@@ -188,15 +189,16 @@ export class SettingsPage extends Control {
 
     const playButton = new Control(buttonsWrapper.node, 'button', '', 'play');
     playButton.node.onclick = () => {
-      // const settings:IGameOptions = {
-      //   map: imageMap,//this.mapImage,
-      //   credits: this.credit
-      // };
+      const settings:IGameOptions = {
+        map: imageMap,//this.mapImage,
+        credits: this.credit
+      };
       // socket.onAuth = (name) => {
       //   this.onAuth(name);
       // }
-      socket.addUser();
-      //this.onPlay(settings);
+      //socket.addUser();
+      
+      this.onPlay(settings);
     }
 
   }
