@@ -260,11 +260,6 @@ export class GameModel{
     this.mapForBuilds = new Array(map.length+4).fill(null).map((it)=>new Array(map[0].length+4).fill(null).map((el)=>0));
     map.forEach((el, indX) => {
       el.forEach((it, indY) => {
-        // if (indY === 0 || indX === 0 ||
-        //       indY === this.mapForBuilds[0].length - 1 ||          
-        //       indX === this.mapForBuilds[0].length - 1) {
-        //   this.mapForBuilds[indX][indY] = -1;
-        // }
         if (it === 1) {
           this.addInitialObject('initial', 'gold', { x: indX, y: indY })
         }

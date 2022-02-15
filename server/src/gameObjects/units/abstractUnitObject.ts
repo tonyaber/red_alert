@@ -28,8 +28,9 @@ export class AbstractUnitObject extends GameObject {
   direction: Vector;
   action: string;
   targetId: string;
-  private path: Vector[];
+  private path: Vector[] = [];
   weapon: any;
+  targetHit: Vector = null;
 
 
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -64,7 +65,7 @@ export class AbstractUnitObject extends GameObject {
         const step = this.path.pop();
         if (!step) {
           if (Math.abs(this.data.position.x - this.target.x) < 0.3
-              && Math.abs(this.data.position.y - this.target.y) < 0.3) {
+            && Math.abs(this.data.position.y - this.target.y) < 0.3) {
             this.target = null
            // console.log(tilesCollection.arrayTiles)
           }
@@ -90,8 +91,8 @@ export class AbstractUnitObject extends GameObject {
     if (this.action === 'attack') {
       if (this.objects[this.targetId]) {
         // this.weapon.position = this.data.position;
-        this.weapon.position = Vector.fromIVector(this.data.position) 
-        this.weapon.tryShot(this.target);
+        this.weapon.position = Vector.fromIVector(this.data.position);
+        this.weapon.tryShot(this.targetHit);
         this.weapon.step(delta);
       }
       else {
@@ -170,7 +171,7 @@ export class AbstractUnitObject extends GameObject {
 
           const step = this.path.pop();
 
-          //console.log('step', step)
+          console.log('step', step)
           this.target = new Vector(step.x, step.y)
         })
     }
@@ -195,7 +196,7 @@ export class AbstractUnitObject extends GameObject {
     this.path.length = 0;
     this.targetId = targetId;
     const target = this.objects[targetId].data.position;
-
+    this.targetHit = Vector.fromIVector(target);
     //console.log('TARGETT', target)
     this.tracePathToTarget(target, this.action)
   }

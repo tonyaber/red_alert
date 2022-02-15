@@ -13,6 +13,8 @@ import { GameCursorStatus } from '../gameCursorStatus';
 import { Explosion } from '../builds_and_units/explosion';
 import { AbstractBuild } from "../builds_and_units/builds/abstractBuild";
 import { mod } from "./mod";
+import { Gold } from "../builds_and_units/gold";
+import { Rock } from "../builds_and_units/rock";
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -25,6 +27,7 @@ export class GameMainRender{
   cursorStatus: GameCursorStatus;
   cursorPosition: Vector;
   hoveredObjects: InteractiveObject;
+  buildsMap: number[][] = [];
   onAddBuild: (position: Vector, name: string) => void;
   onObjectClick: (id: string, name: string, subType: string) => void;
   onChangePosition: (id: string, position: Vector) => void;
@@ -35,7 +38,15 @@ export class GameMainRender{
     this.res = res;
     this.camera = camera;
     this.playerId = playerId;
-    this.cursorStatus = new GameCursorStatus(this.playerId);
+    this.buildsMap = new Array(100).fill(null).map((it) => new Array(100).fill(null).map((el) => 0));
+    this.cursorStatus = new GameCursorStatus(this.playerId, ()=>{
+      return this.getBuildMap();
+    },
+      () => {
+        return this.interactiveList;
+      }
+    );
+    
     this.interactiveList = interactiveList;
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
@@ -45,6 +56,7 @@ export class GameMainRender{
     let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
 
     this.tilingLayer.update(this.camera.position, newMap);
+    
 
     this.boundingLayer = new BoundingLayer(mp, mp, camera.getTileSize(), camera.position);
     this.interactiveList.onChangeHovered = (lastTarget:InteractiveObject, currentTarget:InteractiveObject) => {
@@ -77,6 +89,9 @@ export class GameMainRender{
     this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
     this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
   }
+  getBuildMap(){
+    return this.buildsMap;
+  }
 
   render(ctx: CanvasRenderingContext2D){
     //ctx.drawImage(this.tilingLayer.canvas, this.camera.position.x, this.camera.position.y);
@@ -93,7 +108,7 @@ export class GameMainRender{
     this.debugInfoView.render(ctx);
     this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
     
-    this.cursorStatus.render(ctx, new Vector(0,0));
+    this.cursorStatus.render(ctx,this.camera.position, this.camera.getTileSize());
   }
 
   setCameraPosition(position:Vector){
@@ -117,6 +132,22 @@ export class GameMainRender{
     //}
     if (interactiveObject instanceof AbstractBuild) {
       this.cursorStatus.planned = null;
+    }
+    if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
+      this.buildsMap[data.content.position.y][data.content.position.x] = 1;
+    }
+    if (interactiveObject instanceof AbstractBuild) {
+       for (let i = 0; i < data.content.buildMatrix.length + 2; i++){
+        for (let j = 0; j <  data.content.buildMatrix[0].length + 2; j++){
+          if (data.content.position.x - 1 + j > 0 &&
+            data.content.position.y - 1 + i > 0 &&
+            data.content.position.x - 1 + j < this.buildsMap.length &&
+            data.content.position.y - 1 + i < this.buildsMap[0].length) {
+            this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = 1;
+          }        
+        }
+      }  
+     
     }
   }
 
@@ -142,7 +173,11 @@ export class GameMainRender{
     this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
   }
 
-  setPlannedBuild(object:IObject) {
+  setPlannedBuild(object: IObject) {
+    object.mtx = [[1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1,1,1,1]]
     this.cursorStatus.planned = object;
   }
 
@@ -157,7 +192,8 @@ export class GameMainRender{
   handleMouseMove(cursor: Vector) {
     this.interactiveList.handleMove(this.camera.getTileVector(this.camera.position.clone().add(cursor)) ,this.camera.position.clone().add(cursor));
     this.cursorPosition = this.camera.getTileVector(this.camera.position.clone().add(cursor))
-    this.cursorStatus.pixelPosition = cursor
+    this.cursorStatus.pixelPosition = cursor;
+    this.cursorStatus.tilePosition =this.camera.getTileVector(this.camera.position.clone().add(cursor)) 
   }
 
   handleMouseDown(cursor: Vector) {

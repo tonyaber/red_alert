@@ -21,7 +21,7 @@ export class AbstractBuild extends InteractiveObject{
   health: number;
   info: BuildingInfoView;
   infoLayer: any;
-  private tileMap: number[][];
+  tileMap: number[][];
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
@@ -61,6 +61,7 @@ export class AbstractBuild extends InteractiveObject{
       
       this.tiles.push(tile);
     }));
+    this.tileMap = tileMap;
     // const tileMap = [
     //   [0,0,0,0],
     //   [0,1,1,0],
