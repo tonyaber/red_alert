@@ -14,6 +14,7 @@ import {SettingsPage} from './settingsPageSingle'
 import { Settings } from './settingsPageMulti';
 import style from './application.css'
 import PopupPage from './popup'
+import InfoPage from './infoPage'
 import { getImageData, getMapFromImageData } from '../game/tracer';
 
 
@@ -45,24 +46,28 @@ export class Application extends Control{
     
   }
 
+  
   singleCycle(res: Record<string, HTMLImageElement>){
     const settings = new SettingsPage(this.node, this.socket);
-    // settings.onAuth = (name) => {
-     
-    //   }
+    settings.onPlay = (set) => { // передаем set параметры для настройки игры
       const imageData = getImageData(res.map)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
-    
-    settings.onStartGame = (data) => {
-    
-  
+      const info = new InfoPage(this.node, this.socket);
+      info.onStartGame = (data) => {
         settings.destroy();
+        info.destroy();
         this.gameCycle(settings.nameUser, data, res)
-        
+      }
+      info.onBack = () => {
+        info.destroy();
+      }
     }
-    
-    
+
+    settings.onBack = () => {
+      settings.destroy();
+      this.mainCycle();
+    }
   }
 
   multiCycle(res: Record<string, HTMLImageElement>) {
@@ -70,39 +75,21 @@ export class Application extends Control{
     authorization.onAuth = (name) => {
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
-      
       const roomPage = new RoomPage(this.node, this.socket);
       const imageData = getImageData(res.map)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
       roomPage.onCreateGame = () => {
         const settings = new Settings(this.node);
-        
         settings.onCreate = (data) => {
           //записываем данные созданной игры 
+          this.socket.chatSend({user: 'system', msg: `new game create`}); //добавить название карты/игры
           settings.destroy();
         }
       }
       roomPage.onStartGame = (data) => { //при мульти ждет игроков
-        
-        
         roomPage.destroy();
         this.gameCycle(name, data, res)
-        // resourceLoader.load(resources).then(res=>{
-        //   const game = new Game(this.node, this.socket, name, data, res.textures);
-        //   game.onExit = () => {
-        //     //TODO сделать выход всех игроков, оповещение
-        //     game.destroy();
-        //     this.finishCycle();
-        //   } 
-        //   game.onPause = () => {
-        //     const pause = new PopupPage(this.node, 'Game paused ||', 'You stay game on pause. Your competitors wait you. Harry up!');
-        //     //TODO сделать паузу для всех игроков, оповещение
-        //     pause.onBack = () => {
-        //       pause.destroy();
-        //     }
-        //   }
-        // })
       }
     }
     authorization.onHome = () => {
@@ -139,36 +126,4 @@ export class Application extends Control{
       //});
     }
   }
-/*
-  gameCycle_() {    
-    const settingsPage = new SettingsPage(this.main.node,  this.settingsModel.getData())//, this.maps.data);
-    settingsPage.onBack = () => {
-      settingsPage.destroy();
-      this.mainCycle();
-    }
-    settingsPage.onPlay = (settings) => {
-      settingsPage.destroy();
-     // this.settingsModel.setData(settings);
-      this.loader.load(resources).then(res => { //в ресурсах есть мар??
-        const game = new Game(this.main.node, res.textures, settings);
-        game.onExit = () => {
-          game.destroy();
-          this.finishCycle();
-        }
-      })
-    }
-  }
-*/
-
-
-
-    // const startPage = new StartPage(this.main.node);
-    // startPage.animateIn();
-    // startPage.onGamePlay = (typeGame) => {
-    //   startPage.animateOut().then(() => {
-    //     startPage.destroy();
-    //     this.gameCycle();
-    //   });
-    // }
-
 }

@@ -8,9 +8,10 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
   onStartGame: (players: string) => void;
   onCreateGame: () => void;
   constructor(parentNode: HTMLElement,socket: IClientModel) {
-    super(parentNode, 'div', style['room_main'], 'Room Page');
-    const lobby = new Control(this.node, 'div', style['lobby_wrapper'], 'lobby-room');
+    super(parentNode, 'div', style['room_main'], '');
+    const lobby = new Control(this.node, 'div', style['lobby_wrapper'], '');
     const wrapperPlayers = new Control(lobby.node, 'div', style['players_wrapper'], 'Players');
+    
     socket.getUsersList().then(
       _=>{
         console.log('send get userList')
@@ -20,11 +21,14 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
       wrapperPlayers.node.innerHTML='';  
       msg.forEach(x => {
         const user = new Control(wrapperPlayers.node, 'div', style['user_item'], x.name); 
+        //const status = new Control(wrapperPlayers.node, 'div', style['user_item'], x.name); 
+        user.node.style.background = '#6ecd43'
+
         console.log(x);        
       });
     }
     const wrapperChat = new Control(lobby.node, 'div', style['chat_wrapper'], 'Chat');
-    const chat = new Control(wrapperChat.node, 'div', style['chat'], 'bla bla bla');
+    const chat = new Control(wrapperChat.node, 'div', style['chat'], '');
     // тут вставил текстарию... хотя не имеет значение как вносить значение
     const inputChat = new Control<HTMLInputElement>(wrapperChat.node, 'textarea', style['input_chat'], '');
     //Это просто для примера
@@ -53,6 +57,12 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     // Получение сообщений
     socket.onChatMsg = (msg: IChatMsg) => {      
       const newMsg = new Control(chat.node,'div','chat_msg','<b>'+msg.user+': </b>'+msg.msg);
+      
+      if(msg.user === 'system') {
+        console.log('system_msg', msg.user);
+        newMsg.node.classList.add('system_msg');
+        newMsg.node.style.color = '#cc0000';
+      }
     }
     // Отправка сообщений.Отдельная функция что бы проще было вешать событие кнопок.
     const fn_chatSend = ()=>{

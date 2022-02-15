@@ -125,7 +125,7 @@ export class GameModel{
     console.log('addGameObject', playerId)
     //mapObject
     //проверка, можно ли его добавлять
-    //console.log(position)
+    // console.log(position)
     const state = { position, playerId }
     // console.log(objectName)
      const gameObjectConstructor = gameObjects[objectName];
