@@ -38,7 +38,7 @@ export class GameMainRender{
     this.res = res;
     this.camera = camera;
     this.playerId = playerId;
-    this.buildsMap = new Array(100).fill(null).map((it) => new Array(100).fill(null).map((el) => 0));
+    this.buildsMap = new Array(96).fill(null).map((it) => new Array(96).fill(null).map((el) => 0));
     this.cursorStatus = new GameCursorStatus(this.playerId, ()=>{
       return this.getBuildMap();
     },

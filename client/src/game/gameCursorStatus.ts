@@ -74,10 +74,10 @@ export class GameCursorStatus{
     const builds = this.getObjects().list.filter(it => it.playerId === this.playerId&& it instanceof AbstractBuild) as AbstractBuild[];
 
     const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
-    if (!(!builds.length /*|| closestBuild.distance <= 6*/)) { 
+    //if (!(!builds.length /*|| closestBuild.distance <= 6*/)) { 
       // console.log('redMask: ', redMask);
-      return redMask;
-    }
+     // return redMask;
+    //}
     // console.log('mask: ', mask);
     return mask;
 
@@ -172,12 +172,12 @@ obj: схема объекта
   
   const rowsInObj = obj.length;
   const columnsInObj = obj[0].length;
-  if (y + rowsInObj > map.length) {
-    throw 'There is no enough rows to place the object';
-  };
-  if (x + columnsInObj > map[0].length) {
-    throw 'There is no enough columns to place the object';
-  };
+  // if (y + rowsInObj > map.length) {
+  //   throw 'There is no enough rows to place the object';
+  // };
+  // if (x + columnsInObj > map[0].length) {
+  //   throw 'There is no enough columns to place the object';
+  // };
   const result: Array<Array<number>> = [];
   
 

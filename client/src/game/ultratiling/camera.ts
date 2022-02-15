@@ -20,11 +20,11 @@ export class Camera{
     if (this.position.y < -100) {
       this.position.y = -100;
     }
-    if (this.position.x > 100 * this.getTileSize() + 100 -800) {
-      this.position.x = 100 * this.getTileSize() + 100 -800;
+    if (this.position.x > 100 * this.getTileSize()  + 400 -document.documentElement.clientWidth) {
+      this.position.x = 100 * this.getTileSize() + 400 -document.documentElement.clientWidth;
     }
-    if (this.position.y > 100 * this.getTileSize() + 100 -600) {
-      this.position.y = 100 * this.getTileSize() + 100-600;
+    if (this.position.y > 100 * this.getTileSize() + 100 - document.documentElement.clientHeight) {
+      this.position.y = 100 * this.getTileSize() + 100-document.documentElement.clientHeight;
     }
     this.velocity.scale(this.inertion);
     if (this.velocity.abs()<0.1){
