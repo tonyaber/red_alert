@@ -59,12 +59,15 @@ export class LocalModel implements IClientModel
     //   bots.forEach(player=> player.sendMessage({}));
       if (action === 'update') {
         this.onUpdate(data);
+        bots.forEach(item=> item.sendMessage('update', JSON.stringify(data)));
       }
       if (action === 'create') {
         this.onAddObject(data);
+        bots.forEach(item=> item.sendMessage('create', JSON.stringify(data))); // получить боту все здания, которые строятся
       }
       if (action === 'delete') {
         this.onDeleteObject(data);
+        bots.forEach(item=> item.sendMessage('delete', JSON.stringify(data)));
       }
     }
     game.onShot = (point) => {
