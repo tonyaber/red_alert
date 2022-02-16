@@ -164,9 +164,12 @@ export class GameMainRender{
 
   }
 
-  updateObject(data:IGameObjectData){
+  updateObject(data: IGameObjectData) {
     //console.log('%^',data)
-   this.interactiveList.list.find(item=>item.id === data.objectId).updateObject(data.content)
+    const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);
+    if (interactiveObject) {
+      interactiveObject.updateObject(data.content)
+    }
   }
 
   deleteObject(data: IGameObjectData) {

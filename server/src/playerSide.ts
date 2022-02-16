@@ -52,10 +52,8 @@ export class PlayerSide{
 
   removeBuilding(name: string) {
     const index = this.buildsInGame.findIndex(item=>item===name);
-    this.buildsInGame.splice(index, 1);
-   
+    this.buildsInGame.splice(index, 1);   
     this.updateAvailableObject();
-    console.log(this.buildings)
     this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 

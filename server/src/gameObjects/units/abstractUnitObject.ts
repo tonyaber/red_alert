@@ -211,6 +211,7 @@ export class AbstractUnitObject extends GameObject {
     this.data.action = 'move';
     this.path.length = 0;
     //   console.log(target) 
+    this.target = Vector.fromIVector(target);
     this.tracePathToTarget(target, this.data.action);
   }
 
@@ -220,6 +221,7 @@ export class AbstractUnitObject extends GameObject {
     this.path.length = 0;
     this.targetId = targetId;
     const target = this.objects[targetId].data.position;
+    this.target = Vector.fromIVector(target);
     this.targetHit = Vector.fromIVector(target);
     
     //console.log('TARGETT', target)

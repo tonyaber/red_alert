@@ -243,9 +243,14 @@ export class GameModel{
   }
 
   setAttackTarget(playerId: string, unitId: string, targetId: string) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
-    return 'attack';
+    const unit = this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId)
+    if (unit) {
+      unit.attack(targetId);
+      return 'attack';
+    }
+    return 'false';
   }
+    
 
   setPrimary(playerId: string, buildId: string, name: string) {
   //console.log(playerId, buildId, name)

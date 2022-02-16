@@ -54,21 +54,21 @@ export class BotCommander{
 
       /////
       
-      if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
+      //if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
          // console.log('%cАтакоемое здание уничтожено ' + parsedObject.objectId+': ', 'color:orange')
           // console.log(this.attakedBuildings[parsedObject.objectId])
 
-        if (this.attakedBuildings[parsedObject.objectId]) {
-          //console.log(this.attakedBuildings[parsedObject.objectId])
-          this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
-            if (this.objectData.hasOwnProperty(soldierId)) {
-              // this.objectData[soldierId].content.action = 'idle';
-              //console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
-            }
-          })
-          delete this.attakedBuildings[parsedObject.objectId]
-        }
-      }
+        // if (this.attakedBuildings[parsedObject.objectId]) {
+        //   //console.log(this.attakedBuildings[parsedObject.objectId])
+        //   this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
+        //     if (this.objectData.hasOwnProperty(soldierId)) {
+        //       // this.objectData[soldierId].content.action = 'idle';
+        //       //console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
+        //     }
+        //   })
+        //   delete this.attakedBuildings[parsedObject.objectId]
+        //}
+      //}
     }
 
     if (type === 'addBuild' && !this.startPoint) {
@@ -153,7 +153,7 @@ export class BotCommander{
       }
       )
 
-      if (arrIdleSoldiers.length >= 3) {
+      if (arrIdleSoldiers.length >= 3&&arrEnemy.length) {
         // console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {

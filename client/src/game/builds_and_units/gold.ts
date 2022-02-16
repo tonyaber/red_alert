@@ -51,7 +51,6 @@ export class Gold extends InteractiveObject{
   }
   
   updateObject(data: IGameObjectContent) {
-    console.log(data.health)
     this.layer.updateCacheTile(this.layer.camera,  this.position.x,  this.position.y, data.health+3);
   }
 
