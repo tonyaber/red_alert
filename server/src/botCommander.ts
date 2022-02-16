@@ -13,7 +13,7 @@ import { Console } from "console";
 export class BotCommander{
   playerController: PlayerController;
   tickList: TickList;
-  reloadingTime: number = 1000;
+  reloadingTime: number = 5000;
   loading: number = 1000;
   panelInfo: IUpdateSidePanel;
   radius: number = 0; // радиус постройки вокруг инишл здания

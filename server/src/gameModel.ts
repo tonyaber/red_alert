@@ -185,8 +185,12 @@ export class GameModel{
       }
 
       gameObject.onDamageTile = (targetId, point) => {
-        this.gameObjects.find(it => it.objectId === targetId).damage(point);
-        this.onShot(point);
+        const obj = this.gameObjects.find(it => it.objectId === targetId);
+        if (obj) {
+          this.gameObjects.find(it => it.objectId === targetId).damage(point);
+          this.onShot(point);
+        }
+        
         //gameObjects
       }
       gameObject.create();

@@ -107,6 +107,9 @@ export class AbstractUnitObject extends GameObject {
     if (this.data.action ==='idle') {
       this.findClosetEnemy();
     }
+    if (this.data.action === 'cash') {
+      this.findClosetEnemy();
+    }
   }
 
   findClosetEnemy() {
@@ -215,19 +218,17 @@ export class AbstractUnitObject extends GameObject {
     this.tracePathToTarget(target, this.data.action);
   }
 
-  attack(targetId: string) {
-    
+  attack(targetId: string) {    
     this.data.action = 'moveToAttack'; //attack
     this.path.length = 0;
     this.targetId = targetId;
-    const target = this.objects[targetId].data.position;
-    this.target = Vector.fromIVector(target);
-    this.targetHit = Vector.fromIVector(target);
-    
-    //console.log('TARGETT', target)
-    this.tracePathToTarget(target, this.data.action);
-    this.update();
- 
+    if (this.objects[targetId]) {
+      const target = this.objects[targetId].data.position;
+      this.target = Vector.fromIVector(target);
+      this.targetHit = Vector.fromIVector(target);
+      this.tracePathToTarget(target, this.data.action);
+      this.update();
+    }  
   }
 
   setState(callback: (data: IGameObjectContent) => IGameObjectContent) {

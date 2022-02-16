@@ -180,6 +180,7 @@ export class GameMainRender{
       this.changeBuildsMap(interactiveObject, data, 0);   
     }
     interactiveObject.destroy();
+    
   }
 
   setPlannedBuild(object: IObject) {
