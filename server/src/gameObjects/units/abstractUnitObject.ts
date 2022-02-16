@@ -170,7 +170,7 @@ export class AbstractUnitObject extends GameObject {
 
           const step = this.path.pop();
 
-          console.log('step', step)
+          // console.log('step', step)
           this.target = new Vector(step.x, step.y)
         })
     }
@@ -186,7 +186,7 @@ export class AbstractUnitObject extends GameObject {
   moveUnit(target: IVector) {
     this.data.action = 'move';
     this.path.length = 0;
-    console.log(target)
+    // console.log(target)
     this.tracePathToTarget(target, this.data.action)
   }
 

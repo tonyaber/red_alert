@@ -7,6 +7,7 @@ import { AbstractUnitObject } from "./gameObjects/units/abstractUnitObject";
 import { Soldier } from "./gameObjects/units/soldier";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
 import { GameObject } from "./gameObjects/gameObject";
+import { Console } from "console";
 
   
 export class BotCommander{
@@ -22,11 +23,13 @@ export class BotCommander{
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 2; // Минимально допустимое расстояние для постройки
   objectData: Record<string, IGameObjectData> = {};
+  attakedBuildings: Record<string, Array<string>> = {}
 
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
     this.tickList.add(this);
+    this.attakedBuildings = {}
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
@@ -43,11 +46,29 @@ export class BotCommander{
     }
     if(type === 'update'){
       let parsedObject: IGameObjectData = JSON.parse(message);
-      this.objectData[parsedObject.objectId] = parsedObject; // получить созданные ботом здания 
+      this.objectData[parsedObject.objectId] = parsedObject; // обновить созданные ботом здания 
     }
     if(type === 'delete'){
       let parsedObject: IGameObjectData = JSON.parse(message);
       delete this.objectData[parsedObject.objectId]
+
+      /////
+      
+      if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
+          console.log('%cАтакоемое здание уничтожено ' + parsedObject.objectId+': ', 'color:orange')
+          // console.log(this.attakedBuildings[parsedObject.objectId])
+
+        if (this.attakedBuildings[parsedObject.objectId]) {
+          console.log(this.attakedBuildings[parsedObject.objectId])
+          this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
+            if (this.objectData.hasOwnProperty(soldierId)) {
+              // this.objectData[soldierId].content.action = 'idle';
+              console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
+            }
+          })
+          delete this.attakedBuildings[parsedObject.objectId]
+        }
+      }
     }
 
     if (type === 'addBuild' && !this.startPoint) {
@@ -103,53 +124,55 @@ export class BotCommander{
           this.playerController.startBuilding(availableBuilds[Math.floor(Math.random() * availableBuilds.length)].object.name);
         }
         
-      // строим юнита
+        // строим юнита
       } else if (random < 1) {
         const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
         if (availableUnits.length) {
           this.playerController.startBuilding(availableUnits[Math.floor(Math.random() * availableUnits.length)].object.name);
         }
+      }
 
       // go to attack
-      // console.log('attac this.objectData: ',typeof this.objectData, this.objectData)
-      
       
       // Выбрать бездействующих солдат текущего бота
       const arr = Object.values(this.objectData)
       
-      // Мои бездействующие солдаты
       let arrIdleSoldiers = arr.filter(item => {
         return item.type === 'soldier'
           && item.content.playerId === this.playerController.playerId
           && item.content.action === 'idle';
         }
       )
-      console.log('arrIdleSoldiers ', arrIdleSoldiers)
-      // Выбрать ближайшего врага
+      // console.log('arrIdleSoldiers ', arrIdleSoldiers)
+      
       // Здания врагов
-      const arrEnemy = arr.filter(item => {
-          return item.content.playerId !== this.playerController.playerId
-            && getSubtype(item.type) === 'build'
-        }
+      const arrEnemy: IGameObjectData[] = arr.filter(item => {
+        return item.content.playerId !== this.playerController.playerId
+          && getSubtype(item.type) === 'build'
+          && item.content.health !== 0
+      }
       )
       const arrEnemyContent = arrEnemy.map(item => item.content)
 
-      if (arrIdleSoldiers.length >= 10) {
-        console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
+      if (arrIdleSoldiers.length === 3) {
+        // console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
+          // Выбрать ближайшего врага
           const closestBuild = findClosestBuild(item.content.position, arrEnemyContent);
-          const enemy = arrEnemy.find(item => item.content === closestBuild.unit)
-          //послать солдата item в атаку на ближайшее к нему здание closestBuild
+          const enemyBuild: IGameObjectData = arrEnemy.find(item => item.content === closestBuild.unit)
+          // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
-          this.playerController.setAttackTarget(item.objectId, enemy.objectId)
+          this.playerController.setAttackTarget(item.objectId, enemyBuild.objectId)
+          if (!this.attakedBuildings[enemyBuild.objectId]) {
+            this.attakedBuildings[enemyBuild.objectId] = []
+          }
+          this.attakedBuildings[enemyBuild.objectId].push(item.objectId)
         })
       }
-      }
-
     }
+
     const privateMessage=0;//this.playerController.addGameObject()
-    //
   }
 
   sendMessage(type: string, message:string){ // self receive
@@ -162,28 +185,9 @@ export class BotCommander{
     for (let i = 0; i <= 180; i = i + angle){
       let x: number = this.startPoint.x + this.minDistance * this.stepBuilding * Math.cos(i);
       let y: number = this.startPoint.y + this.minDistance * this.stepBuilding * Math.sin(i);
-      
       arrPoints.push({ x: Math.floor(Math.abs(x)), y: Math.floor(Math.abs(y)) })
     }
-    console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
+    // console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
     return arrPoints
   }   
 }
-
-/*
-0) Если построек еще нет, строим произвольную точку start
-1) Получить координаты всех точек, лежащих на окружности с центром start и радиусом this.minDistance 
-  (this.minDistance - минимальное допустимое расстояние до постройки - из общих настроек)
-  методом полрной засечки (приращение координат по углу и расстоянию).
-2) Обход массива arrPoints. Если 
-  - расстояние до ближайшего своего здания > this.minDistance
-  - расстояние до ближайшего здания противника > this.minDistance
-  - если на этом месте можно строить
-  => строим здание
-3) По окончанию обхода, построить новую окружность с радиусом this.minDistance * 2 
-и повторять шаго 1 и 2
-/// задача
-1) Получать и сохранять созданные здания и юнитов objectData
-2) Как только набралось 10 солдат - находить ближайшее здание врага
-3) посылать в атаку
-*/
