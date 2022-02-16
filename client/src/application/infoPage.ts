@@ -8,7 +8,6 @@ export default class InfoPage extends Control{
   constructor(parentNode:HTMLElement, socket: IClientModel/*titleContent:string, messageContent:string*/ ){
     super(parentNode, 'div', style['popup'] );
     socket.onStartGame = (data: string) => {
-      console.log('onStartGame')
       this.onStartGame(data);
   }
     
@@ -29,7 +28,6 @@ export default class InfoPage extends Control{
     const wrapperButton = new Control(content.node, 'div', style['wrapper_button'], '');
     const btnOk = new Control(wrapperButton.node, 'button', style['popup_button'], 'create');
     btnOk.node.onclick = () => {
-      console.log('onAddUser')
       socket.addUser();
      // this.onBack();
     }

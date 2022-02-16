@@ -76,7 +76,7 @@ export class Application extends Control{
   multiCycle(res: Record<string, HTMLImageElement>) {
     const authorization = new Authorization(this.node, this.socket);//ответ с именем
     authorization.onAuth = (name) => {
-      console.log(name)
+      //console.log(name)
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       const roomPage = new RoomPage(this.node, this.socket);

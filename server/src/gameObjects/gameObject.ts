@@ -89,10 +89,10 @@ export class GameObject {
   }
   damage(point: Vector) {
     
-    if (this.data.health === 0) {
+    if (this.data.health <= 0) {
       this.destroy();
     } else if(this.data.health>0){
-      console.log(this.data.health)
+      //console.log(this.data.health)
       this.setState((data) => {
         return {
           ...data,

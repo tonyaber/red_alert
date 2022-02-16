@@ -242,12 +242,12 @@ export class GameModel{
   }
 
   setPrimary(playerId: string, buildId: string, name: string) {
-  console.log(playerId, buildId, name)
+  //console.log(playerId, buildId, name)
     const newPrimary = this.gameObjects.find(item => item.objectId === buildId && item.data.playerId === playerId);
-    console.log(newPrimary)
+    //console.log(newPrimary)
     if (newPrimary&&this._getPrimary(playerId, name)) {
       const oldPrimary = this._getPrimary(playerId, name);
-      console.log(oldPrimary)
+      //console.log(oldPrimary)
       oldPrimary.setState((lastState) => {
         return {
           ...lastState,

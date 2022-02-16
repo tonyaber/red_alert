@@ -30,7 +30,7 @@ export class SocketModel implements IClientModel {
     this.messageHandler = (message: IServerResponseMessage) => {
       //console.log(message.type)
       if (message.type === "update") {
-        console.log("socketModel", message.content);
+        //console.log("socketModel", message.content);
         this.onUpdate(JSON.parse(message.content));
       }
       if (message.type === "create") {
@@ -91,7 +91,7 @@ export class SocketModel implements IClientModel {
       type: "startBuild",
       content: { name, playerId },
     });
-    console.log('socketModel', name, playerId)
+   // console.log('socketModel', name, playerId)
     //если будет объект, то
     // const result = this.client.sendMessage('gameMove', content).then((r)=>{
     //  const data:ТИП = JSON.stringify(r);
@@ -143,13 +143,13 @@ export class SocketModel implements IClientModel {
       type: "setPrimary",
       content: { id, name },
     });
-    console.log('socketClient')
+   // console.log('socketClient')
     return this.client.sendMessage("gameMove", content);
   }
 
   moveUnit(id: string, position: Vector):Promise<string>{
     const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
-    console.log('____>>>',content,'&')
+    //console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
   }
 

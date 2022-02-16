@@ -128,7 +128,7 @@ export class ServerSocket {
             // const gameId = 1 //msg.gameId;
             //find game by id
             const result = game.handleMessage(msg, playerId);
-            console.log("server gameMove", result);
+            //console.log("server gameMove", result);
             const response: IServerResponseMessage = {
               sessionID: msg.sessionID,
               type: "privateResponse",
