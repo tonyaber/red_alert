@@ -154,7 +154,7 @@ export class BotCommander{
       )
       const arrEnemyContent = arrEnemy.map(item => item.content)
 
-      if (arrIdleSoldiers.length === 3) {
+      if (arrIdleSoldiers.length >= 3) {
         // console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
@@ -188,6 +188,6 @@ export class BotCommander{
       arrPoints.push({ x: Math.floor(Math.abs(x)), y: Math.floor(Math.abs(y)) })
     }
     // console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
-    return arrPoints
+    return arrPoints 
   }   
 }
