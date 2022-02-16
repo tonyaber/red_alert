@@ -1,25 +1,37 @@
 import { IVector, Vector } from '../../../../common/vector';
 import { findClosestGold } from '../../distance';
 import { PlayerSide } from '../../playerSide';
+import { OreFactory } from '../builds/oreFactory';
 import { AbstractBullet } from '../bullet/abstractBullet';
 import { GameObject } from '../gameObject';
 import { AbstractWeapon } from '../weapon/abstractWeapon';
 import { AbstractUnitObject } from './abstractUnitObject';
 
 export class Truck extends AbstractUnitObject{
-  cash: number;
+  money: number;
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super(objects, playerSides, objectId, type, state);
     this.attackRadius = 1;
-    this.cash = 0;
+    this.money = 0;
     this.findRadius = 30;
      this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
     this.weapon.onBulletTarget = (point: Vector) => {
-      this.cash += 200;
       this.onDamageTile?.(this.targetId, point);
-      if (this.cash >= 3000) {
+      console.log(this.money)
+      if (this.data.action === 'attack'&&this.objects[this.targetId]) {
+        if (this.objects[this.targetId].subType === 'gold') {
+          this.money += 200;
+        }else{
+          this.money = 0;
+          this.data.action = 'idle'
+        }        
+      }
+
+      if (this.money >= 3000) {
         this.data.action = 'cash';
       }
+      
+      console.log(this.money)
     }
   }
   
@@ -32,7 +44,10 @@ export class Truck extends AbstractUnitObject{
         this.attack(closetGold.gold.objectId);
       }
     } if (this.data.action === 'cash') {
-      //const oreFactory = this.objects.find(it=>it.)
+      const oreFactory = Object.values(this.objects).find(it => it instanceof OreFactory && it.data.playerId === this.data.playerId);
+      if(oreFactory){
+        this.attack(oreFactory.objectId);
+      }
     }
     
   }

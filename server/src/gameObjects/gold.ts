@@ -11,6 +11,7 @@ export class GoldGameObject extends GameObject{
   onUpdate: (state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData) => void;
   onDelete: (state: IGameObjectData) => void;
+  playerSides: PlayerSide[];
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super();
     this.data.position = Vector.fromIVector(state.position);
@@ -19,6 +20,7 @@ export class GoldGameObject extends GameObject{
     this.type = type;
     this.data.playerId = 'gold';
     this.subType = 'gold';
+    this.playerSides = playerSides;
   }
 
   create() {
@@ -33,8 +35,7 @@ export class GoldGameObject extends GameObject{
     return this.data;
   }
 
-  damage(point: Vector) {
-    console.log(this.data.health)
+  damage(point: Vector, unit: GameObject) {
     if (this.data.health <= 0) {
       this.destroy();
     } else if(this.data.health>0){

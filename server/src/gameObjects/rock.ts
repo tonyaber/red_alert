@@ -10,6 +10,7 @@ export class RockGameObject extends GameObject{
   onUpdate: (state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData) => void;
   onDelete: (state: IGameObjectData) => void;
+  playerSides: PlayerSide[];
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super();
     this.data.position = Vector.fromIVector(state.position);
@@ -17,6 +18,7 @@ export class RockGameObject extends GameObject{
     this.type = type;
     this.data.playerId = 'rock';
     this.subType = 'rock';
+    this.playerSides = playerSides;
   }
 
   create() {
@@ -37,5 +39,8 @@ export class RockGameObject extends GameObject{
       objectId: this.objectId,
       content: this.getState(),
     });
+  }
+  damage(point: Vector, unit: GameObject): void {
+      
   }
 } 

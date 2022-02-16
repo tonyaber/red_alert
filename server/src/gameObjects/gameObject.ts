@@ -87,7 +87,7 @@ export class GameObject {
       content: this.getState(),
     }
   }
-  
+ 
   protected update() {
     this.onUpdate({
       type: this.type,
@@ -95,7 +95,7 @@ export class GameObject {
       content: this.getState(),
     });    
   }
-  damage(point: Vector) {
+  damage(point: Vector, unit: GameObject) {
     
     if (this.data.health <= 0) {
       this.destroy();

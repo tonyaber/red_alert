@@ -32,6 +32,7 @@ export class AbstractUnitObject extends GameObject {
   private path: Vector[] = [];
   weapon: any;
   targetHit: Vector = null;
+  playerSides: PlayerSide[];
 
 
   constructor(objects: Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
@@ -48,6 +49,7 @@ export class AbstractUnitObject extends GameObject {
     this.weapon.onBulletTarget = (point: Vector) => {
       this.onDamageTile?.(this.targetId, point);
     }
+    this.playerSides = playerSides;
   }
 
   
@@ -201,20 +203,21 @@ export class AbstractUnitObject extends GameObject {
         
         })
     }
+    if (this.target) {
+      this.setState((data) => {
+        return {
+          ...data,
+          target: Vector.fromIVector(this.target),
+        }
+      })
+   }
    
-    this.setState((data) => {
-      return {
-        ...data,
-        target: Vector.fromIVector(this.target),
-      }
-    })
   }
 
   moveUnit(target: IVector) {
     this.data.action = 'move';
     this.path.length = 0;
     //   console.log(target) 
-    this.target = Vector.fromIVector(target);
     this.tracePathToTarget(target, this.data.action);
   }
 
@@ -224,7 +227,6 @@ export class AbstractUnitObject extends GameObject {
     this.targetId = targetId;
     if (this.objects[targetId]) {
       const target = this.objects[targetId].data.position;
-      this.target = Vector.fromIVector(target);
       this.targetHit = Vector.fromIVector(target);
       this.tracePathToTarget(target, this.data.action);
       this.update();

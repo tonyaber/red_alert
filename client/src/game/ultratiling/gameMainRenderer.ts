@@ -174,12 +174,10 @@ export class GameMainRender{
 
   deleteObject(data: IGameObjectData) {
     const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);
-    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
-    if (interactiveObject instanceof AbstractBuild) {
-      this.cursorStatus.planned = null;
-      this.changeBuildsMap(interactiveObject, data, 0);   
-    }
     interactiveObject.destroy();
+    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
+    this.changeBuildsMap(interactiveObject, data, 0);   
+    
     
   }
 

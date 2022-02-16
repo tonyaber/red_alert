@@ -134,8 +134,8 @@ export class GameModel{
     }
 
     gameObject.onDamageTile = (targetId, point) => {
-      this.gameObjects.find(it => it.objectId === targetId).damage(point);
-      this.onShot(point);
+      // this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
+      // this.onShot(point);
       //gameObjects
     }
     gameObject.create();
@@ -176,18 +176,19 @@ export class GameModel{
       }
       gameObject.onDelete = (state) => {
         this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
-        delete this.objects[state.objectId];
+        
         this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
         if (gameObject.subType === 'build') { 
-           this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position, 0);
+           this.addMapBuild(state.content.buildMatrix, state.content.position, 0);
         }
-        this.onUpdate(state, 'delete'); 
+        this.onUpdate(state, 'delete');
+        delete this.objects[state.objectId]; 
       }
 
       gameObject.onDamageTile = (targetId, point) => {
         const obj = this.gameObjects.find(it => it.objectId === targetId);
         if (obj) {
-          this.gameObjects.find(it => it.objectId === targetId).damage(point);
+          this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
           this.onShot(point);
         }
         
@@ -234,7 +235,7 @@ export class GameModel{
           position.y - 1 + i > 0 &&
           position.x - 1 + j < this.mapForBuilds.length &&
           position.y - 1 + i < this.mapForBuilds[0].length) {
-          this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
+          this.mapForBuilds[position.x-1 + j][position.y-1 + i] = state;
         }        
       }
     }    

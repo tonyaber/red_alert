@@ -13,7 +13,7 @@ export class TickList {
       this.tickable.forEach(item => {
         item.tick(delta);
       })
-    }, 100)
+    }, 200)
   }
 
   add(item:ITickable) {
