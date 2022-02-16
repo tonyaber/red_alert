@@ -18,18 +18,15 @@ export class BotCommander{
   radius: number = 0; // радиус постройки вокруг инишл здания
   startPoint: Vector = null; // стартовая точка для постройки первого здания
   circlePoints: Array<IVector> = []; // точки на круге
-  startAngle: number = 4; // угол отклонения при расчете точек на окружности
+  startAngle: number = 3; // угол отклонения при расчете точек на окружности
   stepBuilding: number = 1; // номер круга постройки  
-  minDistance: number = 4; // Минимально допустимое расстояние для постройки
+  minDistance: number = 2; // Минимально допустимое расстояние для постройки
   objectData: Record<string, IGameObjectData> = {};
 
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
     this.tickList.add(this);
-    // this.startPoint = new Vector(20, 20);
-    this.startPoint = new Vector(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500));
-
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
@@ -37,6 +34,12 @@ export class BotCommander{
     if(type === 'create'){
       let parsedObject: IGameObjectData = JSON.parse(message);
       this.objectData[parsedObject.objectId] = parsedObject; // получить созданные ботом здания 
+      //todo получить координаты первого инишл здания и записать как this.startPoint
+      if (this.startPoint === null && getSubtype(parsedObject.type) === 'build') {
+        this.startPoint = parsedObject.content.position;
+        console.log('присвоили this.startPoint = ', this.startPoint)
+        this.circlePoints = this.getCirclePoints() // Получим точки окружности вокруг первого здания
+      }
     }
     if(type === 'update'){
       let parsedObject: IGameObjectData = JSON.parse(message);
@@ -49,6 +52,7 @@ export class BotCommander{
 
     if (type === 'addBuild' && !this.startPoint) {
       let parsedObject = JSON.parse(message);
+      console.log('type === addBuild, parsedObject = ', parsedObject)
       this.startPoint = parsedObject.content.position;
     }
     if (type === 'startGame') {
@@ -57,7 +61,6 @@ export class BotCommander{
       const builds = data.sidePanel.sidePanelData.filter(item => item.status === 'available');  // Доступные здания
       
       this.playerController.startBuilding(builds[Math.floor(Math.random() * builds.length)].object.name); 
-      this.circlePoints = this.getCirclePoints() // Получим точки окружности вокруг первого здания
     }   
     if (type === 'updateSidePanel') {
       let parse = JSON.parse(message);
@@ -65,12 +68,16 @@ export class BotCommander{
       this.panelInfo = parse;
       const buildsIsReady = this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');  //  && item.object.subType === 'build'
       if (buildsIsReady.length) {
-        // console.log('buildsIsReady: ', buildsIsReady)
+        
         const lastEl = this.circlePoints[this.circlePoints.length - 1]
-        this.circlePoints.pop();
-        let vector = new Vector(lastEl.x, lastEl.y)
-        let currentPointAdd = vector.clone().add(vector) // надо клонировать?
-        this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, currentPointAdd); // this.startPoint
+
+        if (lastEl !== undefined) {
+          // console.log('строим здание на позиции: ', lastEl)
+          this.circlePoints.pop();
+          let vector = new Vector(lastEl.x, lastEl.y)
+          let currentPointAdd = vector.clone().add(vector) // надо клонировать?
+          this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, currentPointAdd); // this.startPoint
+        }
       }
     }
   }
@@ -82,6 +89,12 @@ export class BotCommander{
       this.loading = this.reloadingTime;
       const random = Math.random();
       this.radius += this.radius < 10 ? 1 : 0.5;
+
+      if (this.circlePoints.length === 0) {
+        this.stepBuilding++
+        this.circlePoints = this.getCirclePoints()
+      }
+
       
       // строим здание 
       if (random < 0.3) {
@@ -124,23 +137,13 @@ export class BotCommander{
 
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
-          const vector = item.content.position;
-          const closestBuild = findClosestBuild(vector, arrEnemy);
-          // console.log('Блиайшее здание от ' + ind + ' солдата: ', closestBuild.unit.objectId)
-
+          const closestBuild = findClosestBuild(item.content.position, arrEnemy);
           //послать солдата item в атаку на ближайшее к нему здание closestBuild
-          this.playerController.setAttackTarget(item.objectId, closestBuild.unit.objectId, 1) // 1 - временно, т.к. в новом коде это убрали
+          this.playerController.setAttackTarget(item.objectId, closestBuild.unit.objectId)
         })
-          
-          
       }
       }
 
-      if (this.circlePoints.length === 0) {
-        this.stepBuilding++
-        this.circlePoints = this.getCirclePoints()
-        // console.log(`точки на ${this.stepBuilding}-й окружности: `, this.circlePoints)
-      }
     }
     const privateMessage=0;//this.playerController.addGameObject()
     //
@@ -153,13 +156,13 @@ export class BotCommander{
   getCirclePoints(){
     let arrPoints: Array<IVector> = []
     let angle = (this.startAngle) / this.stepBuilding; //  / 2
-    for(let i=0; i <=180; i = i + angle){
+    for (let i = 0; i <= 180; i = i + angle){
       let x: number = this.startPoint.x + this.minDistance * this.stepBuilding * Math.cos(i);
       let y: number = this.startPoint.y + this.minDistance * this.stepBuilding * Math.sin(i);
       
       arrPoints.push({ x: Math.floor(Math.abs(x)), y: Math.floor(Math.abs(y)) })
     }
-    // console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
+    console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
     return arrPoints
   }   
 }
@@ -169,10 +172,6 @@ export class BotCommander{
 1) Получить координаты всех точек, лежащих на окружности с центром start и радиусом this.minDistance 
   (this.minDistance - минимальное допустимое расстояние до постройки - из общих настроек)
   методом полрной засечки (приращение координат по углу и расстоянию).
-<<<<<<< HEAD
-
-=======
->>>>>>> ffa0ec199f7664a48639760f3c78f4467c50bc85
 2) Обход массива arrPoints. Если 
   - расстояние до ближайшего своего здания > this.minDistance
   - расстояние до ближайшего здания противника > this.minDistance
@@ -180,16 +179,8 @@ export class BotCommander{
   => строим здание
 3) По окончанию обхода, построить новую окружность с радиусом this.minDistance * 2 
 и повторять шаго 1 и 2
-<<<<<<< HEAD
-
-=======
->>>>>>> ffa0ec199f7664a48639760f3c78f4467c50bc85
 /// задача
 1) Получать и сохранять созданные здания и юнитов objectData
 2) Как только набралось 10 солдат - находить ближайшее здание врага
 3) посылать в атаку
-<<<<<<< HEAD
-
-=======
->>>>>>> ffa0ec199f7664a48639760f3c78f4467c50bc85
 */

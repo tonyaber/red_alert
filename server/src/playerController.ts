@@ -25,7 +25,9 @@ export class PlayerController{
 
   // Добавление объекта на канвас
   addGameObject(objectType: string, position: IVector) {
-    console.log("%c"+this.playerId+ ' строит '+ objectType+ ': '+position.x+': '+position.y, 'color: blue')
+    if (this.gameModel.addGameObject(this.playerId, objectType, position) !== 'false') {
+      console.log("%c" + this.playerId + ' строит ' + objectType + ': ' + position.x + ': ' + position.y, 'color: blue')
+    }
     return this.gameModel.addGameObject(this.playerId, objectType, position);
   }
 

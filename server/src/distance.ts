@@ -55,5 +55,5 @@ export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObject
 
 export function getSubtype(type: string) {
   const building = tech.object.find(item => item.name === type)
-  return building.subType;
+  return building ? building.subType : false;
 }
