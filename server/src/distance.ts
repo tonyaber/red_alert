@@ -1,3 +1,4 @@
+import { IGameObjectContent } from "../../client/src/game/dto";
 import { Vector } from "../../common/vector";
 import { IGameObjectData } from "./dto";
 // import {GameObject, MapObject, AbstractUnit, InteractiveObject} from "./interactives";
@@ -35,12 +36,12 @@ export function getTilingDistance(playerPosition:Vector, tilesPosition:Vector, t
 // }
 
 // export function findClosestBuild(playerPosition:Vector, builds:Array<GameObject>){
-export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObjectData>){
+export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObjectContent>){
   let min = Number.MAX_SAFE_INTEGER;
   let minIndex = -1;
   let minTile:Vector = null;
   builds.forEach((it, i) => {
-    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.content.position), it.content.buildMatrix);
+    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.position), it.buildMatrix);
     if (dist<min){
       min = dist;
       minIndex = i;
@@ -48,7 +49,7 @@ export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObject
     }
   });
   if (minIndex != -1) {
-    minTile = minTile.clone().add(builds[minIndex].content.position);
+    minTile = minTile.clone().add(builds[minIndex].position as Vector);
   }
   return { distance: min, unit: builds[minIndex], tile: minTile };
 }

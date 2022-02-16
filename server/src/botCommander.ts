@@ -34,10 +34,10 @@ export class BotCommander{
     if(type === 'create'){
       let parsedObject: IGameObjectData = JSON.parse(message);
       this.objectData[parsedObject.objectId] = parsedObject; // получить созданные ботом здания 
-      //todo получить координаты первого инишл здания и записать как this.startPoint
+      
+      // получить координаты первого инишл здания и записать как this.startPoint
       if (this.startPoint === null && getSubtype(parsedObject.type) === 'build') {
         this.startPoint = parsedObject.content.position;
-        console.log('присвоили this.startPoint = ', this.startPoint)
         this.circlePoints = this.getCirclePoints() // Получим точки окружности вокруг первого здания
       }
     }
@@ -116,30 +116,33 @@ export class BotCommander{
       
       // Выбрать бездействующих солдат текущего бота
       const arr = Object.values(this.objectData)
-      // console.log('arr: ', arr)
+      
+      // Мои бездействующие солдаты
       let arrIdleSoldiers = arr.filter(item => {
-        return item.type === 'soldier' 
-          && item.content.playerId === this.playerController.playerId 
-          && item.content.action === null //todo после добавления в стейт изменить на 'idle'
+        return item.type === 'soldier'
+          && item.content.playerId === this.playerController.playerId
+          && item.content.action === 'idle';
         }
       )
+      console.log('arrIdleSoldiers ', arrIdleSoldiers)
       // Выбрать ближайшего врага
-      let arrEnemy = arr.filter(item => {
+      // Здания врагов
+      const arrEnemy = arr.filter(item => {
           return item.content.playerId !== this.playerController.playerId
             && getSubtype(item.type) === 'build'
         }
       )
+      const arrEnemyContent = arrEnemy.map(item => item.content)
 
       if (arrIdleSoldiers.length >= 10) {
-        // console.log(this.playerController.playerId + '---------- Пора атаковать-----------')
-        // console.log('Здания врагов: ', arrEnemy)
-        // console.log('arrIdleSoldiers: ', arrIdleSoldiers)
-
+        console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
-          const closestBuild = findClosestBuild(item.content.position, arrEnemy);
+          const closestBuild = findClosestBuild(item.content.position, arrEnemyContent);
+          const enemy = arrEnemy.find(item => item.content === closestBuild.unit)
           //послать солдата item в атаку на ближайшее к нему здание closestBuild
-          this.playerController.setAttackTarget(item.objectId, closestBuild.unit.objectId)
+          // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
+          this.playerController.setAttackTarget(item.objectId, enemy.objectId)
         })
       }
       }
