@@ -4,6 +4,8 @@ import { AbstractUnit } from './builds_and_units/units/abstractUnit';
 import { IObject } from './dto';
 import { InteractiveObject } from './builds_and_units/interactiveObject';
 import { Rock } from './builds_and_units/rock';
+import { InteractiveList } from './interactiveList';
+import { findClosestBuild } from './distance';
 
 export class GameCursorStatus{
   pixelPosition:Vector = new Vector(0, 0);
@@ -14,14 +16,15 @@ export class GameCursorStatus{
   planned: IObject;
   playerId: string;
     // getPrimaries: () => Record<string, MapObject>;
-  // getMap: () => Array<Array<number>>;
+   getMap: () => Array<Array<number>>;
   // getRealMap: () => Array<Array<number>>;
-  // getObjects: () => InteractiveList;
-  // getCurrentPlayer: () => GamePlayer;
+   getObjects: () => InteractiveList;
 
-  constructor(playerId:string/*getPrimaries:()=>Record<string, MapObject>, getMap:()=>Array<Array<number>>, getRealMap:()=>Array<Array<number>>*/){
+  constructor(playerId:string, getMap:()=>Array<Array<number>>, getObject: ()=>InteractiveList/*getPrimaries:()=>Record<string, MapObject>, , getRealMap:()=>Array<Array<number>>*/){
+    this.getMap = getMap;
+    this.getObjects = getObject;
     // this.getPrimaries = getPrimaries;
-    // this.getMap = getMap;
+     
     // this.getRealMap = getRealMap;
     this.playerId = playerId;
   }
@@ -29,14 +32,15 @@ export class GameCursorStatus{
   getAction() {
     let action: string = 'select';
     if (this.planned){
-      action = 'build';
-      // const mask = this.getBuildMask();
-      // if (mask.flat(1).find(it => it != 0) == null) {
+      //action = 'build';
+      const mask = this.getBuildMask();
+    
+      if (mask.flat(1).find(it => it != 0) == null) {
         
-      //   action = 'build';
-      // } else {
-      //   action = 'no_build';
-      // }
+        action = 'build';
+      } else {
+        action = 'no_build';
+      }
     } else if (this.selected.length == 0){
       //no selected
       action = 'select';
@@ -58,44 +62,46 @@ export class GameCursorStatus{
         // }
       }
     }
+
     return action;
   }
 
-  // getBuildMask() {
-  //   const mask = checkMap(this.getMap(), this.planned.mtx.map(it => it.map(jt => Number.parseInt(jt))), this.tilePosition);
-  //   const redMask = this.planned.mtx.map(it => it.map(jt => Number.parseInt(jt)));
-  //   const player = this.getCurrentPlayer();
-  //   const builds = this.getObjects().list.filter(it => it.player === player&& it instanceof MapObject) as MapObject[];
+  getBuildMask() {
+    
+    const mask = checkMap(this.getMap(), this.planned.mtx, this.tilePosition);
+    const redMask = this.planned.mtx;
+  
+    const builds = this.getObjects().list.filter(it => it.playerId === this.playerId&& it instanceof AbstractBuild) as AbstractBuild[];
 
-  //   const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
-  //   if (!(!builds.length || closestBuild.distance <= 6)) { 
-  //     // console.log('redMask: ', redMask);
-  //     return redMask;
-  //   }
-  //   // console.log('mask: ', mask);
-  //   return mask;
+    const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
+    if (!(!builds.length || closestBuild.distance <= 6)) { 
+      console.log('redMask: ', redMask);
+     return redMask;
+    }
+    // console.log('mask: ', mask);
+    return mask;
 
-  //   /* redMask массив вида
-  //   [[0, 0, 0, 0]
-  //    [1, 1, 0, 0]
-  //    [1, 1, 1, 1]
-  //    [1, 1, 1, 1]]
-  //    mask - такой же массив, состоящий только из нулей
-  //   */
-  // }
+    /* redMask массив вида
+    [[0, 0, 0, 0]
+     [1, 1, 0, 0]
+     [1, 1, 1, 1]
+     [1, 1, 1, 1]]
+     mask - такой же массив, состоящий только из нулей
+    */
+  }
 
   // isOnlyUnitsSelected(){
   //   return this.selected.find(it=> !(it instanceof AbstractUnit)) == null
   // }
 
-  render(ctx:CanvasRenderingContext2D, camera:Vector){
+  render(ctx:CanvasRenderingContext2D, camera:Vector, sz: number){
     this.renderCursor(ctx, camera)
     if (this.multiStart){
       this.renderMulti(ctx, camera);
     }
-    // if (this.planned){
-    //   this.renderBuildPlanned(ctx, camera);
-    // }
+    if (this.planned){
+      this.renderBuildPlanned(ctx, camera, sz);
+    }
   }
 
   renderCursor(ctx:CanvasRenderingContext2D, camera:Vector){
@@ -123,21 +129,22 @@ export class GameCursorStatus{
     ctx.fillRect(this.multiStart.x+camera.x, this.multiStart.y+camera.y, this.pixelPosition.x -this.multiStart.x-camera.x, this.pixelPosition.y -this.multiStart.y-camera.y);
   }
 
-  // renderBuildPlanned(ctx: CanvasRenderingContext2D, camera:Vector){
-  //   //const cursorTile = this.getTileCursor();
-  //   //this.currentBuilding.render();
-  //   const mask = this.getBuildMask();
-  //   this.drawObject(ctx, this.planned.mtx, this.tilePosition, camera, "#ff06", 55);
-  //   this.drawObject(ctx, /*this.planned.mtx*/mask.map(it=>it.map(jt=>jt.toString())), this.tilePosition, camera, "#f00", 55);
-  // }
+  renderBuildPlanned(ctx: CanvasRenderingContext2D, camera:Vector, sz: number){
+    //const cursorTile = this.getTileCursor();
+    //this.currentBuilding.render();
+    const mask = this.getBuildMask();
+    
+    this.drawObject(ctx, this.planned.mtx, this.tilePosition, camera, "#ff06", sz);
+    this.drawObject(ctx, /*this.planned.mtx*/mask.map(it=>it.map(jt=>jt.toString())), this.tilePosition, camera, "#f00", sz);
+  }
 
-  // drawObject(ctx:CanvasRenderingContext2D, object:Array<Array<any>>, position:IVector, camera:IVector, color:string, sz:number){
-  //   object.forEach((row, i)=>row.forEach((cell, j)=>{
-  //     if (object[i][j]!='0'){
-  //       this.drawTile(ctx, new Vector(j+position.x, i+position.y), camera, color, sz);
-  //     }
-  //   }));
-  // }
+  drawObject(ctx:CanvasRenderingContext2D, object:Array<Array<any>>, position:IVector, camera:IVector, color:string, sz:number){
+    object.forEach((row, i)=>row.forEach((cell, j)=>{
+      if (object[i][j]!='0'){
+        this.drawTile(ctx, new Vector(j+position.x, i+position.y), camera, color, sz);
+      }
+    }));
+  }
 
   drawTile(ctx:CanvasRenderingContext2D, position:IVector, camera:IVector, color:string, sz:number){
     //const sz = this.sz;
@@ -145,9 +152,60 @@ export class GameCursorStatus{
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.rect(camera.x + position.x * sz, camera.y+ position.y *sz, sz, sz);
+    
+    ctx.rect(position.x * sz - camera.x,position.y *sz - camera.y, sz, sz);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
   }
+}
+
+export const checkMap = (map: Array<Array<number>>, obj: Array<Array<number>>, { x, y }: Vector) => {
+/*
+map: массив из 96 строк и 96 столбцов, занятий 0 и 1. 1 - строить нельзя, 0 - можно
+obj: схема объекта
+[[0, 0, 0, 0]
+ [0, 1, 1, 0]
+ [1, 1, 1, 1]
+ [1, 1, 1, 1]]
+*/
+  
+  const rowsInObj = obj.length;
+  const columnsInObj = obj[0].length;
+  // if (y + rowsInObj > map.length) {
+  //   throw 'There is no enough rows to place the object';
+  // };
+  // if (x + columnsInObj > map[0].length) {
+  //   throw 'There is no enough columns to place the object';
+  // };
+  const result: Array<Array<number>> = [];
+  
+
+  for (let rowIndex = 0; rowIndex < rowsInObj; rowIndex++) {
+    result.push([]);
+    for (let columnIndex = 0; columnIndex < columnsInObj; columnIndex++) {
+      const cell = obj[rowIndex][columnIndex];
+      if (cell === 0) {
+        result[rowIndex].push(0);
+        continue;
+      }
+      
+      if (rowIndex + y > 0 && rowIndex + y < map.length &&
+        columnIndex + x>0&&columnIndex + x<map[0].length&&
+        map[rowIndex + y][columnIndex + x] === 0) {
+        result[rowIndex].push(0);
+        continue;
+      } else {
+        result[rowIndex].push(1);
+      }
+    }
+  }
+  /*result - (если строительство возможно) массив вида: 
+  [[0, 0, 0, 0]
+   [0, 0, 0, 0]
+   [0, 0, 0, 0]
+   [0, 0, 0, 0]]
+  */
+   //console.log('checkMap: ',result);
+  return result;
 }

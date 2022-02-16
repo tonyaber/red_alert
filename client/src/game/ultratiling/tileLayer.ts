@@ -2,7 +2,7 @@ import {Vector} from "../../../../common/vector";
 import {copier} from "./copier";
 import {mod} from "./mod";
 import {Tile} from "../../../../server/src/tileElement";
-import {tilesCollection, TilesCollection} from "../../../../server/src/tileCollection";
+
 
 export class TilingLayer {
   ctx: CanvasRenderingContext2D;
@@ -13,8 +13,6 @@ export class TilingLayer {
   lastCamera: Vector;
   lastCacheCamera: Vector = new Vector(0, 0);
   camera: Vector;
-  private tilesCollection: TilesCollection;
-
 
   constructor(width: number, height: number, tileSize: number, camera: Vector) {
     this.camera = camera;
@@ -24,11 +22,9 @@ export class TilingLayer {
     this.canvas.height = 700;
     this.ctx = this.canvas.getContext('2d');
 
-    this.tilesCollection = tilesCollection
     //если создавать циклом for то за один проход создастся и Map и Array
     let newMap: Array<Array<number>> = new Array(height).fill(0).map(it => new Array(width).fill(0));
     this.map = newMap;
-    this.tilesCollection.createTilesMap(this.map)
     this.updateCamera(new Vector(0, 0), tileSize);
   }
 

@@ -3,7 +3,7 @@ import { IObjectInfo } from "./dto";
 import { buildSidePanel } from './buildSidePanel';
 import red from './red.css'
 //import style from './sideOptions.css'
-import OptionsPage from '../application/optionsPage'
+//import OptionsPage from '../application/optionsPage'
 import Range from "../components/range";
 import PopupPage from "../application/popup";
 

@@ -70,7 +70,8 @@ export class GameServer {
     this.players.forEach(item => {
       const sidePanel = this.gameModel.getState(item.playerController.playerId);
       const type = item instanceof BotCommander ? 'bot' : item instanceof HumanCommander ? 'human' : 'spectator';
-      const response:IStartGameResponse = { players: allPlayers, sidePanel, type}
+      const response: IStartGameResponse = { players: allPlayers, sidePanel, type}
+
       item.sendMessage('startGame', JSON.stringify(response));
       
     })

@@ -143,6 +143,7 @@ export class SocketModel implements IClientModel {
       type: "setPrimary",
       content: { id, name },
     });
+    console.log('socketClient')
     return this.client.sendMessage("gameMove", content);
   }
 

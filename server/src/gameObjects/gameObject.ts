@@ -1,6 +1,7 @@
 import { IVector, Vector } from "../../../common/vector";
 import { IGameObjectContent,IGameObjectData } from "../dto";
 import { PlayerSide } from "../playerSide";
+import { TilesCollection } from "../tileCollection";
 
 export class GameObject {
   data: IGameObjectContent = {
@@ -24,6 +25,7 @@ export class GameObject {
   direction: Vector;
   target: Vector;
    buildMatrix: number[][];
+  traceMap: TilesCollection;
 
   constructor(/*objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }*/) {
     // this.data.position = Vector.fromIVector(state.position);
@@ -32,6 +34,10 @@ export class GameObject {
     // this.data.health = 100;
     // this.type = type;
     // this.objectId = objectId;
+  }
+
+  setMap(traceMap: TilesCollection) {
+    this.traceMap = traceMap;
   }
 
   tick(delta: number) {

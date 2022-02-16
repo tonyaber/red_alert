@@ -46,8 +46,8 @@ export class BoundingLayer{
   }
 
   _clearTile(tilingCamera:Vector, obj:CachedSprite, tileSize:number){
-    const renderX = (-tilingCamera.x * tileSize) + obj.position.x * tileSize; 
-    const renderY = (-tilingCamera.y * tileSize) + obj.position.y * tileSize;
+    const renderX = ((-tilingCamera.x + 4)* tileSize) + obj.position.x * tileSize; 
+    const renderY = ((-tilingCamera.y + 4)* tileSize) + obj.position.y * tileSize;
     this.ctx.clearRect(renderX, renderY, obj.canvas.width, obj.canvas.height);
   }
 

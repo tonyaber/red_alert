@@ -17,7 +17,7 @@ export class AbstractBullet {
     if (this.isDestroyed) return;
     
     const next = this.position.clone().add(this.position.clone().sub(this.target).normalize().scale(-this.speed * delta*0.0005));
-   // console.log('BULLET', this.position, next)
+     //console.log('BULLET', next)
     // console.log('bullet', onLine(this.target, this.position, next))
    // console.log(this.position, this.target, next)
     if (onLine(this.target, this.position, next)) {
