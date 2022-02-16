@@ -1,6 +1,9 @@
 import { ResourceLoader } from './loader';
 import grass from '../assets/png/grass.png';
-import rocks from '../assets/png/tree2.png';
+
+import tree from '../assets/png/tree2.png';
+import rock from '../assets/png/rock.png';
+
 import goldFull from '../assets/png/gold_full.png';
 import goldLow from '../assets/png/gold_low.png';
 import goldMed from '../assets/png/gold_med.png';
@@ -44,7 +47,8 @@ export const resources = {
   map4: map4,
   map: map,
   grass: grass,
-  rocks: rocks, 
+  rock: rock,
+  tree: tree,
   goldFull: goldFull,
   goldLow: goldLow,
   goldMed: goldMed,

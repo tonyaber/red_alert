@@ -17,7 +17,6 @@ export class Truck extends AbstractUnitObject{
      this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
     this.weapon.onBulletTarget = (point: Vector) => {
       this.onDamageTile?.(this.targetId, point);
-      console.log(this.money)
       if (this.data.action === 'attack'&&this.objects[this.targetId]) {
         if (this.objects[this.targetId].subType === 'gold') {
           this.money += 200;
@@ -30,8 +29,6 @@ export class Truck extends AbstractUnitObject{
       if (this.money >= 3000) {
         this.data.action = 'cash';
       }
-      
-      console.log(this.money)
     }
   }
   

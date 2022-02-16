@@ -28,7 +28,7 @@ export class Gold extends InteractiveObject{
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
     this.layer = layer;
-    const tile = new TileObject(this.health+3, this.position.clone())
+    const tile = new TileObject(this.health+2, this.position.clone())
     tile.onUpdate = ()=>{
       this.layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
     }
@@ -52,7 +52,7 @@ export class Gold extends InteractiveObject{
   
   updateObject(data: IGameObjectContent) {
     const pos = this.position.clone()
-    this.layer.updateCacheTile(this.layer.camera,  pos.x,  pos.y, data.health+3);
+    this.layer.updateCacheTile(this.layer.camera,  pos.x,  pos.y, data.health+2);
   }
 
   
@@ -60,6 +60,6 @@ export class Gold extends InteractiveObject{
   update(){
   }
   destroy() { 
-   
+    this.layer.updateCacheTile(this.layer.camera,  this.position.x,  this.position.y, 1);
   }
 }

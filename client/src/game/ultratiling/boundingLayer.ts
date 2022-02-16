@@ -81,6 +81,10 @@ export class BoundingLayer{
     this._renderTile(this.getTileCamera(this.camera, this.tileSize), object);
   }
 
+  deleteObject(object: CachedSprite) {
+    this.objects = this.objects.filter(it => it != object);
+  }
+
   updateObject(object: CachedSprite) {
     this._renderTile(this.getTileCamera(this.camera, this.tileSize), object);    
   }

@@ -51,7 +51,7 @@ export class GameMainRender{
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
     this.tilingLayer.registred = [
-      null, res['grass'], res["rocks"], null, res['goldMin'], res['goldMed'], res["goldLow"], res["goldLow"],res["goldFull"],
+      null, res['grass'], null, res['goldMin'], res['goldMed'], res["goldLow"], res["goldLow"],res["goldFull"],res["rock"],res['tree']
     ]
     let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
 

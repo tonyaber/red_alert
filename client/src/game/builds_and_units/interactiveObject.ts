@@ -78,7 +78,7 @@ export class InteractiveObject{
   }
 
   destroy(){
-    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
+    
   }
 //   isHovered: boolean;
 //   onMouseMove: any;
