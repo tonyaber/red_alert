@@ -121,6 +121,10 @@ export class Application extends Control{
           popupOptions.onBack = () => {
             popupOptions.destroy();
           }
+          popupOptions.onClose = () => {
+            popupOptions.destroy();
+          }
+
       }
       sideOptions.onExit = () => {
         sideOptions.quickOut();
@@ -135,6 +139,9 @@ export class Application extends Control{
             game.destroy();
             options.destroy();
             this.finishCycle();
+          }
+          popupOptions.onClose = () => {
+            popupOptions.destroy();
           }
       }
     

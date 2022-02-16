@@ -24,25 +24,56 @@ background-color: rgba(219, 219, 218, 0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
   border: 25px solid grey;
   border-image: url('../assets/img/aside/border-light.png') 45 / 25px/ 1em stretch;
   box-shadow:  50px 50px 100px black;
+  position: relative;
 }
 
 .popup_title{
   font-size: 30px;
-  margin-bottom: 10px;
+ /* margin-bottom: 20px;*/
 }
 
 .popup_message{
-  margin-bottom: 25px;
+  /*margin-bottom: 25px;*/
 }
 
 .wrapper_button{
+ 
   width: 100%;
   display: flex;
   justify-content: space-around;
 }
 .popup_button{
-  width: 50%;
+  width: 40%;
+  background: url('../assets/img/aside/fon-metall.jpg') no-repeat 0 0/cover;
+  
 }
+.popup_button, 
+.close_button{
+  cursor: pointer;
+  border: 1 solid #666 ;
+  box-shadow: 0px 3px 7px #666;
+  transition: 0.3s;
+}
+
+.popup_button:hover,
+.close_button:hover{
+  filter: brightness(2);
+  transform: scale(1.05);
+  transition: 0.3s;
+}
+
+.close_button{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  text-align: center;
+  top: 5px;
+  right: 5px;
+  border-radius: 3px;
+}
+

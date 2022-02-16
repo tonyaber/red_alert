@@ -2,7 +2,7 @@ import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import mapsData from '../game/maps.json';
 import style from './settingsPageSingle.css'
-import InfoPage from './infoPage';
+//import InfoPage from './infoPage';
 import Range from '../components/range'
 
 export interface IMapsData{
