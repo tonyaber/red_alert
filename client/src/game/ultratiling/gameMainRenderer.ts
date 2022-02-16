@@ -133,6 +133,7 @@ export class GameMainRender{
   }
 
   changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData) {
+   
     if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
       this.buildsMap[data.content.position.y][data.content.position.x] = 1;
     }
