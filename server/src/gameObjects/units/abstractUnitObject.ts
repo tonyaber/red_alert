@@ -97,6 +97,7 @@ export class AbstractUnitObject extends GameObject {
       else {
         this.targetId = null;
         this.data.action = 'idle';
+        this.update();
       }
     }
   }
