@@ -49,7 +49,7 @@ export class GameCursorStatus{
         action = 'move';
       } else if (!this.hovered.length) {
         action = 'select';
-      } else if (this.hovered[0].playerId !=this.playerId) {
+      } else if (this.hovered[0].playerId != this.playerId && !(this.hovered[0] instanceof Rock)) {
         action = 'attack';
       }
     } else if ((this.selected[0] instanceof AbstractBuild)) {

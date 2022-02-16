@@ -129,6 +129,7 @@ export class GameModel{
     gameObject.onDelete = (state) => {
       delete this.objects[state.objectId];
       this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
+      this.mapForBuilds[position.x][position.y] = 0;
       this.onUpdate(state, 'delete'); 
     }
 
@@ -160,7 +161,7 @@ export class GameModel{
         this.objects[state.objectId] = gameObject;
         
         if(gameObject.subType==='build'){        
-          this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position);
+          this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position, -1);
           this.tilesCollection.addBuild((gameObject as AbstractBuildObject).data.buildMatrix, position)
         }
         this.onUpdate(state, 'create');     
@@ -177,6 +178,9 @@ export class GameModel{
         this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
         delete this.objects[state.objectId];
         this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
+        if (gameObject.subType === 'build') { 
+           this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position, 0);
+        }
         this.onUpdate(state, 'delete'); 
       }
 
@@ -206,8 +210,10 @@ export class GameModel{
         }
       }
     }
-    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item=>item.getState());
-    
+    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item => {
+      return item.getAllInfo();
+    });
+  
     const closestBuild = findClosestBuild(Vector.fromIVector(position), builds);
           
     if (!(!builds.length || closestBuild.distance <= 6)) { 
@@ -217,7 +223,7 @@ export class GameModel{
   }
 
 
-  addMapBuild(buildMatrix: number[][], position: IVector) {
+  addMapBuild(buildMatrix: number[][], position: IVector, state: number) {
     for (let i = 0; i < buildMatrix.length + 2; i++){
       for (let j = 0; j < buildMatrix[0].length + 2; j++){
         if (position.x - 1 + j > 0 &&

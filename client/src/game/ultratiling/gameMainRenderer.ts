@@ -51,7 +51,7 @@ export class GameMainRender{
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
     this.tilingLayer.registred = [
-      null, res['grass'],  res["goldFull"],res["rocks"]
+      null, res['grass'], res["rocks"], null, res['goldMin'], res['goldMed'], res["goldLow"], res["goldLow"],res["goldFull"],
     ]
     let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
 
@@ -129,10 +129,10 @@ export class GameMainRender{
     const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
     
-    this.changeBuildsMap(interactiveObject, data);
+    this.changeBuildsMap(interactiveObject, data, 1);
   }
 
-  changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData) {
+  changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData, state: number) {
    
     if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
       this.buildsMap[data.content.position.y][data.content.position.x] = 1;
@@ -145,7 +145,7 @@ export class GameMainRender{
             data.content.position.y - 1 + i > 0 &&
             data.content.position.x - 1 + j < this.buildsMap.length &&
             data.content.position.y - 1 + i < this.buildsMap[0].length) {
-            this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = 1;
+            this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = state;
           }        
         }
       }       
@@ -170,8 +170,13 @@ export class GameMainRender{
   }
 
   deleteObject(data: IGameObjectData) {
-    this.interactiveList.list.find(item => item.id === data.objectId).destroy();
+    const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);
     this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
+    if (interactiveObject instanceof AbstractBuild) {
+      this.cursorStatus.planned = null;
+      this.changeBuildsMap(interactiveObject, data, 0);   
+    }
+    interactiveObject.destroy();
   }
 
   setPlannedBuild(object: IObject) {

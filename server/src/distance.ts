@@ -21,26 +21,40 @@ export function getTilingDistance(playerPosition:Vector, tilesPosition:Vector, t
   return { distance: min, tile: minPosition } ;
 }
 
-// export function findClosestUnit(playerPosition:Vector, units:Array<AbstractUnit>){
-//     let min = Number.MAX_SAFE_INTEGER;
-//     let minIndex = -1;
-//     units.forEach((it, i) => {
-//       const dist = Vector.fromIVector(it.position).sub(playerPosition).abs();
-//       if (dist<min){
-//         min = dist;
-//         minIndex = i;
-//       }
-//     });
-//     return {distance: min, unit:units[minIndex]}
-// }
+export function findClosestGold(playerPosition:Vector, golds:Array<IGameObjectData>){
+  let min = Number.MAX_SAFE_INTEGER;
+  let minIndex = -1;
+  golds.forEach((it, i) => {
+    const dist = Vector.fromIVector(it.content.position).sub(playerPosition).abs();
+    if (dist<min){
+      min = dist;
+      minIndex = i;
+    }
+  });
+  return { distance: min, gold: golds[minIndex]}
+}
+
+export function findClosestUnit(playerPosition:Vector, units:Array<IGameObjectData>){
+    let min = Number.MAX_SAFE_INTEGER;
+  let minIndex = -1;
+  
+    units.forEach((it, i) => {
+      const dist = Vector.fromIVector(it.content.position).sub(playerPosition).abs();
+      if (dist<min){
+        min = dist;
+        minIndex = i;
+      }
+    });
+    return {distance: min, unit:units[minIndex]}
+}
 
 // export function findClosestBuild(playerPosition:Vector, builds:Array<GameObject>){
-export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObjectContent>){
+export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObjectData>){
   let min = Number.MAX_SAFE_INTEGER;
   let minIndex = -1;
   let minTile:Vector = null;
   builds.forEach((it, i) => {
-    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.position), it.buildMatrix);
+    const {distance: dist, tile } = getTilingDistance(playerPosition, Vector.fromIVector(it.content.position), it.content.buildMatrix);
     if (dist<min){
       min = dist;
       minIndex = i;
@@ -48,7 +62,7 @@ export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObject
     }
   });
   if (minIndex != -1) {
-    minTile = minTile.clone().add(builds[minIndex].position as Vector);
+    minTile = minTile.clone().add(builds[minIndex].content.position as Vector);
   }
   return { distance: min, unit: builds[minIndex], tile: minTile };
 }

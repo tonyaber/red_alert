@@ -152,15 +152,14 @@ export class BotCommander{
           && item.content.health !== 0
       }
       )
-      const arrEnemyContent = arrEnemy.map(item => item.content)
 
       if (arrIdleSoldiers.length >= 3) {
         // console.log(`Посылаю в атаку солдат ${arrIdleSoldiers}`)
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
           // Выбрать ближайшего врага
-          const closestBuild = findClosestBuild(item.content.position, arrEnemyContent);
-          const enemyBuild: IGameObjectData = arrEnemy.find(item => item.content === closestBuild.unit)
+          const closestBuild = findClosestBuild(item.content.position, arrEnemy);
+          const enemyBuild: IGameObjectData = arrEnemy.find(it => it.objectId === closestBuild.unit.objectId)
           // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
           this.playerController.setAttackTarget(item.objectId, enemyBuild.objectId)

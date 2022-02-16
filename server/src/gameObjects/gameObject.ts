@@ -72,20 +72,28 @@ export class GameObject {
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {
-    // this.data = callback(this.getState());
-    // this.update();
+     this.data = callback(this.getState());
+     this.update();
   }
 
   getState() {
     return this.data;
   }
+
+  getAllInfo() {
+    return {
+      type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    }
+  }
   
   protected update() {
-    // this.onUpdate({
-    //   type: this.type,
-    //   objectId: this.objectId,
-    //   content: this.getState(),
-    // });    
+    this.onUpdate({
+      type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });    
   }
   damage(point: Vector) {
     

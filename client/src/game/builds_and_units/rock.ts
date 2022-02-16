@@ -26,7 +26,7 @@ export class Rock extends InteractiveObject{
     this.infoLayer = infoLayer; 
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
-    const tile = new TileObject(3, this.position)
+    const tile = new TileObject(2, this.position)
     tile.onUpdate = ()=>{
       layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
     }

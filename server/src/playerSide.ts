@@ -38,7 +38,8 @@ export class PlayerSide{
 
   updateAvailableObject() {
     const availableObject = Array.from(new Set(this.buildsInGame));
-       
+    this.buildings.filter(item => item.status === 'available' && !item.object.deps.every(el => availableObject.includes(el)))
+      .map(it => it.status = 'notAvailable')
     this.buildings.filter(item => item.object.deps.includes('rootAccess'))
       .concat(this.buildings.filter(item => item.object.deps.every(el=>availableObject.includes(el))))
       .filter(item => item.status === 'notAvailable')
@@ -52,7 +53,9 @@ export class PlayerSide{
   removeBuilding(name: string) {
     const index = this.buildsInGame.findIndex(item=>item===name);
     this.buildsInGame.splice(index, 1);
+   
     this.updateAvailableObject();
+    console.log(this.buildings)
     this.onUpdate(JSON.stringify({ sidePanelData: this.buildings, money: this.money }));
   }
 

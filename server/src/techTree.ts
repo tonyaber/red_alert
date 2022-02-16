@@ -111,7 +111,7 @@ const carFactory = {
   energy: 5,
   cost: 1500,
   subType: 'build',
-  time: 30,
+  time: 1,//30,
   mtx: [
     '0110'.split(''),
     '0111'.split(''),
@@ -251,7 +251,7 @@ const truck = {
   spawn: ["carFactory"],
   name: 'truck',
   cost: 1000,
-  time: 10,
+  time: 1,//10,
   radius: 20,
   subType: 'unit',
   speed: 40,
