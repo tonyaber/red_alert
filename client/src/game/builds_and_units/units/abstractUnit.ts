@@ -112,7 +112,11 @@ export class AbstractUnit extends InteractiveObject{
     }
   }
   updateObject(data: IGameObjectContent) {
-    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());   
+    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize()); 
+    const arcTan = Math.atan2(data.position.y - this.position.y, data.position.x - this.position.x);
+    const normalizedAngle = 0.5 * (arcTan / (Math.PI) + 1);
+    const directions = 8;
+    this.info.animation.setDirection(Math.floor(normalizedAngle * directions) % directions);
     this.position =  Vector.fromIVector(data.position);
     this.playerId = data.playerId;
     this.health = data.health;

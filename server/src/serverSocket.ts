@@ -104,7 +104,7 @@ export class ServerSocket {
               type: "chatMsg",
               content: JSON.stringify({
                 user: "system",
-                msg: "You are Welcom",
+                msg: "You are Welcome",
               }),
               requestId: "111111111",
             };

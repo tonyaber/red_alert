@@ -1,6 +1,10 @@
 import { IGameObjectContent } from "../../client/src/game/dto";
 import { Vector } from "../../common/vector";
+<<<<<<< HEAD
 import { IGameObjectData } from "./dto";
+=======
+import { IGameObjectContent, IGameObjectData } from "./dto";
+>>>>>>> aec168ace181fc907728b8a9ca10952f9b977d5b
 // import {GameObject, MapObject, AbstractUnit, InteractiveObject} from "./interactives";
 import { GameObject } from "./gameObjects/gameObject";
 import { tech } from "./techTree";

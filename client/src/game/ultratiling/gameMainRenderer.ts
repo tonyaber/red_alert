@@ -38,7 +38,7 @@ export class GameMainRender{
     this.res = res;
     this.camera = camera;
     this.playerId = playerId;
-    this.buildsMap = new Array(100).fill(null).map((it) => new Array(100).fill(null).map((el) => 0));
+    this.buildsMap = new Array(96).fill(null).map((it) => new Array(96).fill(null).map((el) => 0));
     this.cursorStatus = new GameCursorStatus(this.playerId, ()=>{
       return this.getBuildMap();
     },
@@ -133,6 +133,7 @@ export class GameMainRender{
   }
 
   changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData) {
+   
     if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
       this.buildsMap[data.content.position.y][data.content.position.x] = 1;
     }

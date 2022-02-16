@@ -7,6 +7,7 @@ import { TickList } from "./tickList";
 import { gameObjects } from "./gameObjects/gameObjectsMap";
 import { AbstractBuildObject } from "./gameObjects/builds/abstractBuildObject";
 import { TilesCollection } from "./tileCollection";
+import { findClosestBuild } from "./distance";
 
 
 const BUILDS = ["buildingCenter",
@@ -145,7 +146,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId: string, objectName: string, position: IVector) {
-    if (this.checkBuilding(position) || !BUILDS.includes(objectName)) {
+    if (this.checkBuilding(position, playerId) || !BUILDS.includes(objectName)) {
       const state = { position, playerId }
       const gameObjectConstructor = gameObjects[objectName];
       const gameObject = new gameObjectConstructor(this.objects, this.playersSides, this.nextId(), objectName, state);
@@ -193,7 +194,7 @@ export class GameModel{
     return 'false';
   }
 
-  checkBuilding(position: IVector) {
+  checkBuilding(position: IVector, playerId: string) {
     for (let i = 0; i <4; i++){
       for (let j = 0; j < 4; j++){
         if (position.x + j >= this.mapForBuilds.length||
@@ -205,8 +206,16 @@ export class GameModel{
         }
       }
     }
+    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item=>item.getState());
+    
+    const closestBuild = findClosestBuild(Vector.fromIVector(position), builds);
+          
+    if (!(!builds.length || closestBuild.distance <= 6)) { 
+      return false;
+    }
     return true;
   }
+
 
   addMapBuild(buildMatrix: number[][], position: IVector) {
     for (let i = 0; i < buildMatrix.length + 2; i++){
