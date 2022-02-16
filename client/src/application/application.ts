@@ -11,7 +11,7 @@ import { SoundManager } from '../game/soundManager'
 import { resourceLoader, resources } from '../game/resources';
 import StatisticsPage from './statisticsPage'
 import {SettingsPage} from './settingsPageSingle'
-import { Settings } from './settingsPageMulti';
+import { Settings,IGameOptions } from './settingsPageMulti';
 import style from './application.css'
 import PopupPage from './popup'
 import InfoPage from './infoPage'
@@ -83,6 +83,8 @@ export class Application extends Control{
         const settings = new Settings(this.node);
         settings.onCreate = (data) => {
           //записываем данные созданной игры 
+          console.log('data-->',data);
+          this.socket.createGame(data);
           this.socket.chatSend({user: 'system', msg: `new game create`}); //добавить название карты/игры
           settings.destroy();
         }

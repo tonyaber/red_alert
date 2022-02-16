@@ -5,13 +5,14 @@ import {
   IServerRequestMessage,
   IServerResponseMessage,
 } from "./dto";
-import { GameServer } from "./gameServer";
+// import { GameServer } from "./gameServer";
 import { BatchConnection } from "./batchConnection";
-import GamesList from './gamesList'
+import GamesList from "./gamesList";
 
 const websocket = require("websocket");
 
 interface IUser {
+  id: string;
   name: string;
 }
 
@@ -24,12 +25,15 @@ class Session {
   private _online: boolean = false;
   private ttl: number;
   private tm: NodeJS.Timeout | null;
+  private _game: number;
 
   constructor(msg: IServerRequestMessage, connection: IConnection) {
     this.id = msg.sessionID;
     this._connection = connection || null;
+    this.ttl = new Date().getTime();
     this._user = null;
     this.tm = null;
+    this._game = -1;
     this.touch();
     try {
       const content = JSON.parse(msg.content);
@@ -63,6 +67,12 @@ class Session {
   get user() {
     return this._user;
   }
+  get game() {
+    return this._game;
+  }
+  set game(g) {
+    this._game = g;
+  }
   touch() {
     this.ttl = new Date().getTime();
     this._online = true;
@@ -84,11 +94,16 @@ export class ServerSocket {
     const wsServer = new websocket.server({
       httpServer: server,
     });
-    
-    // const game = new GameServer(0);
-    const game = this.games.createGame().game;
-    this.games.createGame();
-    this.games.createGame();
+
+    // const game = new GameServer();
+    const game = this.games.createGame({
+      credits: 9999,
+      mapID: 0,
+      speed: 3,
+      info: "fake setting",
+    }).game;
+    // this.games.createGame();
+    // this.games.createGame();
 
     wsServer.on("request", (request: request) => {
       const _connection = request.accept(undefined, request.origin);
@@ -99,16 +114,18 @@ export class ServerSocket {
         if (_message.type === "utf8") {
           const message = _message as IUtf8Message;
           const msg: IServerRequestMessage = JSON.parse(message.utf8Data);
-          // console.log(msg.type,'--*', msg.sessionID);
-          if (this.connections.has(msg.sessionID)) {
-            const conn = this.connections.get(msg.sessionID);
-            conn.connection = connection;
-            conn.touch();
-          }
+          console.log(msg.type, "msg.sessionID--", msg.sessionID);
+          // if (this.connections.has(msg.sessionID)) {
+          //   let game = null;
+          //   const conn = this.connections.get(msg.sessionID);
+          //   conn.connection = connection;
+          //   conn.touch();
+          //   const gameID = this.connections.get(msg.sessionID).game;
+          //   game = this.games.get( gameID) || null;
+          // }
+          // console.log(msg.type, "gameID--",game);
+
           if (msg.type === "auth") {
-            //id
-            // this.connections.set(connection, msg.content);
-            // console.log(msg);
             if (!this.connections.has(msg.sessionID))
               this.connections.set(msg.sessionID, new Session(msg, connection));
             connection.sendUTF(
@@ -182,21 +199,32 @@ export class ServerSocket {
           if (msg.type === "getUsersList") {
             this.sendUsersList();
           }
+          if (msg.type === "createGame") {
+            console.log("createGame", msg);
+            try {
+              this.games.createGame(JSON.parse(msg.content));
+              this.sendGamesList();
+            } catch (e) {
+              console.log("serverSocket:206:error", e);
+            }
+          }
         }
       });
     });
   }
   sendUsersList() {
-    const usersList = Array.from(this.connections.entries()).map(
-      (x) => {
-        const user = { name: x[1].user.name, id: x[0] };
-        return user;
-      }
-    );
-    this.responseAll("usersList",JSON.stringify(usersList),'"usersList"')
+    const usersList = Array.from(this.connections.entries()).map((x) => {
+      const user = { name: x[1].user.name, id: x[0] };
+      return user;
+    });
+    this.responseAll("usersList", JSON.stringify(usersList), '"usersList"');
   }
   sendGamesList() {
-    this.responseAll("gamesList",JSON.stringify(this.games.getList()),'"gameList"')
+    this.responseAll(
+      "gamesList",
+      JSON.stringify(this.games.getList()),
+      '"gameList"'
+    );
   }
 
   responseAll(type: string, content: string, requestId: string) {
@@ -217,4 +245,4 @@ export class ServerSocket {
   }
 }
 
-export { Session };
+export { Session, IUser };

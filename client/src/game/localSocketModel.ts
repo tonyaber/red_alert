@@ -128,6 +128,7 @@ export class LocalModel implements IClientModel
 
   chatSend():Promise<string>{ return new Promise((r)=>r(''))}
   getUsersList():Promise<string>{ return new Promise((r)=>r(''))}
+  createGame():Promise<string>{ return new Promise((r)=>r(''))}
   
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{

@@ -78,7 +78,12 @@ export interface IUserItem{
   name: string;
   id: string;
 }
+
 export interface ISendItemGame {
   id: number;
-  name: string;
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
+  users: IUserItem[];
 }

@@ -41,8 +41,8 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     socket.onGamesList = (msg:ISendItemGame[]):void => {      
       wrapperGames.node.innerHTML='';  
       msg.forEach(x => {
-        console.log(x.id);        
-        const game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.name);
+        console.log(x);        
+        const game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
       });
     }
 
