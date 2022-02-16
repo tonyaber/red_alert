@@ -48,12 +48,12 @@ export function findClosestBuild(playerPosition:Vector, builds:Array<IGameObject
     }
   });
   if (minIndex != -1) {
-    minTile = minTile.clone().add(builds[minIndex].position);
+    minTile = minTile.clone().add(builds[minIndex].position as Vector);
   }
   return { distance: min, unit: builds[minIndex], tile: minTile };
 }
 
 export function getSubtype(type: string) {
   const building = tech.object.find(item => item.name === type)
-  return building.subType;
+ return building ? building.subType : false;
 }
