@@ -36,6 +36,6 @@ export class UnitInfoView extends CachedSprite{
     
     //this.ctx.fillText(this.playerId, 0, topText * 3);
     
-    this.onUpdate?.();
+ //   this.onUpdate?.();
   }
 }

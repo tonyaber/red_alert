@@ -24,7 +24,7 @@ export class Gold extends InteractiveObject{
     super();
     this.id = data.objectId;
     this.health = data.content.health
-    this.infoLayer = infoLayer;   
+   
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
     this.layer = layer;

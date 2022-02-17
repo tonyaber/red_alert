@@ -157,9 +157,9 @@ export class GameMainRender{
   }
 
   addShot(data: { position: IVector, id: string }) {
-    this.bullets[data.id].destroy();
-    delete this.bullets[data.id]
-    this.interactiveList.list.filter(it => it.id != data.id);
+    // this.bullets[data.id].destroy();
+    // delete this.bullets[data.id]
+    // this.interactiveList.list.filter(it => it.id != data.id);
     const pointPosition =  Vector.fromIVector(data.position)
     // const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
@@ -171,11 +171,11 @@ export class GameMainRender{
 
   }
   addBullet(data: { position: IVector, id: string }) {  
-    if (this.bullets[data.id]) {
-      this.bullets[data.id].updateShot(data.position)
-    } else {
-      this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
-    } 
+    // if (this.bullets[data.id]) {
+    //   this.bullets[data.id].updateShot(data.position)
+    // } else {
+    //   this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
+    // } 
   }
 
   updateObject(data: IGameObjectData) {

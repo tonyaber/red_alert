@@ -32,7 +32,7 @@ export class LocalModel implements IClientModel
 
   addUser() {
     this.player = 'user' + Math.floor(Math.random() * 100);
-    const bots: IRegisteredPlayerInfo[] = new Array(3).fill(null).map(item => {
+    const bots: IRegisteredPlayerInfo[] = new Array(1).fill(null).map(item => {
       return {
         id: 'bot' + Math.floor(Math.random() * 100),
         type: 'bot'

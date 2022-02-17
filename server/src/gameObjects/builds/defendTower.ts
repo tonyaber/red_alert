@@ -16,7 +16,7 @@ export class DefendTower extends AbstractBuildObject{
     this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2000, this.objectId);
     this.weapon.moveBullet = (position: Vector, id: string) => {
       this.moveBullet(position, id);
-      console.log(1111)
+  
     }
     this.weapon.onBulletTarget = (point: Vector, id: string) => {
       this.onDamageTile?.(this.targetId, point, id);

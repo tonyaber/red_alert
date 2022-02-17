@@ -11,7 +11,7 @@ export class OreFactory extends AbstractBuildObject{
   } 
 
   damage(point: Vector, unit: GameObject) {
-    console.log(1111)
+
     if (this.data.health <= 0) {
       this.destroy();
     } else if (unit instanceof Truck) { 

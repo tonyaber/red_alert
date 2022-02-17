@@ -23,7 +23,6 @@ export class Rock extends InteractiveObject{
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
     this.id = data.objectId;
-    this.infoLayer = infoLayer; 
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
     const tileNumber = Math.round(8 + Math.random() * (10 - 8));

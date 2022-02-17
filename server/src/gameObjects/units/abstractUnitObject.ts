@@ -111,10 +111,10 @@ export class AbstractUnitObject extends GameObject {
       }
     }
     if (this.data.action ==='idle') {
-      this.findClosetEnemy();
+     //this.findClosetEnemy();
     }
     if (this.data.action === 'cash') {
-      this.findClosetEnemy();
+     // this.findClosetEnemy();
     }
   }
 
@@ -192,11 +192,11 @@ export class AbstractUnitObject extends GameObject {
 
           this.path = [new Vector(targetToTile.x + 0.5, targetToTile.y + 0.5), ...path]
           if (action === 'moveToAttack') {
-            this.path = path.filter(p => {
-              if (p.x + this.attackRadius < target.x || p.y + this.attackRadius < target.y) {
-                return p
-              }
-            })
+            // this.path = path.filter(p => {
+            //   if (p.x + this.attackRadius < target.x || p.y + this.attackRadius < target.y) {
+            //     return p
+            //   }
+            // })
           }
 
           const step = this.path.pop();
@@ -207,14 +207,14 @@ export class AbstractUnitObject extends GameObject {
         
         })
     }
-    if (this.target) {
-      this.setState((data) => {
-        return {
-          ...data,
-          target: Vector.fromIVector(this.target),
-        }
-      })
-   }
+  //   if (this.target) {
+  //     this.setState((data) => {
+  //       return {
+  //         ...data,
+  //         target: Vector.fromIVector(this.target),
+  //       }
+  //     })
+  //  }
    
   }
 
