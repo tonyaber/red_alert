@@ -82,10 +82,19 @@ export class AbstractUnitObject extends GameObject {
           } else {
             this.data.action = 'idle';
           }
+          return;
+        }else {
+          this.target = new Vector(step.x, step.y);
         }
-        else {
-          this.target = new Vector(step.x, step.y)
-        }
+        if (this.traceMap.arrayTiles[Math.floor(step.y)][Math.floor(step.x)] === -1) {
+          this.target = null;
+          this.path.length = 0;
+          this.data.action = 'idle';
+          this.update();
+          return;
+        }   
+        
+        
       }
       if (this.target) {
         this.setState((data) => {
