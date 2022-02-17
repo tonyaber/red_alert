@@ -1,7 +1,7 @@
 import Control from "../../../common/control";
 import { Camera } from "./ultratiling/camera";
 import { IGameObjectData, IObject } from "./dto";
-import { Vector } from '../../../common/vector';
+import { IVector, Vector } from '../../../common/vector';
 import { RenderTicker } from './ultratiling/renderTicker';
 import { GameMainRender } from './ultratiling/gameMainRenderer';
 import red from './red.css'
@@ -117,8 +117,11 @@ export class Canvas extends Control{
     //const interactiveObject = new BuildConstructor(data);
   }
 
-  addShot(point: Vector) {
-    this.renderer.addShot(point);
+  addShot(data: { position: IVector, id: string }) {
+    this.renderer.addShot(data);
+  }
+  addBullet(data: { position: IVector, id: string }) {
+    this.renderer.addBullet(data);
   }
 
   render(ctx: CanvasRenderingContext2D, delta: number) {

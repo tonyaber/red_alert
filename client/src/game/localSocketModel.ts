@@ -5,7 +5,7 @@ import { PlayerController } from "../../../server/src/playerController";
 import { IChatMsg, IUserItem, IGameUpdateResponse } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
-import { Vector } from '../../../common/vector'
+import { IVector, Vector } from '../../../common/vector'
 import { INITIAL_DATA } from "../../../server/src/initialData";
 
 export class LocalModel implements IClientModel
@@ -17,13 +17,14 @@ export class LocalModel implements IClientModel
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
-  onShot: (point: Vector) => void;
+  onShot: (data: { position: IVector, id: string }) => void;
   onChatMsg: (msg: IChatMsg) => void;
   onUsersList: (msg: IUserItem[]) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
   map: number[][];
+  onMoveBullet: (data: { position: IVector, id: string })=>void;
 
   constructor(){
 
@@ -69,8 +70,11 @@ export class LocalModel implements IClientModel
         bots.forEach(item=> item.sendMessage('delete', JSON.stringify(data)));
       }
     }
-    game.onShot = (point) => {
-      this.onShot(point);
+    game.onShot = (point, id) => {
+      this.onShot({ position: point, id: id });
+    }
+    game.onMoveBullet = (point, id) => {
+     this.onMoveBullet({ position: point, id: id })
     }
 
     // game.onUpdate = (id, data)=>{

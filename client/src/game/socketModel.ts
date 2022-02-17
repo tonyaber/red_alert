@@ -1,4 +1,4 @@
-import { Vector } from "../../../common/vector";
+import { IVector, Vector } from "../../../common/vector";
 import { ClientSocket } from "./clientSocket";
 import {
   IGameObjectData,
@@ -18,12 +18,13 @@ export class SocketModel implements IClientModel {
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
-  onShot: (point: Vector) => void;
+  onShot: (data: { position: IVector, id: string }) => void;
   onChatMsg: (msg: IChatMsg) => void;  
   onUsersList: (msg: IUserItem[]) => void;  
 
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
+  onMoveBullet: (data: { position: IVector, id: string })=> void;
 
   constructor(client: ClientSocket) {
     this.client = client;
@@ -50,6 +51,9 @@ export class SocketModel implements IClientModel {
       }
       if (message.type === "shot") {
         this.onShot(JSON.parse(message.content));
+      }
+      if (message.type === 'moveBullet') {
+        this.onMoveBullet(JSON.parse(message.content));
       }
       if (message.type === "chatMsg") {
         this.onChatMsg(JSON.parse(message.content));

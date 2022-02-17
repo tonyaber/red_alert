@@ -45,9 +45,13 @@ export class AbstractUnitObject extends GameObject {
     this.objectId = objectId;
     this.target = null
     this.path = []
-    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
-    this.weapon.onBulletTarget = (point: Vector) => {
-      this.onDamageTile?.(this.targetId, point);
+    
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 400, this.objectId);
+    this.weapon.moveBullet = (position: Vector, id: string) => {
+      this.moveBullet(position, id);
+    }
+    this.weapon.onBulletTarget = (point: Vector, id: string) => {
+      this.onDamageTile?.(this.targetId, point, id);
     }
     this.playerSides = playerSides;
   }

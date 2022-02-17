@@ -54,8 +54,8 @@ export class GameServer {
 
       }     
     }
-    this.gameModel.onShot = (point) => {
-      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify(point)));
+    this.gameModel.onShot = (point, id) => {
+      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify({position: point, id: id})));
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])
@@ -63,6 +63,10 @@ export class GameServer {
         .forEach(item=>item.sendMessage('updateSidePanel', data))
       this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
       
+    }
+
+    this.gameModel.onMoveBullet = (point, id) => {
+     this.players.forEach(player=> player.sendMessage('moveBullet', JSON.stringify({position: point, id: id})));
     }
    
     ///start to game, fix it later

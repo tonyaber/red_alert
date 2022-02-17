@@ -23,6 +23,7 @@ import map2 from '../assets/png/map2.png';
 import map3 from '../assets/png/map3.png';
 import map4 from '../assets/png/map4.png';
 import explosion from '../assets/png/explosion_1.png';
+import bullet from '../assets/png/bullet2.png'
 
 import soldier_top from '../sprites/units/soldier_back_run.png';
 import soldier_bottom from '../sprites/units/soldier_front_run.png';
@@ -62,6 +63,7 @@ export const resources = {
   defendedTower:defendedTower,
   buildingCenter:buildingCenter,
   explosion: explosion,
+  bullet: bullet,
   soldier_top,
   soldier_bottom,
   soldier_left,

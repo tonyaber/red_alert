@@ -15,7 +15,8 @@ export class GameObject {
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
   onDelete: (state: IGameObjectData) => void;
-  onDamageTile: (targetId: string, point: Vector) => void;
+  onDamageTile: (targetId: string, point: Vector, id: string) => void;
+  moveBullet: (point: Vector, id: string) => void;
 
   objectId: string;
   objects: Record<string, GameObject> = {}

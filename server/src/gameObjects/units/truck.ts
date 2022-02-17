@@ -14,21 +14,24 @@ export class Truck extends AbstractUnitObject{
     this.attackRadius = 1;
     this.money = 0;
     this.findRadius = 30;
-     this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 200);
-    this.weapon.onBulletTarget = (point: Vector) => {
-      this.onDamageTile?.(this.targetId, point);
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2000, objectId);
+    this.weapon.onBulletTarget = (point: Vector, id: string) => {
+      this.onDamageTile?.(this.targetId, point, id);
       if (this.data.action === 'attack'&&this.objects[this.targetId]) {
         if (this.objects[this.targetId].subType === 'gold') {
           this.money += 200;
         }else{
           this.money = 0;
           this.data.action = 'idle'
-        }        
-      }
-
-      if (this.money >= 3000) {
-        this.data.action = 'cash';
-      }
+        }
+        console.log(this.money)
+        if (this.money >= 3000) {
+          this.data.action = 'cash';
+        }  
+      }      
+    }
+    this.weapon.moveBullet = (position: Vector, id: string) => {
+      this.moveBullet(position, id);
     }
   }
   

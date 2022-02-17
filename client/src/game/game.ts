@@ -60,6 +60,9 @@ export class Game extends Control{
     socket.onShot = (point) => {
       canvas.addShot(point);
     }
+     socket.onMoveBullet = (point) => {
+      canvas.addBullet(point);
+    }
 
     sidePanel.onSidePanelClick = (selected, object) => {
       if (selected === 'onAvailableClick') {

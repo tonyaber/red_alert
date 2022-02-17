@@ -16,6 +16,7 @@ import { mod } from "./mod";
 import { Gold } from "../builds_and_units/gold";
 import { Rock } from "../builds_and_units/rock";
 import { AbstractUnit } from "../builds_and_units/units/abstractUnit";
+import { Bullet } from '../builds_and_units/bullet';
 export class GameMainRender{
   tilingLayer: TilingLayer; 
   camera: Camera;
@@ -35,6 +36,7 @@ export class GameMainRender{
   onAttack: (id: string, targetId: string) => void;
   explosions: Explosion[]=[];
   preventSelect: boolean = false;
+  bullets: Record<string, Bullet> = {};
 
   constructor(camera: Camera, width: number, height: number, res: Record<string, HTMLImageElement>, playerId: string) {
     this.res = res;
@@ -53,7 +55,7 @@ export class GameMainRender{
     const mp = 100;
     this.tilingLayer = new TilingLayer(mp, mp, camera.getTileSize(), camera.position);
     this.tilingLayer.registred = [
-      null, res['grass'], null, res['goldMin'], res['goldMed'], res["goldLow"], res["goldLow"],res["goldFull"],res["rock"],res['tree'], res['tree2']
+      null, res['grass'],  res['grass'], res['goldMin'], res["goldLow"], res["goldLow"],res['goldMed'],res["goldFull"],res["rock"],res['tree'], res['tree2']
     ]
     let newMap:Array<Array<number>> = new Array(mp).fill(0).map(it=> new Array(mp).fill(1));
 
@@ -154,8 +156,10 @@ export class GameMainRender{
     }
   }
 
-  addShot(point: IVector) {
-    const pointPosition =  Vector.fromIVector(point)
+  addShot(data: { position: IVector, id: string }) {
+    this.bullets[data.id].destroy();
+    delete this.bullets[data.id]
+    const pointPosition =  Vector.fromIVector(data.position)
     const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
     explosion.onDestroyed = () => {
@@ -164,6 +168,13 @@ export class GameMainRender{
     }
     this.explosions.push(explosion);
 
+  }
+  addBullet(data: { position: IVector, id: string }) {  
+    if (this.bullets[data.id]) {
+      this.bullets[data.id].updateShot(data.position)
+    } else {
+      this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
+    } 
   }
 
   updateObject(data: IGameObjectData) {

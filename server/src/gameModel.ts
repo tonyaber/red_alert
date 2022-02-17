@@ -29,7 +29,7 @@ export class GameModel{
   onUpdate: (state: IGameObjectData, action: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
-  onShot: (point: Vector) => void;
+  onShot: (point: Vector, id: string) => void;
   tickList: TickList;
   gameObjects: GameObject[] = [];
   nextId: () => string;
@@ -38,6 +38,7 @@ export class GameModel{
   mapForTrace: number[][];
   mapForBuilds: number[][];
   tilesCollection: TilesCollection;
+  onMoveBullet: (point: Vector, id: string) => void;;
   
   constructor(players: IRegisteredPlayerInfo[], state: { map: number[][], builds: any }) {
     this.tickList = new TickList();
@@ -185,14 +186,17 @@ export class GameModel{
         delete this.objects[state.objectId]; 
       }
 
-      gameObject.onDamageTile = (targetId, point) => {
+      gameObject.onDamageTile = (targetId, point, id: string) => {
         const obj = this.gameObjects.find(it => it.objectId === targetId);
         if (obj) {
           this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
-          this.onShot(point);
+          this.onShot(point, id);
         }
         
         //gameObjects
+      }
+      gameObject.moveBullet = (point: Vector, id: string) => {
+          this.onMoveBullet(point, id);
       }
       gameObject.create();
       this.gameObjects.push(gameObject);

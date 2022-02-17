@@ -1,18 +1,18 @@
 import { Vector } from "../../common/vector";
 
 export const INITIAL_DATA = [
-  [
-    {
+    [
+     {
       name: 'buildingCenter',
-      position: (new Vector(8,4))
+      position: (new Vector(78,84))
     },
     {
       name: 'barrack',
-      position: (new Vector(13,6))
+      position: (new Vector(83,86))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(8,10))
+      position: (new Vector(78,90))
     },
   ],
   [
@@ -43,18 +43,18 @@ export const INITIAL_DATA = [
       position: (new Vector(8,90))
     },
   ],
-  [
-     {
+   [
+    {
       name: 'buildingCenter',
-      position: (new Vector(78,84))
+      position: (new Vector(8,4))
     },
     {
       name: 'barrack',
-      position: (new Vector(83,86))
+      position: (new Vector(13,6))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(78,90))
+      position: (new Vector(8,10))
     },
   ],
 ];
