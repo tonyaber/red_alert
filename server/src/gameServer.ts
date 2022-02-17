@@ -32,7 +32,6 @@ export class GameServer {
   
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
     if(this.registeredPlayersInfo.find((x)=>x.id===userId)){
-      this.unregisterPlayer(userId)
       return {successfully:false};
     } else {
       this.registeredPlayersInfo.push({ type, id: userId, connection });
