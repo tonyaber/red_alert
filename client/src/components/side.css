@@ -3,15 +3,18 @@
   width: 250px;
   position: absolute;
   top:0;
-  right: 0;
+  right: 2px;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   background-color: black;
-  z-index: 10;
+  border: 1 solid;
+ /* z-index: 10;*/
 }
 
 .hide{
-  right: -250px;
+ top: -100vh;
 }
 
 .volume{
@@ -21,5 +24,18 @@
 }
 
 .button{
+  height: 30px;
+  width: 80%;
+  background: url('../assets/img/aside/fon-metall.jpg') no-repeat 0 0/cover;
+  cursor: pointer;
+  border: 1 solid #666;
+  border-radius: 5px;
+  box-shadow: 0px 3px 7px #666;
+  transition: 0.3s;
+}
 
+.button:hover{
+  filter: brightness(2);
+  transform: scale(1.05);
+  transition: 0.3s;
 }

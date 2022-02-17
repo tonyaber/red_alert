@@ -20,8 +20,15 @@ export class Authorization extends Control {
       style["body"]
     );
 
-    const content = new Control(
+    const wrapper = new Control(
       body.node,
+      "div",
+      style["wrapper"],
+      ``
+    );
+
+    const content = new Control(
+      wrapper.node,
       "div",
       style["content"],
       ``

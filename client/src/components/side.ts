@@ -8,6 +8,7 @@ export default class Side extends AnimatedControl{
   onPause: () => void;
   constructor(parentNode:HTMLElement){
     super(parentNode, 'div', {default:style['side'], hidden:style['hide']});//[style['side'], style['hide']].join(' '));
+    
     const pause = new Control(this.node, 'button', style['button'], 'pause');
     pause.node.onclick = () => {
       this.onPause();
@@ -17,7 +18,7 @@ export default class Side extends AnimatedControl{
       this.onExit();
     }
     const soundsSettings = new Control(this.node, 'div', style['volume'], 'music and sounds');
-    const volume = new Range(soundsSettings.node, 'volume', '0', '100', '10', '0', '100');
+    const volume = new Range(soundsSettings.node, '0', '100', '10');
     
 
   }

@@ -10,7 +10,9 @@
 .global_main{
   display: flex;
   height: calc(100vh - 6px);  
-  position: relative;
+  
+  /*position: relative;*/
+ /* overflow: hidden;*/
 }
 
 .global_header{
@@ -24,6 +26,7 @@
   height: 100%;
   overflow: hidden;
   border: solid 1px;  
+ 
 }
 
 .game_side{
@@ -35,6 +38,7 @@
   flex-direction: column;
   overflow: hidden;
   border: solid 1px;  
+  
 }
 
 .game_radar{

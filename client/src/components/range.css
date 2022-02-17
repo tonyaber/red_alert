@@ -1,39 +1,90 @@
-.double-range{
+.container-range{
   display: flex;
-  justify-content: space-around;
-  height: 30px;
+  justify-content: space-between;
+  height: 40px;
   align-items: center;
 }
 
 .value-range{
-  width: 70px;
-  height: 20px;
+  width: 50px;
+  height: 22px;
   margin: 15px 0;
-  background-color: white;
-  border: 1px solid #db2424;
-  border-radius: 5px;
-  color: #db2424;
+  background-color: black;
+  color: white;
   font-weight: 700;
   text-align: center;
   line-height: 20px;
+  border: 2px solid #e71313;
+  border-radius: 5px;
+  box-shadow: 3px 0px 7px #e71313;
 }
 /* .container-range{
   position: relative;
   pointer-events: none;
 } */
-
-.container-range input[type="range"]{
- /* -webkit-appearance: none;*/
+/*
+.input[type="range"]{
+  -webkit-appearance: none;
   height: 5px;
   width: 100%;
   display: block;
   margin: 20px;
 }
-/*
-.container-range input[type="range"]:last-child{
-  margin-top: -25px;
-}
-*/
+
 input[type="range"]::-webkit-slider-thumb {
   pointer-events: all;
+  background-color: grey;
+}*/
+input[type='range']{
+  -webkit-appearance: none;
+  width: 200px;
+  height: 15px;
+  border: 3px solid #e71313;
+  border-radius: 5px;
 }
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #C3CDD8, #1A1C1A);
+  border: 2px solid #C3CDD8;
+  cursor: pointer;
+ /* box-shadow: 3px 3px 7px 1px #F00000;*/
+  margin-top: -10px/*calc( max((20px - 2px - 2px) * 0.5, 0px) - max(30px * 0.5,2px));*/
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  border: 2px solid #e71313;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 15px;
+  border: 3px solid #e71313;
+  border-radius: 5px;
+  background: #851e1e;
+  box-shadow: 3px 0px 7px #e71313;
+}
+
+.range::-webkit-slider-thumb:active {
+  background: linear-gradient(to right, #C3CDD8, #F00000);
+  border-color: #F00000;
+}
+
+.range:active::-webkit-slider-runnable-track {
+  background: #f5f5f5;
+  border-color: #F00000;
+}
+/*
+.range.slider-progress::-webkit-slider-runnable-track {
+  background: linear-gradient(#F00000,#F00000) 0/var(--sx) 100% no-repeat, #EFEFEF;
+}
+
+input[type=range].slider-progress:hover::-webkit-slider-runnable-track {
+  background: linear-gradient(#F00000,#F00000) 0/var(--sx) 100% no-repeat, #e5e5e5;
+}
+
+input[type=range].slider-progress:active::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #F00000CC, #000000) 0/var(--sx) 100% no-repeat, #f5f5f5;
+}*/
