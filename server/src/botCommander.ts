@@ -23,13 +23,13 @@ export class BotCommander{
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 2; // Минимально допустимое расстояние для постройки
   objectData: Record<string, IGameObjectData> = {};
-  attakedBuildings: Record<string, Array<string>> = {}
+  // attakedBuildings: Record<string, Array<string>> = {}
 
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
     this.tickList.add(this);
-    this.attakedBuildings = {}
+    // this.attakedBuildings = {}
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
@@ -163,10 +163,10 @@ export class BotCommander{
           // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
           this.playerController.setAttackTarget(item.objectId, enemyBuild.objectId)
-          if (!this.attakedBuildings[enemyBuild.objectId]) {
-            this.attakedBuildings[enemyBuild.objectId] = []
-          }
-          this.attakedBuildings[enemyBuild.objectId].push(item.objectId)
+          // if (!this.attakedBuildings[enemyBuild.objectId]) {
+          //   this.attakedBuildings[enemyBuild.objectId] = []
+          // }
+          // this.attakedBuildings[enemyBuild.objectId].push(item.objectId)
         })
       }
     }
@@ -187,6 +187,6 @@ export class BotCommander{
       arrPoints.push({ x: Math.floor(Math.abs(x)), y: Math.floor(Math.abs(y)) })
     }
     // console.log(`точки на ${this.stepBuilding}-й окружности: `, arrPoints)
-    return arrPoints
+    return arrPoints 
   }   
 }

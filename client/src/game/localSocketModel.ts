@@ -56,7 +56,6 @@ export class LocalModel implements IClientModel
       return new BotCommander(playerController);
     });
     game.onUpdate = (data, action) => {
-    //   bots.forEach(player=> player.sendMessage({}));
       if (action === 'update') {
         this.onUpdate(data);
         bots.forEach(item=> item.sendMessage('update', JSON.stringify(data)));

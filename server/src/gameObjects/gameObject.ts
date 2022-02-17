@@ -10,16 +10,15 @@ export class GameObject {
     playerId: null,
     primary: false,
     action: null,
-    target: null
+    target: null,
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
   onDelete: (state: IGameObjectData) => void;
   onDamageTile: (targetId: string, point: Vector) => void;
+
   objectId: string;
-
   objects: Record<string, GameObject> = {}
-
   subType: string;
   type: string;
   direction: Vector;
@@ -34,6 +33,7 @@ export class GameObject {
     // this.data.health = 100;
     // this.type = type;
     // this.objectId = objectId;
+    this.buildMatrix = [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]];
   }
 
   setMap(traceMap: TilesCollection) {
