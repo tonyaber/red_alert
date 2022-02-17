@@ -46,7 +46,7 @@ export class AbstractUnitObject extends GameObject {
     this.target = null
     this.path = []
     
-    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 400, this.objectId);
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2000, this.objectId);
     this.weapon.moveBullet = (position: Vector, id: string) => {
       this.moveBullet(position, id);
     }
@@ -101,7 +101,7 @@ export class AbstractUnitObject extends GameObject {
       if (this.objects[this.targetId]) {
         // this.weapon.position = this.data.position;
         this.weapon.position = Vector.fromIVector(this.data.position);
-        this.weapon.tryShot(this.targetHit);
+        this.weapon.tryShot(this.objects[this.targetId].data.position);
         this.weapon.step(delta);
       }
       else {
@@ -231,7 +231,6 @@ export class AbstractUnitObject extends GameObject {
     this.targetId = targetId;
     if (this.objects[targetId]) {
       const target = this.objects[targetId].data.position;
-      this.targetHit = Vector.fromIVector(target);
       this.tracePathToTarget(target, this.data.action);
       this.update();
     }  
@@ -252,6 +251,20 @@ export class AbstractUnitObject extends GameObject {
       objectId: this.objectId,
       content: this.getState(),
     });
+  }
+   damage(point: Vector, unit: GameObject) {
+    
+    if (this.data.health <= 0) {
+      this.destroy();
+    } else if(this.data.health>0){
+      //console.log(this.data.health)
+      this.setState((data) => {
+        return {
+          ...data,
+          health:this.data.health-10,
+        }
+      })
+    } 
   }
 }
 

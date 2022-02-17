@@ -28,6 +28,7 @@ export class AbstractBuildObject extends GameObject{
     this.data.playerId = state.playerId;
     this.data.health = 100;
     this.type = type;
+    this.objects = objects;
     this.objectId = objectId;
     this.data.buildMatrix = [
       [0,1,1,0],

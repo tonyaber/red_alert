@@ -24,7 +24,6 @@ export class Truck extends AbstractUnitObject{
           this.money = 0;
           this.data.action = 'idle'
         }
-        console.log(this.money)
         if (this.money >= 3000) {
           this.data.action = 'cash';
         }  

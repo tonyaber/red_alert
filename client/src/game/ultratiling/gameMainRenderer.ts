@@ -110,7 +110,7 @@ export class GameMainRender{
       -mod(this.camera.position.y, this.camera.getTileSize())*1 - this.camera.getTileSize() * 4
     ); 
     this.debugInfoView.render(ctx);
-    this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
+    //this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
     
     this.cursorStatus.render(ctx,this.camera.position, this.camera.getTileSize());
   }
@@ -159,14 +159,15 @@ export class GameMainRender{
   addShot(data: { position: IVector, id: string }) {
     this.bullets[data.id].destroy();
     delete this.bullets[data.id]
+    this.interactiveList.list.filter(it => it.id != data.id);
     const pointPosition =  Vector.fromIVector(data.position)
-    const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
+    // const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
-    explosion.onDestroyed = () => {
-      this.explosions = this.explosions.filter(it => it != explosion);
-      this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
-    }
-    this.explosions.push(explosion);
+    // explosion.onDestroyed = () => {
+    //   this.explosions = this.explosions.filter(it => it != explosion);
+    //   this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
+    // }
+    // this.explosions.push(explosion);
 
   }
   addBullet(data: { position: IVector, id: string }) {  

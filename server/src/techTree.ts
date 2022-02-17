@@ -145,7 +145,7 @@ const defendTower = {
   energy: 5,
   cost: 1000,
   subType: 'build',
-  time: 30,
+  time: 1, //30,
   mtx: [
     '0110'.split(''),
     '0110'.split(''),
