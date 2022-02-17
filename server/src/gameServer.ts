@@ -28,14 +28,32 @@ export class GameServer {
   }
   get id(){ return this._settings.id };
   get settings(){ return this._settings };
+  getPlayersInfo():IRegisteredPlayerInfo[]{ return this.registeredPlayersInfo };
   
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
-    this.registeredPlayersInfo.push({ type, id: userId, connection });
-    if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
-      this.startGame();
+    if(this.registeredPlayersInfo.find((x)=>x.id===userId)){
+      this.unregisterPlayer(userId)
+      return {successfully:false};
+    } else {
+      this.registeredPlayersInfo.push({ type, id: userId, connection });
+      if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
+        this.startGame();
+      }
+      return {successfully:true};
     }
   }
   
+  unregisterPlayer(userId:string){
+    const user = this.registeredPlayersInfo.find((x)=>x.id===userId)
+    if(user){
+      const index = this.registeredPlayersInfo.indexOf(user);
+      this.registeredPlayersInfo.splice(index,1);
+      return {successfully:true};
+    } else {
+      return {successfully:false};
+    }
+  }
+
   startGame() {
     this.gameModel = new GameModel(this.registeredPlayersInfo, {map: this.map, builds: INITIAL_DATA} );
     this.players = this.registeredPlayersInfo.map(it=> {
