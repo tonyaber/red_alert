@@ -23,13 +23,13 @@ export class BotCommander{
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 2; // Минимально допустимое расстояние для постройки
   objectData: Record<string, IGameObjectData> = {};
-  attakedBuildings: Record<string, Array<string>> = {}
+  // attakedBuildings: Record<string, Array<string>> = {}
 
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
     this.tickList.add(this);
-    this.attakedBuildings = {}
+    // this.attakedBuildings = {}
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
@@ -54,21 +54,20 @@ export class BotCommander{
 
       /////
       
-      if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
-          console.log('%cАтакоемое здание уничтожено ' + parsedObject.objectId+': ', 'color:orange')
-          // console.log(this.attakedBuildings[parsedObject.objectId])
+      // if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
+      //     // console.log('%cАтакоемое здание уничтожено ' + parsedObject.objectId+': ', 'color:orange')
 
-        if (this.attakedBuildings[parsedObject.objectId]) {
-          console.log(this.attakedBuildings[parsedObject.objectId])
-          this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
-            if (this.objectData.hasOwnProperty(soldierId)) {
-              // this.objectData[soldierId].content.action = 'idle';
-              console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
-            }
-          })
-          delete this.attakedBuildings[parsedObject.objectId]
-        }
-      }
+      //   if (this.attakedBuildings[parsedObject.objectId]) {
+      //     console.log(this.attakedBuildings[parsedObject.objectId])
+      //     this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
+      //       if (this.objectData.hasOwnProperty(soldierId)) {
+      //         // this.objectData[soldierId].content.action = 'idle';
+      //         console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
+      //       }
+      //     })
+      //     delete this.attakedBuildings[parsedObject.objectId]
+      //   }
+      // }
     }
 
     if (type === 'addBuild' && !this.startPoint) {
@@ -164,10 +163,10 @@ export class BotCommander{
           // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
           this.playerController.setAttackTarget(item.objectId, enemyBuild.objectId)
-          if (!this.attakedBuildings[enemyBuild.objectId]) {
-            this.attakedBuildings[enemyBuild.objectId] = []
-          }
-          this.attakedBuildings[enemyBuild.objectId].push(item.objectId)
+          // if (!this.attakedBuildings[enemyBuild.objectId]) {
+          //   this.attakedBuildings[enemyBuild.objectId] = []
+          // }
+          // this.attakedBuildings[enemyBuild.objectId].push(item.objectId)
         })
       }
     }

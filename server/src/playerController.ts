@@ -64,5 +64,5 @@ export class PlayerController{
   addInitialMap(map:number[][]){
     return this.gameModel.createMap(map);
   }
-
+  
 }
