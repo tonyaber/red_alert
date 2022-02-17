@@ -80,7 +80,7 @@ export class Application extends Control{
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       const roomPage = new RoomPage(this.node, this.socket);
-      const imageData = getImageData(res.map)
+      const imageData = getImageData(res.map1)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
       roomPage.onCreateGame = () => {
