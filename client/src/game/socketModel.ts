@@ -7,9 +7,11 @@ import {
   IGameUpdateResponse,
   IChatMsg,
   IUserItem,
+  ISendItemGame,
 } from "./dto";
 import { IClientModel } from "./IClientModel";
 import session from "../application/session";
+import {IGameOptions} from "../application/settingsPageMulti";
 export class SocketModel implements IClientModel {
   onSideUpdate: (data: { sidePanelData: IObjectInfo[]; money: number }) => void;
   onCanvasObjectUpdate: (response: IGameUpdateResponse) => void;
@@ -21,6 +23,7 @@ export class SocketModel implements IClientModel {
   onShot: (data: { position: IVector, id: string }) => void;
   onChatMsg: (msg: IChatMsg) => void;  
   onUsersList: (msg: IUserItem[]) => void;  
+  onGamesList: (msg: ISendItemGame[]) => void;  
 
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
@@ -60,6 +63,9 @@ export class SocketModel implements IClientModel {
       }
       if (message.type === "usersList") {
         this.onUsersList(JSON.parse(message.content));
+      }
+      if (message.type === "gamesList") {
+        this.onGamesList(JSON.parse(message.content));
       }
     };
     this.client.onMessage.add(this.messageHandler);
@@ -162,9 +168,14 @@ export class SocketModel implements IClientModel {
     return this.client.sendMessage('gameMove', content);
   }
   
+  
   chatSend(msg: IChatMsg): Promise<string> {
     const content = JSON.stringify(msg);
     return this.client.sendMessage("chatSend", content);
+  }
+  createGame(msg: IGameOptions): Promise<string> {
+    const content = JSON.stringify(msg);
+    return this.client.sendMessage("createGame", content);
   }
   getUsersList(msg: IChatMsg): Promise<string> {
     const content = JSON.stringify(msg);

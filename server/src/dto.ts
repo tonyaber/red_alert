@@ -71,3 +71,5 @@ export interface IUpdateSidePanel{
   sidePanelData: IObjectInfo[];
   money: number;
 }
+import { ISendItem } from "./gamesListItem"
+export  { ISendItem };

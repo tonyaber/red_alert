@@ -8,24 +8,34 @@ import { SpectatorCommander } from "./spectatorCommander";
 import { Session } from "./serverSocket";
 import { INITIAL_DATA } from './initialData';
 
+export interface IGameOptions {
+  id: number;
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
+}
 
 export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
 
   players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
-  map: number[][] =[];
-  constructor(){
-    
+  map: number[][] =[];  
+  private _settings:IGameOptions; 
+  constructor(props:IGameOptions){
+    this._settings = props;
   }
-
+  get id(){ return this._settings.id };
+  get settings(){ return this._settings };
+  
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
     this.registeredPlayersInfo.push({ type, id: userId, connection });
     if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
       this.startGame();
     }
   }
-
+  
   startGame() {
     this.gameModel = new GameModel(this.registeredPlayersInfo, {map: this.map, builds: INITIAL_DATA} );
     this.players = this.registeredPlayersInfo.map(it=> {
