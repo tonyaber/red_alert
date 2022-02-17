@@ -76,7 +76,12 @@ export class InteractiveObject{
   update(){
     //this.tiles.forEach(it=>it.update());
   }
-
+  setSelected() {
+    
+  }
+  deleteSelected() {
+  
+}
   destroy(){
     
   }

@@ -140,6 +140,19 @@ export class AbstractUnit extends InteractiveObject{
   update(){
     //this.tiles.forEach(it=>it.update());
   }
+
+  deleteSelected() {
+    this.info.selected = false;
+     this.info.update();
+    this.infoLayer.updateObject(this.info)
+  }
+
+  setSelected(): void {
+    this.info.selected = true;
+     this.info.update();
+    this.infoLayer.updateObject(this.info)
+      
+  }
   // subType: string = 'unit';
   // id: string;
   // playerId: string;

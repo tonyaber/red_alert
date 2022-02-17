@@ -97,7 +97,7 @@ export class GameCursorStatus{
   render(ctx:CanvasRenderingContext2D, camera:Vector, sz: number){
     this.renderCursor(ctx, camera)
     if (this.multiStart){
-      this.renderMulti(ctx, camera);
+      this.renderMulti(ctx, camera, sz);
     }
     if (this.planned){
       this.renderBuildPlanned(ctx, camera, sz);
@@ -124,9 +124,9 @@ export class GameCursorStatus{
     //this.drawTile(ctx, this.tilePosition, new Vector(0,0), "#0ff7", 0);
   }
 
-  renderMulti(ctx: CanvasRenderingContext2D, camera:Vector){
+  renderMulti(ctx: CanvasRenderingContext2D, camera:Vector, sz: number){
     ctx.fillStyle = '#fff4';
-    ctx.fillRect(this.multiStart.x+camera.x, this.multiStart.y+camera.y, this.pixelPosition.x -this.multiStart.x-camera.x, this.pixelPosition.y -this.multiStart.y-camera.y);
+    ctx.fillRect(this.multiStart.x - camera.x, this.multiStart.y - camera.y, this.pixelPosition.x -this.multiStart.x+camera.x, this.pixelPosition.y -this.multiStart.y+camera.y);
   }
 
   renderBuildPlanned(ctx: CanvasRenderingContext2D, camera:Vector, sz: number){

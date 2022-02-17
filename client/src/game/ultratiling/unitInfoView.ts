@@ -9,7 +9,8 @@ export class UnitInfoView extends CachedSprite{
   playerId: string;
   select: boolean;
   animation:UnitAnimation;
-  direction:number;
+  direction: number;
+  selected:boolean= false;
 
   constructor(position: Vector, img: HTMLImageElement, name: string, health: number,  playerId: string) {    
     super(30, 50, position);
@@ -29,7 +30,10 @@ export class UnitInfoView extends CachedSprite{
     this.animation.render(this.ctx, new Vector(30, 0), 100);
     this.ctx.fillRect(0, 0, this.health, 5);
     //this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
-    //this.ctx.fillText('name: ' + this.name, 0, topText * 2);
+    if (this.selected) {
+      this.ctx.fillText('Selected', 0, topText * 2);
+    }
+    
     //this.ctx.fillText(this.playerId, 0, topText * 3);
     
     this.onUpdate?.();
