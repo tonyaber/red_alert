@@ -53,7 +53,7 @@ export class Application extends Control{
   singleCycle(res: Record<string, HTMLImageElement>){
     const settings = new SettingsPage(this.node, this.socket);
     settings.onPlay = (set) => { // передаем set параметры для настройки игры
-      const imageData = getImageData(res.map)
+      const imageData = getImageData(res.map4)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);
       const info = new InfoPage(this.node, this.socket);

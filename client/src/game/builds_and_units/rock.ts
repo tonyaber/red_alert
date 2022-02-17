@@ -26,7 +26,7 @@ export class Rock extends InteractiveObject{
     this.infoLayer = infoLayer; 
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
-    const tileNumber = Math.round(8 + Math.random() * (9 - 8));
+    const tileNumber = Math.round(8 + Math.random() * (10 - 8));
     
     const tile = new TileObject(tileNumber, this.position)
     tile.onUpdate = ()=>{
