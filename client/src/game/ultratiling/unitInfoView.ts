@@ -18,7 +18,7 @@ export class UnitInfoView extends CachedSprite{
     this.name = name;
     this.health = health;
     this.playerId = playerId;
-    this.animation = new UnitAnimation(this.position.clone(), 2);
+    this.animation = new UnitAnimation(new Vector(0, 0), 2);
   }
 
   update(): void {
@@ -27,7 +27,7 @@ export class UnitInfoView extends CachedSprite{
     this.ctx.fillStyle = "#f00";
     //this.ctx.fillRect(0,0, this.canvas.width, this.canvas.height);
     //this.ctx.drawImage(this.img, 0, 0, 30, 30);
-    this.animation.render(this.ctx, new Vector(30, 0), 100);
+    this.animation.render(this.ctx, new Vector(-15, -30), 100);
     this.ctx.fillRect(0, 0, this.health, 5);
     //this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
     if (this.selected) {
