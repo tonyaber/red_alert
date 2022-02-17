@@ -11,7 +11,7 @@ export class Truck extends AbstractUnitObject{
   money: number;
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super(objects, playerSides, objectId, type, state);
-    this.attackRadius = 1;
+    this.attackRadius = 5;
     this.money = 0;
     this.findRadius = 30;
     this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2000, objectId);

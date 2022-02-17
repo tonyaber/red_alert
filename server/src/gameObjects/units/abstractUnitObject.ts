@@ -2,7 +2,8 @@ import {IVector, Vector} from "../../../../common/vector";
 import {IGameObjectContent, IGameObjectData} from "../../dto";
 import {PlayerSide} from "../../playerSide";
 import {GameObject} from "../gameObject"
-import {tracePath} from "../../trace";
+import { tracePath } from "../../trace";
+import { makeCircleMap } from '../../makeCircleMap';
 
 import {TilesCollection} from "../../tileCollection";
 import {AbstractWeapon} from '../weapon/abstractWeapon';
@@ -140,7 +141,7 @@ export class AbstractUnitObject extends GameObject {
     });
   }
 
-  getTraceMap(target: IVector) {
+  getTraceMap(target: IVector):number[][] {
     const tilesArray = this.traceMap.arrayTiles
     const targetToTile = {x: Math.floor(target.x), y: Math.floor(target.y)}
     const positionToTile = {
@@ -178,7 +179,16 @@ export class AbstractUnitObject extends GameObject {
   }
 
   tracePathToTarget(target: IVector, action: string) {
+    const circle = makeCircleMap(this.attackRadius);
     const traceMap = this.getTraceMap(target);
+    circle.forEach((it, i)=> it.forEach((jt, j) => {
+      if (jt===1) {
+        const row = traceMap[Math.floor(i + target.y - circle.length / 2)]
+        if (row) {
+          row[Math.floor(j + target.x - circle.length / 2)] = Number.MAX_SAFE_INTEGER
+        }
+      }
+    }))
     const targetToTile = {x: Math.floor(target.x), y: Math.floor(target.y)}
     const positionToTile = {
       x: Math.floor(this.data.position.x),
@@ -192,6 +202,7 @@ export class AbstractUnitObject extends GameObject {
 
           this.path = [new Vector(targetToTile.x + 0.5, targetToTile.y + 0.5), ...path]
           if (action === 'moveToAttack') {
+            
             // this.path = path.filter(p => {
             //   if (p.x + this.attackRadius < target.x || p.y + this.attackRadius < target.y) {
             //     return p

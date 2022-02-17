@@ -127,8 +127,10 @@ export class BotCommander{
         // строим юнита
       } else if (random < 1) {
         const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
+        
         const countUnits = Object.values(this.objectData).filter(item => item.type === 'soldier' && item.content.playerId === this.playerController.playerId).length;
-        if (availableUnits.length&&countUnits<30) {
+   
+        if (availableUnits.length && countUnits < 30) {
           this.playerController.startBuilding(availableUnits[Math.floor(Math.random() * availableUnits.length)].object.name);
         }
       }
@@ -159,11 +161,11 @@ export class BotCommander{
         // Послать в атаку каждого юнита
         arrIdleSoldiers.forEach((item, ind) => {
           // Выбрать ближайшего врага
-  // const closestBuild = findClosestBuild(item.content.position, arrEnemy);
+          const closestBuild = findClosestBuild(item.content.position, arrEnemy);
           //const enemyBuild: IGameObjectData = arrEnemy.find(it => it.objectId === closestBuild.unit.objectId)
           // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
-          this.playerController.setAttackTarget(item.objectId, arrEnemy[0].objectId)
+          this.playerController.setAttackTarget(item.objectId, closestBuild.unit.objectId)
           // if (!this.attakedBuildings[enemyBuild.objectId]) {
           //   this.attakedBuildings[enemyBuild.objectId] = []
           // }
