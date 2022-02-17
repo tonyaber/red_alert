@@ -42,21 +42,26 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
       wrapperGames.node.innerHTML='';  
       msg.forEach(x => {
         console.log(x);        
-        const game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
+        const div_game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
+        const wrapper_games_user = new Control(div_game.node, 'div', style['game-users'],'');
+        x.users.forEach(u=>{
+          const games_user = new Control(wrapperGames.node, 'div', style['game_users_item'], '['+u.name+']');
+        })
+        const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Register');
+        btnRegister.node.onclick = () => {
+          console.log('registerGamePlayer-',x.id)
+          socket.registerGamePlayer(x.id)
+        }    
       });
     }
 
     const btnCreateMap = new Control(this.node, 'button', style['btn_map'], 'Create game');
     btnCreateMap.node.onclick = () => {
       this.onCreateGame();
-    }    
-    const btnRegister = new Control(this.node, 'button', style['btn_register'], 'Register');
-    btnRegister.node.onclick = () => {
-      socket.registerGamePlayer()
-    }
+    }        
     const btnSpectator = new Control(this.node, 'button', '', 'Spectator');
     btnSpectator.node.onclick = () => {
-      socket.registerSpectator();
+      socket.registerSpectator(0);
     }
     socket.onStartGame = (data: string) => {
       this.onStartGame(data);

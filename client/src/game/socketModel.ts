@@ -73,10 +73,10 @@ export class SocketModel implements IClientModel {
 
   //side
 
-  registerSpectator() {
+  registerSpectator(gameID:number) {
     this.client.sendMessage(
       "registerGamePlayer",
-      JSON.stringify({ playerType: "spectator" })
+      JSON.stringify({ gameID:gameID,playerType: "spectator" })
     );
   }
 
@@ -84,10 +84,10 @@ export class SocketModel implements IClientModel {
     this.client.sendMessage("auth", JSON.stringify({ user:session.user }));
   }
 
-  registerGamePlayer() {
+  registerGamePlayer(gameID:number) {
     this.client.sendMessage(
       "registerGamePlayer",
-      JSON.stringify({ playerType: "human" })
+      JSON.stringify({ gameID:gameID, playerType: "human" })
     );
   }
   

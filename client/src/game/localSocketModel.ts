@@ -123,9 +123,9 @@ export class LocalModel implements IClientModel
 
   cancelBuild(){
   }
-  registerGamePlayer() {
+  registerGamePlayer(gameID:number) {
   }
-  registerSpectator() {
+  registerSpectator(gameID:number) {
   
   }
 

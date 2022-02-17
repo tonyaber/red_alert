@@ -63,6 +63,7 @@ export interface IUpdateSidePanel{
 }
 
 export interface IRegisterGamePlayerRequest{
+ gameID:number;
  type: 'bot'|'human'|'spectator'
 }
 

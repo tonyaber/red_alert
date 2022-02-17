@@ -14,6 +14,7 @@ export interface IGameOptions {
   mapID: number;
   speed: number;
   info: string;
+  mapGame: number[][];
 }
 
 export class GameServer {

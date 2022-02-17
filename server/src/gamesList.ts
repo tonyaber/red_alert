@@ -19,6 +19,9 @@ export default class GamesList {
   getList():ISendItem[]{
     return this._list.map(x=>x.getItem());
   }
+  unregisterAll(id:string):void{
+    this._list.map(x=>x.unregister(id));
+  }
 }
 // const gamesList = new GamesList();
 

@@ -58,6 +58,7 @@ export class SettingsModel {
 
 export interface IGameOptions {
   map?: HTMLImageElement;
+  mapGame?:number[][];
   credits: number;
   mapID: number;
   speed: number;

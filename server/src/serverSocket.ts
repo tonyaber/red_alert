@@ -5,7 +5,7 @@ import {
   IServerRequestMessage,
   IServerResponseMessage,
 } from "./dto";
-// import { GameServer } from "./gameServer";
+import { GameServer } from "./gameServer";
 import { BatchConnection } from "./batchConnection";
 import GamesList from "./gamesList";
 
@@ -95,16 +95,12 @@ export class ServerSocket {
       httpServer: server,
     });
 
-    // const game = new GameServer();
-    const game = this.games.createGame({
-      credits: 9999,
-      mapID: 0,
-      speed: 3,
-      info: "fake setting",
-    }).game;
-    // this.games.createGame();
-    // this.games.createGame();
-
+    // const game0 = this.games.createGame({
+    //   credits: 9999,
+    //   mapID: 0,
+    //   speed: 3,
+    //   info: "fake setting",
+    // }).game;
     wsServer.on("request", (request: request) => {
       const _connection = request.accept(undefined, request.origin);
       const connection = new BatchConnection(_connection);
@@ -144,23 +140,25 @@ export class ServerSocket {
             this.sendGamesList();
           }
           if (msg.type === "createMap") {
-            game.createGame(JSON.parse(msg.content));
+            // console.log('-------->',msg)
+            // const conn = this.connections.get(msg.sessionID)
+            // const game=this.games.get(conn.game).game
 
-            const response: IServerResponseMessage = {
-              sessionID: msg.sessionID,
-              type: "privateResponse",
-              content: JSON.stringify("ok"),
-              requestId: msg.requestId,
-            };
-            connection.sendUTF(JSON.stringify(response));
+            // game.createGame(JSON.parse(msg.content));
+            // const response: IServerResponseMessage = {
+            //   sessionID: msg.sessionID,
+            //   type: "privateResponse",
+            //   content: JSON.stringify("ok"),
+            //   requestId: msg.requestId,
+            // };
+            // connection.sendUTF(JSON.stringify(response));
           }
           if (msg.type === "gameMove") {
-            // const playerId = this.connections.get(connection);
             const playerId = msg.sessionID;
-            // const gameId = 1 //msg.gameId;
-            //find game by id
+            const conn = this.connections.get(msg.sessionID)
+            const game=this.games.get(conn.game).game
+
             const result = game.handleMessage(msg, playerId);
-            //console.log("server gameMove", result);
             const response: IServerResponseMessage = {
               sessionID: msg.sessionID,
               type: "privateResponse",
@@ -169,13 +167,15 @@ export class ServerSocket {
             };
             connection.sendUTF(JSON.stringify(response));
           }
-          if (msg.type === "registerGamePlayer") {
-            // const playerId = this.connections.get(connection);
+          if (msg.type === "registerGamePlayer") {          
             const playerId = msg.sessionID;
-            //const gameId = 1//msg.gameId;
-            //find game by id
+            const conn = this.connections.get(msg.sessionID)
+            this.games.unregisterAll(playerId);  
+            conn.game = -1;
 
             const content = JSON.parse(msg.content);
+            conn.game = content.gameID;
+            const game=this.games.get(conn.game).game 
             game.registerPlayer(
               content.playerType,
               playerId,
@@ -204,6 +204,13 @@ export class ServerSocket {
             try {
               this.games.createGame(JSON.parse(msg.content));
               this.sendGamesList();
+              const response: IServerResponseMessage = {
+                sessionID: msg.sessionID,
+                type: "privateResponse",
+                content: JSON.stringify('ok'),
+                requestId: msg.requestId,
+              };
+              connection.sendUTF(JSON.stringify(response));
             } catch (e) {
               console.log("serverSocket:206:error", e);
             }

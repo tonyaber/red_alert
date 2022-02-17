@@ -19,7 +19,7 @@ export class IClientModel
   addUser: () => void;
    onMoveBullet: (data: { position: IVector, id: string })=> void;
 
-  registerGamePlayer: () => void;
+  registerGamePlayer: (gameID:number) => void;
 
   startBuild: (name: string, playerId: string) => Promise<string>;
 
@@ -36,7 +36,7 @@ export class IClientModel
   moveUnit: (id: string, position: Vector)=> Promise<string>;
 
   setAttackTarget:(id: string, targetId: string)=>Promise<string>;
-  registerSpectator: () => void;
+  registerSpectator: (gameID:number) => void;
   createMap: (map: number[][]) => Promise<string>;
   chatSend: (msg?: IChatMsg)=>Promise<string>;
   createGame: (msg?: IGameOptions)=>Promise<string>;
