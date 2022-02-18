@@ -1,16 +1,16 @@
-import Control from '../../../common/control';
-import { IClientModel } from '../game/IClientModel';
-import mapsData from '../game/maps.json';
-import style from './settingsPage.css'
+import Control from "../../../common/control";
+import { IClientModel } from "../game/IClientModel";
+import mapsData from "../game/maps.json";
+import style from "./settingsPage.css";
 
-export interface IMapsData{
-  size: string,
-  players: number,
-  name: string,
-  src: string
+export interface IMapsData {
+  size: string;
+  players: number;
+  name: string;
+  src: string;
 }
 
-const mapSizes = ['64x64', '64x96', '96x96', '128x96', '128x128']
+const mapSizes = ["64x64", "64x96", "96x96", "128x96", "128x128"];
 /*
 const defaultSettings: IGameOptions = {
   map: new Image(),//,defaultMap,
@@ -56,9 +56,13 @@ export class SettingsModel {
 
 */
 
-export interface IGameOptions  {
-  map: HTMLImageElement;
+export interface IGameOptions {
+  map?: HTMLImageElement;
+  mapGame?:number[][];
   credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
 }
 
 export class Settings extends Control {
@@ -72,12 +76,13 @@ export class Settings extends Control {
   // onStartGame: (players: string) => void;
   // onAuth: (name:string) => void;
   nameUser: string;
-  onCreate:(settings:IGameOptions) => void;
+  onCreate: (settings: IGameOptions) => void;
 
-  constructor(parentNode: HTMLElement){//, initialSettings: IGameOptions/*, maps: IMapsData[]*/) {
-    
-    super(parentNode, 'div', style["main_wrapper"]);// TODO сделать анимацию страницы //{default: style["main_wrapper"], hidden: style["hide"]});    
-   // this.socket = socket;
+  constructor(parentNode: HTMLElement) {
+    //, initialSettings: IGameOptions/*, maps: IMapsData[]*/) {
+
+    super(parentNode, "div", style["main_wrapper"]); // TODO сделать анимацию страницы //{default: style["main_wrapper"], hidden: style["hide"]});
+    // this.socket = socket;
     // socket.onAuth = (name) => {
     //   //this.onAuth(name);
     //   this.nameUser = name;
@@ -86,12 +91,11 @@ export class Settings extends Control {
     // socket.onStartGame = (data: string) => {
     //   this.onStartGame(data);
     // }
-    
 
-    this.credit = 10000;/*initialSettings.credits;*/
-     this.loadMapsData().then(result => {
+    this.credit = 10000; /*initialSettings.credits;*/
+    this.loadMapsData().then((result) => {
       this.map = this.maps[0];
-       this.render();
+      this.render();
     });
     // this.map = {
     //   size: '64x64',
@@ -101,115 +105,215 @@ export class Settings extends Control {
     // }
 
     // this.render();
-
-
   }
-  render(){
-    const settingsWrapper = new Control(this.node, 'div', style['settings_wrapper']);
+  render() {
+    const settingsWrapper = new Control(
+      this.node,
+      "div",
+      style["settings_wrapper"]
+    );
 
-    const basicSettingsWrapper = new Control(settingsWrapper.node, 'div', style['basic_settings_wrapper']);
-    const moneyWrapper = new Control(basicSettingsWrapper.node, 'div', style["item_wrapper"]);
-    const moneyLabel = new Control<HTMLLabelElement>(moneyWrapper.node, 'label', '', 'Кредит')
-    const moneyInput = new Control<HTMLInputElement>(moneyWrapper.node, 'input', style['input_settings']);
-    moneyInput.node.type = 'text';
-    moneyInput.node.value = '10000'
+    const basicSettingsWrapper = new Control(
+      settingsWrapper.node,
+      "div",
+      style["basic_settings_wrapper"]
+    );
+    const moneyWrapper = new Control(
+      basicSettingsWrapper.node,
+      "div",
+      style["item_wrapper"]
+    );
+    const moneyLabel = new Control<HTMLLabelElement>(
+      moneyWrapper.node,
+      "label",
+      "",
+      "Кредит"
+    );
+    const moneyInput = new Control<HTMLInputElement>(
+      moneyWrapper.node,
+      "input",
+      style["input_settings"]
+    );
+    moneyInput.node.type = "text";
+    moneyInput.node.value = "10000";
     moneyInput.node.onchange = () => {
       this.credit = Number(moneyInput.node.value);
-    }
+    };
 
-    const speedWrapper = new Control(basicSettingsWrapper.node, 'div', style["item_wrapper"]);
-    const speedLabel = new Control<HTMLLabelElement>(speedWrapper.node, 'label', '', 'Скорость')
-    const speedInput = new Control<HTMLInputElement>(speedWrapper.node, 'select', style['input_settings'], '7');
+    const speedWrapper = new Control(
+      basicSettingsWrapper.node,
+      "div",
+      style["item_wrapper"]
+    );
+    const speedLabel = new Control<HTMLLabelElement>(
+      speedWrapper.node,
+      "label",
+      "",
+      "Скорость"
+    );
+    const speedInput = new Control<HTMLInputElement>(
+      speedWrapper.node,
+      "select",
+      style["input_settings"],
+      "7"
+    );
     for (let i = 1; i <= 7; i++) {
-      const speedValue = new Control<HTMLOptionElement>(speedInput.node, 'option', style[''], `${i}`);
+      const speedValue = new Control<HTMLOptionElement>(
+        speedInput.node,
+        "option",
+        style[""],
+        `${i}`
+      );
       speedValue.node.value = i.toString();
       speedValue.node.onclick = () => {
         //
-      }
+      };
     }
 
-    const selectedMapWrapper = new Control(basicSettingsWrapper.node, 'div', style["item_wrapper"]);
-    const selectedMapLabel = new Control<HTMLLabelElement>(selectedMapWrapper.node, 'label', '', 'Выбранная карта:')
-    const selectedMapInput = new Control<HTMLInputElement>(selectedMapWrapper.node, 'input', style['input_settings']);
-    selectedMapInput.node.type = 'text';
-    selectedMapInput.node.value = this.map.name + '  '+ this.map.size;
+    const selectedMapWrapper = new Control(
+      basicSettingsWrapper.node,
+      "div",
+      style["item_wrapper"]
+    );
+    const selectedMapLabel = new Control<HTMLLabelElement>(
+      selectedMapWrapper.node,
+      "label",
+      "",
+      "Выбранная карта:"
+    );
+    const selectedMapInput = new Control<HTMLInputElement>(
+      selectedMapWrapper.node,
+      "input",
+      style["input_settings"]
+    );
+    selectedMapInput.node.type = "text";
+    selectedMapInput.node.value = this.map.name + "  " + this.map.size;
     selectedMapInput.node.readOnly = true;
 
-    const playersWrapper = new Control(settingsWrapper.node, 'div', style["players_wrapper"]);
-    const players = new Control<HTMLLabelElement>(playersWrapper.node, 'textarea', style['players_area'], 'Игроки')
+    const playersWrapper = new Control(
+      settingsWrapper.node,
+      "div",
+      style["players_wrapper"]
+    );
+    const players = new Control<HTMLLabelElement>(
+      playersWrapper.node,
+      "textarea",
+      style["players_area"],
+      "Игроки"
+    );
 
-    const infoWrapper = new Control(settingsWrapper.node, 'div', style["info_wrapper"]);
-    const info = new Control<HTMLLabelElement>(infoWrapper.node, 'textarea', style['info_area'], 'Информация')
+    const infoWrapper = new Control(
+      settingsWrapper.node,
+      "div",
+      style["info_wrapper"]
+    );
+    const info = new Control<HTMLInputElement>(
+      infoWrapper.node,
+      "textarea",
+      style["info_area"],
+      "Информация"
+    );
 
-
-    const mapWrapper = new Control(settingsWrapper.node, 'div', style["map_wrapper"]);
-    const selectWrapper = new Control(mapWrapper.node, 'div', style["map_select_wrapper"], 'Choose map');
+    const mapWrapper = new Control(
+      settingsWrapper.node,
+      "div",
+      style["map_wrapper"]
+    );
+    const selectWrapper = new Control(
+      mapWrapper.node,
+      "div",
+      style["map_select_wrapper"],
+      "Choose map"
+    );
 
     // const selectLabel = new Control<HTMLLabelElement>(selectWrapper.node, 'label', style["map_label"], 'Choose map')
-    const mapSlider = new Control(mapWrapper.node, 'div', style["map_slider"]);
-   
+    const mapSlider = new Control(mapWrapper.node, "div", style["map_slider"]);
+
     //const imageWrapper = new AnimatedControl(mapSlider.node, 'div', {default:style['image_map'], hidden:style['hide_map']});
-    const imageWrapper = new Control(mapSlider.node, 'div', style['image_map']);
-    const imageMap = new Image(200, 200);  
-    
+    const imageWrapper = new Control(mapSlider.node, "div", style["image_map"]);
+    const imageMap = new Image(200, 200);
+
     imageWrapper.node.append(imageMap);
 
     this.setImageMap(imageMap);
-    const nameMap = new Control(imageWrapper.node, 'div', style["name_map"], `${this.map.name}`)
-    const prevButton = new Control(mapSlider.node, 'button', style["prev_slider_button"], `&#10094;`);
+    const nameMap = new Control(
+      imageWrapper.node,
+      "div",
+      style["name_map"],
+      `${this.map.name}`
+    );
+    const prevButton = new Control(
+      mapSlider.node,
+      "button",
+      style["prev_slider_button"],
+      `&#10094;`
+    );
     prevButton.node.onclick = () => {
       // imageWrapper.node.classList.add(style['hide_map']);
       // imageWrapper.node.ontransitionend = () => {
       //   imageWrapper.node.classList.remove(style['hide_map']);
-        let index = this.maps.indexOf(this.map);
-        if (index == 0) {
-          index = this.maps.length-1;
-        } else index--;      
-        this.setImageMap(imageMap, index);
-        selectedMapInput.node.value = this.map.name + '  '+ this.map.size;
-      // }    
-    }
-    const nextButton = new Control(mapSlider.node, 'button', style["next_slider_button"], `&#10095;`);
-    nextButton.node.onclick = () => { 
+      let index = this.maps.indexOf(this.map);
+      if (index == 0) {
+        index = this.maps.length - 1;
+      } else index--;
+      this.setImageMap(imageMap, index);
+      selectedMapInput.node.value = this.map.name + "  " + this.map.size;
+      // }
+    };
+    const nextButton = new Control(
+      mapSlider.node,
+      "button",
+      style["next_slider_button"],
+      `&#10095;`
+    );
+    nextButton.node.onclick = () => {
       // imageWrapper.node.classList.add(style['hide_map']);
       // imageWrapper.node.ontransitionend = () => {
-        
-        let index = this.maps.indexOf(this.map);
-        if(index == this.maps.length-1) index = 0; else index++;      
-        this.setImageMap(imageMap, index);
-        selectedMapInput.node.value = this.map.name + '  '+ this.map.size;
+
+      let index = this.maps.indexOf(this.map);
+      if (index == this.maps.length - 1) index = 0;
+      else index++;
+      this.setImageMap(imageMap, index);
+      selectedMapInput.node.value = this.map.name + "  " + this.map.size;
       //   imageWrapper.node.classList.remove(style['hide_map']);
-      // } 
-    }
-    const buttonsWrapper = new Control(settingsWrapper.node, 'div', style["buttons_wrapper"]);
-    const backButton = new Control(buttonsWrapper.node, 'button', '', 'back');
+      // }
+    };
+    const buttonsWrapper = new Control(
+      settingsWrapper.node,
+      "div",
+      style["buttons_wrapper"]
+    );
+    const backButton = new Control(buttonsWrapper.node, "button", "", "back");
     backButton.node.onclick = () => {
       this.onBack();
-    }
+    };
 
-    const playButton = new Control(buttonsWrapper.node, 'button', '', 'play');
+    const playButton = new Control(buttonsWrapper.node, "button", "", "play");
     playButton.node.onclick = () => {
-      const settings:IGameOptions = {
-        map: imageMap,//this.mapImage,
-        credits: this.credit
+      //TODO сформироать IGameOptions
+      const settings: IGameOptions = {
+        map: imageMap, //this.mapImage,
+        credits: this.credit,
+        mapID: this.maps.indexOf(this.map),
+        speed: Number(speedInput.node.value),
+        info: info.node.value,
       };
       // socket.onAuth = (name) => {
       //   this.onAuth(name);
       // }
-     //socket.addUser();
+      //socket.addUser();
       this.onCreate(settings);
-    }
-
+    };
   }
 
-  public async loadMapsData(){
-    const res = await fetch(mapsData); 
+  public async loadMapsData() {
+    const res = await fetch(mapsData);
     this.maps = await res.json();
     return this.maps;
   }
 
-  setImageMap(imageMap: HTMLImageElement, num:number = 0){
-    imageMap.src = this.maps[num].src; 
+  setImageMap(imageMap: HTMLImageElement, num: number = 0) {
+    imageMap.src = this.maps[num].src;
     imageMap.alt = `Карта ${this.maps[num].name} размером ${this.maps[num].size}`;
     this.map = this.maps[num];
     //this.mapImage = imageMap;

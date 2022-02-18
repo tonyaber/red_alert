@@ -25,7 +25,7 @@ export class BatchConnection implements IConnection{
     this.batch.push(message);
     if (isEmpty){
       setTimeout(() => {
-       // console.log('BATCH')
+        // console.log('BATCH')
         this._send(JSON.stringify(this.batch));
         this.batch = [];
       }, 0);
