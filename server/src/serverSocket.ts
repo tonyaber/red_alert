@@ -143,7 +143,6 @@ export class ServerSocket {
             // console.log('-------->',msg)
             // const conn = this.connections.get(msg.sessionID)
             // const game=this.games.get(conn.game).game
-
             // game.createGame(JSON.parse(msg.content));
             // const response: IServerResponseMessage = {
             //   sessionID: msg.sessionID,
@@ -155,8 +154,8 @@ export class ServerSocket {
           }
           if (msg.type === "gameMove") {
             const playerId = msg.sessionID;
-            const conn = this.connections.get(msg.sessionID)
-            const game=this.games.get(conn.game).game
+            const conn = this.connections.get(msg.sessionID);
+            const game = this.games.get(conn.game).game;
 
             const result = game.handleMessage(msg, playerId);
             const response: IServerResponseMessage = {
@@ -167,20 +166,23 @@ export class ServerSocket {
             };
             connection.sendUTF(JSON.stringify(response));
           }
-          if (msg.type === "registerGamePlayer") {          
+          if (msg.type === "registerGamePlayer") {
             const playerId = msg.sessionID;
-            const conn = this.connections.get(msg.sessionID)
-            this.games.unregisterAll(playerId);  
+            const conn = this.connections.get(msg.sessionID);
+            this.games.unregisterAll(playerId);
             conn.game = -1;
 
             const content = JSON.parse(msg.content);
             conn.game = content.gameID;
-            const game=this.games.get(conn.game).game 
-            game.registerPlayer(
-              content.playerType,
-              playerId,
-              this.connections.get(playerId)
-            );
+            if(conn.game>=0){
+            // console.log("RGP", conn.game, msg.content);
+            const game = this.games.get(conn.game).game;
+              game.registerPlayer(
+                content.playerType,
+                playerId,
+                this.connections.get(playerId)
+              )
+            }
             this.sendGamesList();
           }
           if (msg.type === "chatSend") {
@@ -200,14 +202,13 @@ export class ServerSocket {
             this.sendUsersList();
           }
           if (msg.type === "createGame") {
-            console.log("createGame", msg);
             try {
               this.games.createGame(JSON.parse(msg.content));
               this.sendGamesList();
               const response: IServerResponseMessage = {
                 sessionID: msg.sessionID,
                 type: "privateResponse",
-                content: JSON.stringify('ok'),
+                content: JSON.stringify("ok"),
                 requestId: msg.requestId,
               };
               connection.sendUTF(JSON.stringify(response));

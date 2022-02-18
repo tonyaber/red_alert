@@ -79,6 +79,7 @@ export interface IChatMsg{
 export interface IUserItem{
   name: string;
   id: string;
+  type: string;
 }
 
 export interface ISendItemGame {

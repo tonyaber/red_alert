@@ -41,17 +41,28 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     socket.onGamesList = (msg:ISendItemGame[]):void => {      
       wrapperGames.node.innerHTML='';  
       msg.forEach(x => {
-        console.log(x);        
         const div_game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
         const wrapper_games_user = new Control(div_game.node, 'div', style['game-users'],'');
+        let involved = false
         x.users.forEach(u=>{
-          const games_user = new Control(wrapperGames.node, 'div', style['game_users_item'], '['+u.name+']');
+          involved = involved || u.id===session.id;
+          const games_user = new Control(wrapperGames.node, 'div', style['game_users_item'], '['+u.type+":"+u.name+']');
         })
-        const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Register');
-        btnRegister.node.onclick = () => {
-          console.log('registerGamePlayer-',x.id)
-          socket.registerGamePlayer(x.id)
-        }    
+        if(!involved){
+          const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Register');
+          btnRegister.node.onclick = () => {
+            socket.registerGamePlayer(x.id)
+          }  
+          const btnSpectator = new Control(div_game.node, 'button', '', 'Spectator');
+          btnSpectator.node.onclick = () => {
+            socket.registerSpectator(x.id);
+          }  
+        } else {           
+          const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Leave');
+          btnRegister.node.onclick = () => {
+            socket.registerGamePlayer(-1)
+          }  
+        }        
       });
     }
 
@@ -59,10 +70,7 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     btnCreateMap.node.onclick = () => {
       this.onCreateGame();
     }        
-    const btnSpectator = new Control(this.node, 'button', '', 'Spectator');
-    btnSpectator.node.onclick = () => {
-      socket.registerSpectator(0);
-    }
+   
     socket.onStartGame = (data: string) => {
       this.onStartGame(data);
     }
