@@ -92,6 +92,7 @@ export class GameMainRender{
     this.camera.tick(delta);
     this.tilingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
     this.boundingLayer.updateCamera(this.camera.position, this.camera.getTileSize());
+    this.explosions.forEach(item => item.tick(delta))
   }
   getBuildMap(){
     return this.buildsMap;
@@ -110,7 +111,7 @@ export class GameMainRender{
       -mod(this.camera.position.y, this.camera.getTileSize())*1 - this.camera.getTileSize() * 4
     ); 
     this.debugInfoView.render(ctx);
-    //this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
+    
     
     this.cursorStatus.render(ctx,this.camera.position, this.camera.getTileSize());
   }
@@ -160,14 +161,15 @@ export class GameMainRender{
     // this.bullets[data.id].destroy();
     // delete this.bullets[data.id]
     // this.interactiveList.list.filter(it => it.id != data.id);
-    const pointPosition =  Vector.fromIVector(data.position)
-    // const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
+   
+    const pointPosition = Vector.fromIVector(data.position);
+    const explosion = new Explosion(this.boundingLayer,this.res,this.camera,pointPosition.scale(this.camera.getTileSize()));
     
-    // explosion.onDestroyed = () => {
-    //   this.explosions = this.explosions.filter(it => it != explosion);
-    //   this.interactiveList.list = this.interactiveList.list.filter(it => it !== explosion);
-    // }
-    // this.explosions.push(explosion);
+    explosion.onDestroyed = () => {
+      this.explosions = this.explosions.filter(it => it != explosion);
+      explosion.destroy();
+    }
+    this.explosions.push(explosion);
 
   }
   addBullet(data: { position: IVector, id: string }) {  
@@ -188,8 +190,6 @@ export class GameMainRender{
 
   deleteObject(data: IGameObjectData) {
     const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);   
-    interactiveObject.destroy();
-    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
     this.changeBuildsMap(interactiveObject, data, 0);   
     interactiveObject.destroy();
     
