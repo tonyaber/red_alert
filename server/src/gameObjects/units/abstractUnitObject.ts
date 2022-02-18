@@ -8,7 +8,8 @@ import { makeCircleMap } from '../../makeCircleMap';
 import {TilesCollection} from "../../tileCollection";
 import {AbstractWeapon} from '../weapon/abstractWeapon';
 import {AbstractBullet} from "../bullet/abstractBullet";
-import { findClosestBuild, findClosestUnit } from "../../distance";
+import { findClosestBuild, findClosestUnit, getTilingDistance } from "../../distance";
+import { AbstractBuildObject } from "../builds/abstractBuildObject";
 
 export class AbstractUnitObject extends GameObject {
   data: IGameObjectContent = {
@@ -24,7 +25,7 @@ export class AbstractUnitObject extends GameObject {
   objectId: string;
 
   objects: Record<string, GameObject>;
-  attackRadius: number = 2;
+  attackRadius: number = 8;
   findRadius: number = 10;
   subType: string = 'unit';
   type: string;
@@ -71,20 +72,45 @@ export class AbstractUnitObject extends GameObject {
     if ((this.data.action === 'move' || this.data.action === 'moveToAttack') && this.target) {
       if (this.target && Math.abs(this.target.x - this.data.position.x) < 0.2 && Math.abs(this.target.y - this.data.position.y) < 0.2) {
         const step = this.path.pop();
+        if (this.data.action === 'moveToAttack') {
+          if (this.objects[this.targetId] instanceof AbstractBuildObject) {
+            const map = this.objects[this.targetId].data.buildMatrix;
+            const {distance, tile} = getTilingDistance(this.data.position, this.objects[this.targetId].data.position, map);
+           
+            if (distance < this.attackRadius) {
+              this.targetHit = tile;
+              this.data.action = 'attack';
+              return;
+            }
+          } else {
+            const dist = Vector.fromIVector(this.objects[this.targetId].data.position).sub(this.data.position).abs();
+            if (dist < this.attackRadius) {
+              this.targetHit = this.objects[this.targetId].data.position;
+              this.data.action = 'attack';
+              return;
+            }
+          }
+
+
+
+          
+        }
+
         if (!step) {
           if (Math.abs(this.data.position.x - this.target.x) < 0.3
             && Math.abs(this.data.position.y - this.target.y) < 0.3) {
             this.target = null
            // console.log(tilesCollection.arrayTiles)
           }
-          if (this.data.action === 'moveToAttack') {
-            this.data.action = 'attack';
-          } else {
-            this.data.action = 'idle';
-          }
+          // if (this.data.action === 'moveToAttack') {
+          //   this.data.action = 'attack';
+          // } else {
+          //   this.data.action = 'idle';
+          // }
           return;
         }else {
           this.target = new Vector(step.x, step.y);
+          
         }
         if (this.traceMap.arrayTiles[Math.floor(step.y)][Math.floor(step.x)] === -1) {
           this.target = null;
