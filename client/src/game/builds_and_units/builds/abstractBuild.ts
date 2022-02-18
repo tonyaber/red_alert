@@ -46,13 +46,13 @@ export class AbstractBuild extends InteractiveObject{
         return;
       }     
       const tile = new TileObject(1, tilePos);
-      tile.onMouseEnter = ()=>{
-        this.hovBalance+=1;
-      }
+      // tile.onMouseEnter = ()=>{
+      //   this.hovBalance+=1;
+      // }
 
-      tile.onMouseLeave = ()=>{
-        this.hovBalance -= 1;
-      }
+      // tile.onMouseLeave = ()=>{
+      //   this.hovBalance -= 1;
+      // }
 
       tile.onUpdate = ()=>{
         layer.updateCacheTile(layer.camera, tilePos.x, tilePos.y, tile.tileType);
@@ -133,21 +133,23 @@ export class AbstractBuild extends InteractiveObject{
   }
 
   processMove(cursor:Vector){
-    let lastBalance = this.hovBalance;
-    this.tiles.forEach(it=>it.processMove(cursor));
-    if (lastBalance !==this.hovBalance){
-      if (this.hovBalance == 0){
-        this.tiles.forEach(it1=>it1.tileType = 1);
-      } else if (this.hovBalance == 1){
-        this.tiles.forEach(it1=>it1.tileType = 0);
-      }
-    }
+    // let lastBalance = this.hovBalance;
+    // this.tiles.forEach(it=>it.processMove(cursor));
+    // if (lastBalance !==this.hovBalance){
+    //   if (this.hovBalance == 0){
+    //     this.tiles.forEach(it1=>it1.tileType = 1);
+    //   } else if (this.hovBalance == 1){
+    //     this.tiles.forEach(it1=>it1.tileType = 0);
+    //   }
+    // }
   }
 
   inShape(tile: Vector, cursor: Vector): boolean {
     if (this.tiles.find(it => it.inShape(tile))) {
+      this.tiles.forEach(it1=>it1.tileType = 0);
       return true;
     }
+    this.tiles.forEach(it1=>it1.tileType = 1);
     return false;
   }
   
@@ -162,8 +164,10 @@ export class AbstractBuild extends InteractiveObject{
   }
 
   destroy(): void {
+    this.tiles.forEach(it1=>it1.tileType = 1);
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
     this.infoLayer.deleteObject(this.info);
+    super.destroy();
   }
 
   update(){

@@ -60,6 +60,7 @@ export class Gold extends InteractiveObject{
   update(){
   }
   destroy() { 
-    this.layer.updateCacheTile(this.layer.camera,  this.position.x,  this.position.y, 1);
+    this.layer.updateCacheTile(this.layer.camera, this.position.x, this.position.y, 1);  
+    super.destroy()
   }
 }
