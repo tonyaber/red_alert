@@ -118,9 +118,9 @@ export class GameCursorStatus{
     if (this.hovered[0]){
        label = this.hovered[0].name;
     }
-    ctx.fillText( label , this.pixelPosition.x, this.pixelPosition.y -10);
+    ctx.fillText( label , this.pixelPosition.x, this.pixelPosition.y -10); // example: ground0
 
-    ctx.fillText( this.getAction() , this.pixelPosition.x, this.pixelPosition.y -20);
+    ctx.fillText( this.getAction() , this.pixelPosition.x, this.pixelPosition.y -20); // example: delect
     //this.drawTile(ctx, this.tilePosition, new Vector(0,0), "#0ff7", 0);
   }
 

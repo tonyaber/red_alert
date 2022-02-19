@@ -13,7 +13,9 @@ export class Game extends Control{
   onPause: () => void;
   constructor(parentNode: HTMLElement, socket: IClientModel, id: string, sidePanelData: string,res:Record<string, HTMLImageElement>) {
     super(parentNode, 'div', red['global_main']);
+    
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
+    console.log('sidePanelInfo', sidePanelInfo.players)
     if (socket instanceof SocketModel && sidePanelInfo.type === 'spectator') {
       sidePanelInfo.players.forEach(item => {
         if (item != id) {

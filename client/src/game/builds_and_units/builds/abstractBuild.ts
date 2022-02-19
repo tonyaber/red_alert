@@ -6,6 +6,7 @@ import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
 import { InteractiveObject } from '../interactiveObject';
+import { LocalModel } from '../../../game/localSocketModel';
 
 export class AbstractBuild extends InteractiveObject{
   tiles: Array<TileObject> =[];
@@ -22,8 +23,11 @@ export class AbstractBuild extends InteractiveObject{
   info: BuildingInfoView;
   infoLayer: any;
   tileMap: number[][];
+  color: string;
+
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
+
     this.id = data.objectId;
     this.name = data.type;
     this.infoLayer = infoLayer;
@@ -36,7 +40,11 @@ export class AbstractBuild extends InteractiveObject{
     const tileMap = data.content.buildMatrix;
     const pos =  Vector.fromIVector(data.content.position);
 
-    this.info = new BuildingInfoView(pos, res["barrack"], this.name, this.health, this.playerId, this.primary);
+    const colors = ['#f00', '#ff0', '#00f', '#0f0', '#ffa500'];
+    this.color = this.playerId.includes('bot') ? colors[Math.floor(Math.random()*5)] : '#999';
+    console.log(data.content.playerId + ' this.color: ', this.color)
+
+    this.info = new BuildingInfoView(pos, res["barrack"], this.name, this.health, this.playerId, this.primary, this.color); //todo mari передавать сюда цвет игрока
     this.info.update();
     this.infoLayer.addObject(this.info);
     

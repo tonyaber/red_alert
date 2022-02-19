@@ -29,6 +29,7 @@ export class Application extends Control{
     this.mainCycle();
   }
 
+
   mainCycle() {
     resourceLoader.load(resources).then(res => {
       
@@ -36,6 +37,7 @@ export class Application extends Control{
       startPage.onSinglePlay = () => {
         startPage.destroy();
         this.socket = new LocalModel();
+        console.log('this.socket', this.socket )
         //this.gameCycle();
         this.singleCycle(res.textures);
       }

@@ -33,10 +33,11 @@ export class LocalModel implements IClientModel
 
   addUser() {
     this.player = 'user' + Math.floor(Math.random() * 100);
-    const bots: IRegisteredPlayerInfo[] = new Array(1).fill(null).map(item => {
+    const bots: IRegisteredPlayerInfo[] = new Array(1).fill(null).map((item, index) => {
       return {
         id: 'bot' + Math.floor(Math.random() * 100),
-        type: 'bot'
+        type: 'bot',
+        colorIndex: index + 2
       }
     });
     this.onAuth(this.player);
@@ -48,7 +49,8 @@ export class LocalModel implements IClientModel
     const gamePlayersInfo = playersInfo.slice();
     gamePlayersInfo.push({
       id: this.player,
-      type: 'human'
+      type: 'human',
+      colorIndex: 1
     });
     const game = new GameModel(gamePlayersInfo,  {map: this.map, builds: INITIAL_DATA});
     const myPlayerController: PlayerController = new PlayerController(this.player, game);

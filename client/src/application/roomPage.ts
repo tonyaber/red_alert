@@ -38,7 +38,7 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     const btnSendMsg = new Control(wrapperChat.node, 'button', style['btn_send'], 'Send');
 
     const wrapperGames = new Control(lobby.node, 'div', style['games_wrapper'], 'Games');
-    socket.onGamesList = (msg:ISendItemGame[]):void => {      
+    socket.onGamesList = (msg:ISendItemGame[]):void => {  // сообщение при обновлении сервера 
       wrapperGames.node.innerHTML='';  
       msg.forEach(x => {
         const div_game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
@@ -47,6 +47,7 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
         x.users.forEach(u=>{
           involved = involved || u.id===session.id;
           const games_user = new Control(wrapperGames.node, 'div', style['game_users_item'], '['+u.type+":"+u.name+']');
+          console.log('user: ', u)
         })
         if(!involved){
           const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Register');
