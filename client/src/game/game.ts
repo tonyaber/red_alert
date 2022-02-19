@@ -50,6 +50,7 @@ export class Game extends Control{
       canvas.updateObject(data)
     }
     socket.onAddObject = (data) => {
+      
       canvas.addObject(data);
     }
 

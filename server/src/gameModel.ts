@@ -148,6 +148,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId: string, objectName: string, position: IVector) {
+   // console.log(position, playerId)
     if (this.checkBuilding(position, playerId) || !BUILDS.includes(objectName)) {
       const state = { position, playerId }
       const gameObjectConstructor = gameObjects[objectName];

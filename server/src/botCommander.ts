@@ -165,7 +165,6 @@ export class BotCommander{
           //const enemyBuild: IGameObjectData = arrEnemy.find(it => it.objectId === closestBuild.unit.objectId)
           // послать солдата item в атаку на ближайшее к нему здание enemyBuild
           // console.log(`послать солдата ${item.objectId} в атаку на ближайшее к нему здание ${closestBuild} ${enemy.objectId}`)
-          
           this.playerController.setAttackTarget(item.objectId, closestBuild.unit.objectId)
           // if (!this.attakedBuildings[enemyBuild.objectId]) {
           //   this.attakedBuildings[enemyBuild.objectId] = []
