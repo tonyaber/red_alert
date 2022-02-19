@@ -2,7 +2,8 @@
   height: 100vh;
   width: 100%;
   margin: 0 auto;
-  background-color: black;
+  background: black url('../assets/img/startpage/button-single_.png');
+  /*background: black url('../assets/img/startpage/single-player-button.png') no-repeat 50% 30%;*/
   position: relative;
 }
 

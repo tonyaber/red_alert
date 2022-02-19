@@ -1,5 +1,5 @@
 class SoundManagerClass{
-  private baseURL = `./public/sounds/`;
+  private baseURL = `./src/assets/sounds/`;
   private cache = new Map<string, Blob>();
   private soundList:Array<string> = [
     'yes-sir',
@@ -11,7 +11,7 @@ class SoundManagerClass{
     // 'command-received',
 
   ];
-  volume: number = 0.2;
+  volume: number = 0.5;
   constructor(){
 
   }
@@ -35,15 +35,12 @@ class SoundManagerClass{
 
   soldierAttack(){
     this.playSound('attacking'); 
-
   }
 
   soldierReady(){
-
   }
 
   tankReady(){
-
   }
 
   tankMove(){
@@ -51,12 +48,7 @@ class SoundManagerClass{
   }
 
   tankAttack(){
-
   }
-
-  
-
-
 
   playSound(name:string){
     const cached = this.cache.get(name);
