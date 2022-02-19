@@ -36,7 +36,6 @@ export class Application extends Control{
       startPage.onSinglePlay = () => {
         startPage.destroy();
         this.socket = new LocalModel();
-        //this.gameCycle();
         this.singleCycle(res.textures);
       }
       startPage.onMultiPlay = () => {
@@ -53,6 +52,9 @@ export class Application extends Control{
   singleCycle(res: Record<string, HTMLImageElement>){
     const settings = new SettingsPage(this.node, this.socket);
     settings.onPlay = (set) => { // передаем set параметры для настройки игры
+      res.map = set.map;
+      console.log(res.map);
+      console.log(set.map)
       const imageData = getImageData(res.map)
       const mapGame = getMapFromImageData(imageData);
       this.socket.createMap(mapGame);

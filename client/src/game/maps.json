@@ -3,24 +3,28 @@
     "size": "100x100",
     "players": 4,
     "name": "Green fields",
-    "src": "./src/assets/png/map5.png"
+    "src": "./src/assets/png/map.png",
+    "view": "./src/assets/png/map-view.png"
   },
   {
     "size": "100x100",
     "players": 4,
     "name": "Green fields",
-    "src": "./src/assets/png/map1.png"
+    "src": "./src/assets/png/map1.png",
+    "view": ""
   },
   {
     "size": "100x100",
     "players": 6,
     "name": "Green fields, part 2",
-    "src": "./src/assets/png/map2.png"
+    "src": "./src/assets/png/map2.png",
+    "view": ""
   },
   {
     "size": "100x100",
     "players": 4,
     "name": "Cold winter",
-    "src": "./src/assets/png/map3.png"
+    "src": "./src/assets/png/map3.png",
+    "view": ""
   }
 ]

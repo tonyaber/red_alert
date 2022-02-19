@@ -8,7 +8,8 @@ export interface IMapsData{
   size: string,
   players: number,
   name: string,
-  src: string
+  src: string,
+  view: string
 }
 /*
 const defaultSettings: IGameOptions = {
@@ -66,10 +67,10 @@ export class SettingsPage extends Control {
   maps: IMapsData[];
   map: IMapsData;
   gameOptions: IGameOptions = {
-  map: new Image(200, 200),
-  credits: 10000,
-  speed: 7,
-  bots: 5
+    map: new Image(100, 100),
+    credits: 10000,
+    speed: 7,
+    bots: 5
   }; 
   onStartGame: (players: string) => void;
   onAuth: (name:string) => void;
@@ -155,11 +156,12 @@ export class SettingsPage extends Control {
    
     //const imageWrapper = new AnimatedControl(mapSlider.node, 'div', {default:style['image_map'], hidden:style['hide_map']});
     const imageWrapper = new Control(mapSlider.node, 'div', style['image_map']);
-    const imageMap = new Image(200, 200);  
-    
-    imageWrapper.node.append(imageMap);
+    const imageView = new Image(200, 200);  
+    const imageMap = new Image(100, 100);  
 
-    this.setImageMap(imageMap);
+    imageWrapper.node.append(imageView);
+
+    this.setImageMap(imageMap, imageView);
     const nameMap = new Control(imageWrapper.node, 'div', style["name_map"], `${this.map.name}`)
     const prevButton = new Control(mapSlider.node, 'button', style["prev_slider_button"], `&#10094;`);
     prevButton.node.onclick = () => {
@@ -167,7 +169,7 @@ export class SettingsPage extends Control {
       if (index == 0) {
         index = this.maps.length-1;
       } else index--;      
-      this.setImageMap(imageMap, index);
+      this.setImageMap(imageMap, imageView, index);
       selectedMapInput.node.value = this.map.name + '  '+ this.map.size;
       nameMap.node.textContent = this.map.name;
     }
@@ -175,7 +177,7 @@ export class SettingsPage extends Control {
     nextButton.node.onclick = () => { 
       let index = this.maps.indexOf(this.map);
       if(index == this.maps.length-1) index = 0; else index++;      
-      this.setImageMap(imageMap, index);
+      this.setImageMap(imageMap, imageView, index);
       selectedMapInput.node.value = this.map.name + '  '+ this.map.size;
       nameMap.node.textContent = this.map.name;
     }
@@ -185,7 +187,12 @@ export class SettingsPage extends Control {
       'div', 
       [style["info_wrapper"], style['grid_item']].join(' ')
     );
-    const info = new Control<HTMLLabelElement>(infoWrapper.node, 'textarea', style['info_area'], 'Информация')
+    const info = new Control<HTMLTextAreaElement>(
+      infoWrapper.node, 
+      'textarea', 
+      style['info_area']
+    );
+    info.node.readOnly = true;
     info.node.textContent = `##### Frequently Asked Questions #####
 
 
@@ -239,12 +246,12 @@ export class SettingsPage extends Control {
     const buttonsWrapper = new Control(
       settingsWrapper.node, 
       'div', [style["buttons_wrapper"], style['grid_item']].join(' '));
-    const backButton = new Control(buttonsWrapper.node, 'button', '', 'back');
+    const backButton = new Control(buttonsWrapper.node, 'button', style['button'], 'back');
     backButton.node.onclick = () => {
       this.onBack();
     }
 
-    const playButton = new Control(buttonsWrapper.node, 'button', '', 'play');
+    const playButton = new Control(buttonsWrapper.node, 'button', style['button'], 'play');
     playButton.node.onclick = () => {
       // const settings:IGameOptions = {
       //   map: imageMap,//this.mapImage,
@@ -260,10 +267,11 @@ export class SettingsPage extends Control {
     return this.maps;
   }
 
-  setImageMap(imageMap: HTMLImageElement, num:number = 0){
+  setImageMap(imageMap: HTMLImageElement, imageView: HTMLImageElement, num:number = 0){
     imageMap.src = this.maps[num].src; 
-    imageMap.alt = `Карта ${this.maps[num].name} размером ${this.maps[num].size}`;
+    imageView.alt = `Карта ${this.maps[num].name} размером ${this.maps[num].size}`;
     this.map = this.maps[num];
     this.gameOptions.map= imageMap;
+    imageView.src = this.maps[num].view;
   }
 }

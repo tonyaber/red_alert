@@ -1,15 +1,11 @@
 .main_wrapper{
   width: 80%;
   height: 100vh;
-  margin: 0 auto;
-  border: 30px solid rgb(236, 31, 31);
-  border-image: linear-gradient(#a1a1a1, #d41919) 30;
-  box-shadow: 20px 0px 50px #a1a1a1;/*, -30px 0px 50px #d41919,;*/
-  /*position: absolute;
-  top: 0;
-  left: 0;
-  transition-duration: 500ms;
-  background-color: #000;*/
+  margin: 10px auto;
+  border: 30px solid #d41919;
+  /* border-image: linear-gradient(#a1a1a1, #d41919) 30; */
+  border-image: url('../assets/img/aside/border.jpg') 75/ 25px / 10px round;
+  box-shadow: 0px 0px 150px #a1a1a1, 0px 0px 150px #d41919
 }
 
 .hide{
@@ -17,10 +13,6 @@
 }
 
 .settings_wrapper{
-  /* display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  color: #fff; */
   display: grid;
   grid-template: auto/ 50% 50%;
   grid-template-areas: 'block1 block2' 'block3 block3' 'footer footer';
@@ -43,16 +35,17 @@
 .basic_settings_wrapper{
   display: grid;
   grid-template-columns: 40% 60%;
-  grid-template-rows: 25% 25% 25% 25%;
- /* width: 45%;
-  border: 1px #fff solid;*/
-  padding: 10px;
+  grid-template-rows: repeat(4, 25%);/*25% 25% 25% 25%;*/
+  padding: 20px;
+ /* justify-items: center;*/
+  align-items: center;
 }
 
 .item_settings{
-  height: 20px;
+  height: 24px;
   color: white;
-  font-size: 14px;
+  font-size: 18px;
+  line-height: 24px;
   background-color: black;
 }
 
@@ -101,11 +94,34 @@
   height: 100%;
   background-color: black;
   color: white;
+  resize: none;
+  border: 2px solid #d41919;
+  padding: 10px;
 }
 
-.info_area{
-  
+.info_area::-webkit-scrollbar{
+  width: 15px;
 }
+/* 
+.info_area::-webkit-scrollbar-button{
+  background-color: #d41919;
+} */
+
+.info_area::-webkit-scrollbar-track{
+  /* background: linear-gradient(#a1a1a1, #d41919);  */
+  background-color: #a1a1a1;
+  box-shadow: inset 0 0 3px black; 
+}
+
+.info_area::-webkit-scrollbar-thumb{
+  cursor: pointer;
+  border: 1px solid #d41919;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.753);
+  box-shadow: 0px 5px 7px #e71313, 0 -5px 7px #e71313
+}
+
+
 .map_slider{
   width: 300px;
   height: 250px;
@@ -132,7 +148,7 @@
   position: absolute;
   left: 0;
   top: 90%;
-  background-color: rgba(253, 2, 2, 0.384);
+  background-color: rgba(3, 3, 3, 0.6);
   color: white;
   text-align: center;
   border-top: 1px solid #e71313;
@@ -165,21 +181,25 @@
   font-size: 24px;
   border-radius: 5px;
   
-  border: 2px solid #C3CDD8;
+  
 }
 .next_slider_button{
   background: linear-gradient(to right,#1A1C1A, #C3CDD8);
-  left: 90%;
+  left: 95%;
 }
 .prev_slider_button{
   background: linear-gradient(to right, #C3CDD8, #1A1C1A);
-  left:calc(10% - 30px)
+  left:calc(5% - 30px)
 }
 
-.next_slider_button:hover,
+.next_slider_button:hover{
+  box-shadow: 5px 0 7px #666;
+  filter: brightness(1.5)
+}
+
 .prev_slider_button:hover{
-
-
+  box-shadow: -5px 0 7px #666;
+  filter: brightness(1.5)
 }
 
 
@@ -189,4 +209,13 @@
   justify-content: center;
   column-gap: 50px;
   margin: 10px;
+}
+
+.button{
+  width: 70px;
+  background: url('../assets/img/aside/fon-metall.jpg') no-repeat 0 0/cover;
+  cursor: pointer;
+  border: 1 solid #666 ;
+  box-shadow: 0px 3px 7px #666;
+  transition: 0.3s;
 }
