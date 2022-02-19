@@ -25,8 +25,11 @@ export class PlayerController{
 
   // Добавление объекта на канвас
   addGameObject(objectType: string, position: IVector) {
-   // console.log("%c"+this.playerId+ ' строит '+ objectType+ ': '+position.x+': '+position.y, 'color: blue')
-    return this.gameModel.addGameObject(this.playerId, objectType, position);
+    const result = this.gameModel.addGameObject(this.playerId, objectType, position);
+    // if(result !== 'false'){
+    //   console.log("%c"+this.playerId+ ' строит '+ objectType+ ': '+position.x+': '+position.y, 'color: blue')
+    // }
+    return result;
   }
 
   moveUnits(unitId:string, target:IVector){

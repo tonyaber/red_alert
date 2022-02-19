@@ -13,8 +13,8 @@ import { Console } from "console";
 export class BotCommander{
   playerController: PlayerController;
   tickList: TickList;
-  reloadingTime: number = 1000;
-  loading: number = 1000;
+  reloadingTime: number = 2000;
+  loading: number = 2000;
   panelInfo: IUpdateSidePanel;
   radius: number = 0; // радиус постройки вокруг инишл здания
   startPoint: Vector = null; // стартовая точка для постройки первого здания
@@ -23,13 +23,11 @@ export class BotCommander{
   stepBuilding: number = 1; // номер круга постройки  
   minDistance: number = 2; // Минимально допустимое расстояние для постройки
   objectData: Record<string, IGameObjectData> = {};
-  // attakedBuildings: Record<string, Array<string>> = {}
 
   constructor(playerController:PlayerController){
     this.playerController = playerController;
     this.tickList = new TickList()
     this.tickList.add(this);
-    // this.attakedBuildings = {}
   }
   
   private handleClientMessage(type: string, message: string) {   // Обработка данных с клиента
@@ -51,29 +49,10 @@ export class BotCommander{
     if(type === 'delete'){
       let parsedObject: IGameObjectData = JSON.parse(message);
       delete this.objectData[parsedObject.objectId]
-
-      /////
-      
-      //if (!this.objectData.hasOwnProperty(parsedObject.objectId)) {
-         // console.log('%cАтакоемое здание уничтожено ' + parsedObject.objectId+': ', 'color:orange')
-          // console.log(this.attakedBuildings[parsedObject.objectId])
-
-        // if (this.attakedBuildings[parsedObject.objectId]) {
-        //   //console.log(this.attakedBuildings[parsedObject.objectId])
-        //   this.attakedBuildings[parsedObject.objectId].forEach(soldierId => {
-        //     if (this.objectData.hasOwnProperty(soldierId)) {
-        //       // this.objectData[soldierId].content.action = 'idle';
-        //       //console.log('%c ' + soldierId + ' - ' + this.objectData[soldierId].content.action, 'color: green')
-        //     }
-        //   })
-        //   delete this.attakedBuildings[parsedObject.objectId]
-        //}
-      //}
     }
 
     if (type === 'addBuild' && !this.startPoint) {
       let parsedObject = JSON.parse(message);
-     // console.log('type === addBuild, parsedObject = ', parsedObject)
       this.startPoint = parsedObject.content.position;
     }
     if (type === 'startGame') {
@@ -85,7 +64,6 @@ export class BotCommander{
     }   
     if (type === 'updateSidePanel') {
       let parse = JSON.parse(message);
-      // console.log('updateSidePanel')
       this.panelInfo = parse;
       const buildsIsReady = this.panelInfo.sidePanelData.filter(item => item.status === 'isReady');  //  && item.object.subType === 'build'
       if (buildsIsReady.length) {
@@ -95,7 +73,7 @@ export class BotCommander{
         if (lastEl !== undefined) {
           // console.log('строим здание на позиции: ', lastEl)
           this.circlePoints.pop();
-          let vector = new Vector(lastEl.x, lastEl.y)
+          let vector = new Vector(lastEl.x/2, lastEl.y/2)
           let currentPointAdd = vector.clone().add(vector) // надо клонировать?
           this.playerController.addGameObject(buildsIsReady[Math.floor(Math.random() * buildsIsReady.length)].object.name, currentPointAdd); // this.startPoint
         }
@@ -127,9 +105,7 @@ export class BotCommander{
         // строим юнита
       } else if (random < 1) {
         const availableUnits = this.panelInfo.sidePanelData.filter(item => item.status === 'available' && item.object.subType === 'unit');
-        
         const countUnits = Object.values(this.objectData).filter(item => item.type === 'soldier' && item.content.playerId === this.playerController.playerId).length;
-   
         if (availableUnits.length && countUnits < 30) {
           this.playerController.startBuilding(availableUnits[Math.floor(Math.random() * availableUnits.length)].object.name);
         }
@@ -171,7 +147,7 @@ export class BotCommander{
       }
     }
 
-    const privateMessage=0;//this.playerController.addGameObject()
+    const privateMessage=0;
   }
 
   sendMessage(type: string, message:string){ // self receive

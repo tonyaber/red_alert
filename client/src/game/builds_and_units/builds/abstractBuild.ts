@@ -6,10 +6,6 @@ import { Camera } from '../../ultratiling/camera';
 import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
 import { InteractiveObject } from '../interactiveObject';
-import { LocalModel } from '../../../game/localSocketModel';
-import{ app } from '../../../index';
-import { GameModel } from '../../../../../server/src/gameModel';
-import appState from "../../playersStorage"
 
 export class AbstractBuild extends InteractiveObject{
   tiles: Array<TileObject> =[];
@@ -43,11 +39,7 @@ export class AbstractBuild extends InteractiveObject{
     const tileMap = data.content.buildMatrix;
     const pos =  Vector.fromIVector(data.content.position);
 
-    // Получим цвет игрока
-    const colorIndex = appState.players.find((item) => item.id === data.content.playerId).colorIndex
-    const color = appState.colors[colorIndex]
-
-    this.info = new BuildingInfoView(pos, res["barrack"], this.name, this.health, this.playerId, this.primary, color); //передавать сюда цвет игрока
+    this.info = new BuildingInfoView(pos, res["barrack"], this.name, this.health, this.playerId, this.primary);
     this.info.update();
     this.infoLayer.addObject(this.info);
     
