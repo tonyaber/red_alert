@@ -5,21 +5,26 @@ import { IChatMsg, IUserItem, ISendItemGame } from "../game/dto";
 import session from "./session";
 import { AnimatedControl } from "../components/animatedControl";
 
-export class RoomPage extends Control {
+export class RoomPage extends AnimatedControl {
   onStartGame: (players: string) => void;
   onCreateGame: () => void;
   constructor(parentNode: HTMLElement, socket: IClientModel) {
-    super(parentNode, "div", style["room_main"], "");
+    super(parentNode, "div", {default:style['room_main'], hidden:style["hide_room_main"]}, "");
     const lobby = new Control(this.node, "div", style["lobby_wrapper"], "");
-
+    this.quickOut();
     //игроки
     const wrapperPlayers = new Control(
       lobby.node,
       "div",
-      style["players_wrapper"],
-      "Players"
+      style["players_wrapper"]
     );
-    wrapperPlayers.node.innerHTML = "";
+
+    const players = new Control(
+      wrapperPlayers.node,
+      "div",
+      style["players"]
+    );
+    
     const badgePlayers = new Control(
       wrapperPlayers.node,
       "div",
@@ -30,15 +35,16 @@ export class RoomPage extends Control {
       console.log("send get userList");
     });
     socket.onUsersList = (msg: IUserItem[]) => {
+      players.node.innerHTML = "";
       msg.forEach((x) => {
         const user = new Control(
-          wrapperPlayers.node,
+          players.node,
           "div",
           style["user_item"],
           x.name
         );
         //const status = new Control(wrapperPlayers.node, 'div', style['user_item'], x.name);
-        user.node.style.background = "#6ecd43";
+        //user.node.style.background = "#6ecd43";
 
         console.log(x);
       });
@@ -142,7 +148,7 @@ export class RoomPage extends Control {
           boxGames.node,
           "button",
           style["game_item"],
-          x.id + " / " + x.users.length
+          x.id + " / " + x.users.filter(it => it.type=='human').length
         );
         div_game.node.onclick = () => {
           wrapperGame.node.innerHTML='';

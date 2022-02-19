@@ -2,12 +2,12 @@
   margin: 0;
 }
 .global_main{
-  height: 100%;
+  height: 100vh;
   /*min-height: calc(100vh - 30px - 30px);*/
   overflow: hidden;
   background-color: rgba(0, 0, 0);
   border: solid 1px;
- /* position: relative;*/
+  position: relative;
 }
 
 .options_btn{

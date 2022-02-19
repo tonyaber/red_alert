@@ -56,13 +56,15 @@ export class SettingsModel {
 */
 
 export interface IGameOptions  {
-  map: HTMLImageElement,
-  credits: number,
-  speed: number,
-  bots: number
+  map?: HTMLImageElement;
+  mapGame?:number[][];
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
 }
 
-export class SettingsPage extends AnimatedControl {
+export class Settings extends AnimatedControl {
   onBack: () => void;
   onPlay: (settings: IGameOptions) => void;
   maps: IMapsData[];
@@ -71,26 +73,29 @@ export class SettingsPage extends AnimatedControl {
     map: new Image(100, 100),
     credits: 10000,
     speed: 7,
-    bots: 5
+    mapID: 0,
+    info: 'information about game'
   }; 
-  onStartGame: (players: string) => void;
-  onAuth: (name:string) => void;
+  // onStartGame: (players: string) => void;
+  
   nameUser: string;
+  onCreate: (settings: IGameOptions) => void;
 
-  constructor(parentNode: HTMLElement, socket: IClientModel){
-    super(parentNode, 'div', {default: style["wrapper"], hidden: style["hide_wrapper"]});
-    socket.onAuth = (name) => {
-      this.nameUser = name;
-    }
-    this.quickOut();
+  constructor(parentNode: HTMLElement){
+    super(parentNode, 'div', {default: style["wrapper"], hidden: style["hide_wrapper"]});    
+    // socket.onAuth = (name) => {
+    //   this.nameUser = name;
+    // }
+
    // this.gameOptions.credits = 10000;/*initialSettings.credits;*/
+   this.quickOut();
     this.loadMapsData().then(result => {
       this.map = this.maps[0];
        this.render();
     });
   }
   render(){
-    const mainWrapper = new Control(this.node, 'div', style['main_wrapper']);
+    const mainWrapper = new Control(this.node, 'div', style['main_wrapper'])
     const settingsWrapper = new Control(mainWrapper.node, 'div', style['settings_wrapper']);
 
     const basicSettingsWrapper = new Control(
@@ -119,7 +124,7 @@ export class SettingsPage extends AnimatedControl {
     speed.onChange = (value) => {
       this.gameOptions.speed = +value;
     }
-
+/*
     const countBotsLabel = new Control<HTMLLabelElement>(
       basicSettingsWrapper.node,
       'label',
@@ -130,7 +135,7 @@ export class SettingsPage extends AnimatedControl {
     countBots.onChange = (value) => {
       this.gameOptions.bots = +value;
     }
-    
+ */   
     const selectedMapLabel = new Control<HTMLLabelElement>(
       basicSettingsWrapper.node, 
       'label', 
@@ -255,11 +260,18 @@ export class SettingsPage extends AnimatedControl {
 
     const playButton = new Control(buttonsWrapper.node, 'button', style['button'], 'play');
     playButton.node.onclick = () => {
-      // const settings:IGameOptions = {
-      //   map: imageMap,//this.mapImage,
-      //   credits: this.credit
-      // };      
-      this.onPlay(this.gameOptions);
+     /* const settings: IGameOptions = {
+        map: imageMap, //this.mapImage,
+        credits: this.credit,
+        mapID: this.maps.indexOf(this.map),
+        speed: Number(speedInput.node.value),
+        info: info.node.value,
+      };*/
+      // socket.onAuth = (name) => {
+      //   this.onAuth(name);
+      // }
+      //socket.addUser();
+      this.onCreate(this.gameOptions);
     }
   }
 

@@ -5,6 +5,7 @@ left: 0;
 height: 100%;
 width: 100%;
 background-color: rgba(219, 219, 218, 0.9);
+z-index: 10;
 }
 
 .popup_body{

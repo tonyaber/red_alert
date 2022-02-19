@@ -3,8 +3,12 @@
   top: 0;
   left: 0;
   transition-duration: 500ms;
-  left: 0;
   background-color: #000;
+}
+
+.hide_main_wrapper{
+  top: -100%;
+  transition: 0.5s;
 }
 
 .hide{
