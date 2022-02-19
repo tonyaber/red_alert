@@ -22,6 +22,7 @@ export interface IRegisteredPlayerInfo{
   type: 'bot'|'human'|'spectator'
   // connection?: any;//connection
   connection?: Session,
+  colorIndex: number,
 }
 
 export interface IObject {

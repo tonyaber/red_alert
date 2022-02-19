@@ -29,13 +29,15 @@ export class GameServer {
   }
   get id(){ return this._settings.id };
   get settings(){ return this._settings };
-  getPlayersInfo():IRegisteredPlayerInfo[]{ return this.registeredPlayersInfo };
+  getPlayersInfo():IRegisteredPlayerInfo[]{ return this.registeredPlayersInfo }; // при регистрации приходит тип: бот, human, зритель
   
-  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
+  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){ // регистрация игрока
     if(this.registeredPlayersInfo.find((x)=>x.id===userId)){
       return {successfully:false};
     } else {
-      this.registeredPlayersInfo.push({ type, id: userId, connection });
+
+      const colorIndex = this.registerPlayer.length + 1; // цвет игрока
+      this.registeredPlayersInfo.push({ type, id: userId, connection, colorIndex });
       if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
         this.startGame();
       }
@@ -48,6 +50,10 @@ export class GameServer {
     if(user){
       const index = this.registeredPlayersInfo.indexOf(user);
       this.registeredPlayersInfo.splice(index,1);
+      this.registeredPlayersInfo.map((item, index) =>{
+        item.colorIndex = index + 1;
+        return item;
+      })
       return {successfully:true};
     } else {
       return {successfully:false};
