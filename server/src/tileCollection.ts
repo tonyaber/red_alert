@@ -156,7 +156,7 @@ export class TilesCollection {
       }
       this._arrayTiles.push(row);
     
-    }  console.log(this._arrayTiles)
+    }  //console.log(this._arrayTiles)
     //console.log('-->',map)
     // this.tilesMap=new Map()
     // for(let h=0;h<map.length;h++){

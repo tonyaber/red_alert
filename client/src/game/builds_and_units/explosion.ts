@@ -12,7 +12,7 @@ export class Explosion extends InteractiveObject{
   constructor(position:Vector){
     super()
     this.position = position.clone();
-    this.animation = new Animation(resourceLoader.textures['explosion'], 6, 1);
+    this.animation = new Animation(resourceLoader.textures['explosion'], 6, 0.5);
     this.animation.start();
     this.animation.onFinish = () => {
       this.onDestroyed();

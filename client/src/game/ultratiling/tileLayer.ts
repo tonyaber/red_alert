@@ -52,6 +52,7 @@ export class TilingLayer {
     const graphic = this.registred[this.map[tileY] && this.map[tileY][tileX]];
     this.ctx.clearRect(renderX, renderY, this.tileSize, this.tileSize);
     if (graphic) {
+      this.ctx.drawImage(this.registred[1], renderX, renderY, this.tileSize, this.tileSize);
       this.ctx.drawImage(graphic, renderX, renderY, this.tileSize, this.tileSize);
       this.ctx.fillText(`${tileX}/${tileY}`, renderX, renderY + 10);
     }

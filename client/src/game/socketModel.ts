@@ -1,4 +1,4 @@
-import { Vector } from "../../../common/vector";
+import { IVector, Vector } from "../../../common/vector";
 import { ClientSocket } from "./clientSocket";
 import {
   IGameObjectData,
@@ -7,9 +7,11 @@ import {
   IGameUpdateResponse,
   IChatMsg,
   IUserItem,
+  ISendItemGame,
 } from "./dto";
 import { IClientModel } from "./IClientModel";
 import session from "../application/session";
+import {IGameOptions} from "../application/settingsPageMulti";
 export class SocketModel implements IClientModel {
   onSideUpdate: (data: { sidePanelData: IObjectInfo[]; money: number }) => void;
   onCanvasObjectUpdate: (response: IGameUpdateResponse) => void;
@@ -18,19 +20,21 @@ export class SocketModel implements IClientModel {
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
-  onShot: (point: Vector) => void;
+  onShot: (data: { position: IVector, id: string }) => void;
   onChatMsg: (msg: IChatMsg) => void;  
   onUsersList: (msg: IUserItem[]) => void;  
+  onGamesList: (msg: ISendItemGame[]) => void;  
 
   private messageHandler: (message: IServerResponseMessage) => void;
   private client: ClientSocket;
+  onMoveBullet: (data: { position: IVector, id: string })=> void;
 
   constructor(client: ClientSocket) {
     this.client = client;
     this.messageHandler = (message: IServerResponseMessage) => {
       //console.log(message.type)
       if (message.type === "update") {
-        console.log("socketModel", message.content);
+        //console.log("socketModel", message.content);
         this.onUpdate(JSON.parse(message.content));
       }
       if (message.type === "create") {
@@ -51,11 +55,17 @@ export class SocketModel implements IClientModel {
       if (message.type === "shot") {
         this.onShot(JSON.parse(message.content));
       }
+      if (message.type === 'moveBullet') {
+        this.onMoveBullet(JSON.parse(message.content));
+      }
       if (message.type === "chatMsg") {
         this.onChatMsg(JSON.parse(message.content));
       }
       if (message.type === "usersList") {
         this.onUsersList(JSON.parse(message.content));
+      }
+      if (message.type === "gamesList") {
+        this.onGamesList(JSON.parse(message.content));
       }
     };
     this.client.onMessage.add(this.messageHandler);
@@ -63,10 +73,10 @@ export class SocketModel implements IClientModel {
 
   //side
 
-  registerSpectator() {
+  registerSpectator(gameID:number) {
     this.client.sendMessage(
       "registerGamePlayer",
-      JSON.stringify({ playerType: "spectator" })
+      JSON.stringify({ gameID:gameID,playerType: "spectator" })
     );
   }
 
@@ -74,10 +84,10 @@ export class SocketModel implements IClientModel {
     this.client.sendMessage("auth", JSON.stringify({ user:session.user }));
   }
 
-  registerGamePlayer() {
+  registerGamePlayer(gameID:number) {
     this.client.sendMessage(
       "registerGamePlayer",
-      JSON.stringify({ playerType: "human" })
+      JSON.stringify({ gameID:gameID, playerType: "human" })
     );
   }
   
@@ -91,7 +101,7 @@ export class SocketModel implements IClientModel {
       type: "startBuild",
       content: { name, playerId },
     });
-    console.log('socketModel', name, playerId)
+   // console.log('socketModel', name, playerId)
     //если будет объект, то
     // const result = this.client.sendMessage('gameMove', content).then((r)=>{
     //  const data:ТИП = JSON.stringify(r);
@@ -143,13 +153,13 @@ export class SocketModel implements IClientModel {
       type: "setPrimary",
       content: { id, name },
     });
-    console.log('socketClient')
+   // console.log('socketClient')
     return this.client.sendMessage("gameMove", content);
   }
 
   moveUnit(id: string, position: Vector):Promise<string>{
     const content = JSON.stringify({ type: 'moveUnit', content: {id, position} });
-    console.log('____>>>',content,'&')
+    //console.log('____>>>',content,'&')
     return this.client.sendMessage('gameMove', content);
   }
 
@@ -158,9 +168,14 @@ export class SocketModel implements IClientModel {
     return this.client.sendMessage('gameMove', content);
   }
   
+  
   chatSend(msg: IChatMsg): Promise<string> {
     const content = JSON.stringify(msg);
     return this.client.sendMessage("chatSend", content);
+  }
+  createGame(msg: IGameOptions): Promise<string> {
+    const content = JSON.stringify(msg);
+    return this.client.sendMessage("createGame", content);
   }
   getUsersList(msg: IChatMsg): Promise<string> {
     const content = JSON.stringify(msg);

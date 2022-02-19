@@ -48,7 +48,7 @@ export interface IGameObjectContent{
   primary?: boolean;
   action?: string;
   target?: Vector; 
-  buildMatrix?: number[][]
+  buildMatrix?: number[][],
 }
 export interface IGameObjectData{  
   type: string;//name
@@ -71,3 +71,5 @@ export interface IUpdateSidePanel{
   sidePanelData: IObjectInfo[];
   money: number;
 }
+import { ISendItem } from "./gamesListItem"
+export  { ISendItem };

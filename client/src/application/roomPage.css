@@ -148,6 +148,10 @@
   transition: 0.3s;
 }
 
+.game_users_item{
+  background-color: black;
+}
+
 .game_wrapper{
   position: absolute;
   top:0;

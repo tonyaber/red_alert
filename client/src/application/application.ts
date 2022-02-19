@@ -11,7 +11,7 @@ import { SoundManager } from '../game/soundManager'
 import { resourceLoader, resources } from '../game/resources';
 import StatisticsPage from './statisticsPage'
 import {SettingsPage} from './settingsPageSingle'
-import { Settings } from './settingsPageMulti';
+import { Settings,IGameOptions } from './settingsPageMulti';
 import style from './application.css'
 //import side from '../game/sideOptions.css'
 import PopupPage from './popup'
@@ -78,17 +78,19 @@ export class Application extends Control{
   multiCycle(res: Record<string, HTMLImageElement>) {
     const authorization = new Authorization(this.node, this.socket);//ответ с именем
     authorization.onAuth = (name) => {
-      console.log(name)
+      //console.log(name)
       authorization.destroy();
       //const settings = new SettingsPage(this.node, this.socket);
       const roomPage = new RoomPage(this.node, this.socket);
-      const imageData = getImageData(res.map)
+      const imageData = getImageData(res.map1)
       const mapGame = getMapFromImageData(imageData);
-      this.socket.createMap(mapGame);
+      // this.socket.createMap(mapGame);
       roomPage.onCreateGame = () => {
         const settings = new Settings(this.node);
         settings.onCreate = (data) => {
           //записываем данные созданной игры 
+          console.log('data-->',data);
+          this.socket.createGame({...data,...{mapGame:mapGame}});
           this.socket.chatSend({user: 'system', msg: `new game create`}); //добавить название карты/игры
           settings.destroy();
         }

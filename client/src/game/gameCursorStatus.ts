@@ -49,7 +49,7 @@ export class GameCursorStatus{
         action = 'move';
       } else if (!this.hovered.length) {
         action = 'select';
-      } else if (this.hovered[0].playerId !=this.playerId) {
+      } else if (this.hovered[0].playerId != this.playerId && !(this.hovered[0] instanceof Rock)) {
         action = 'attack';
       }
     } else if ((this.selected[0] instanceof AbstractBuild)) {
@@ -75,7 +75,7 @@ export class GameCursorStatus{
 
     const closestBuild = findClosestBuild(this.tilePosition.clone(), builds);
     if (!(!builds.length || closestBuild.distance <= 6)) { 
-      console.log('redMask: ', redMask);
+      //console.log('redMask: ', redMask);
      return redMask;
     }
     // console.log('mask: ', mask);
@@ -97,7 +97,7 @@ export class GameCursorStatus{
   render(ctx:CanvasRenderingContext2D, camera:Vector, sz: number){
     this.renderCursor(ctx, camera)
     if (this.multiStart){
-      this.renderMulti(ctx, camera);
+      this.renderMulti(ctx, camera, sz);
     }
     if (this.planned){
       this.renderBuildPlanned(ctx, camera, sz);
@@ -124,9 +124,9 @@ export class GameCursorStatus{
     //this.drawTile(ctx, this.tilePosition, new Vector(0,0), "#0ff7", 0);
   }
 
-  renderMulti(ctx: CanvasRenderingContext2D, camera:Vector){
+  renderMulti(ctx: CanvasRenderingContext2D, camera:Vector, sz: number){
     ctx.fillStyle = '#fff4';
-    ctx.fillRect(this.multiStart.x+camera.x, this.multiStart.y+camera.y, this.pixelPosition.x -this.multiStart.x-camera.x, this.pixelPosition.y -this.multiStart.y-camera.y);
+    ctx.fillRect(this.multiStart.x - camera.x, this.multiStart.y - camera.y, this.pixelPosition.x -this.multiStart.x+camera.x, this.pixelPosition.y -this.multiStart.y+camera.y);
   }
 
   renderBuildPlanned(ctx: CanvasRenderingContext2D, camera:Vector, sz: number){

@@ -161,6 +161,11 @@ export class AbstractBuild extends InteractiveObject{
     this.infoLayer.updateObject(this.info)
   }
 
+  destroy(): void {
+    this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
+    this.infoLayer.deleteObject(this.info);
+  }
+
   update(){
     //this.tiles.forEach(it=>it.update());
   }

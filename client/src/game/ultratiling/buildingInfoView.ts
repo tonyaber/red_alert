@@ -23,7 +23,8 @@ export class BuildingInfoView extends CachedSprite{
     this.ctx.fillStyle = "#f00";
     
     this.ctx.drawImage(this.img, 0, 0, 200, 200);
-    this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
+    this.ctx.fillRect(0, 0, this.health, 5);
+    //this.ctx.fillText('health: ' + this.health.toString(), 0, topText);
     this.ctx.fillText('name: ' + this.name, 0, topText * 2);
     this.ctx.fillText(this.playerId, 0, topText * 3);
     

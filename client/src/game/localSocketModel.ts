@@ -2,10 +2,10 @@ import { BotCommander } from "../../../server/src/botCommander";
 import { IRegisteredPlayerInfo } from "../../../server/src/dto";
 import { GameModel } from "../../../server/src/gameModel";
 import { PlayerController } from "../../../server/src/playerController";
-import { IChatMsg, IUserItem, IGameUpdateResponse } from './dto';
+import { IChatMsg, IUserItem, IGameUpdateResponse,ISendItemGame, } from './dto';
 import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
-import { Vector } from '../../../common/vector'
+import { IVector, Vector } from '../../../common/vector'
 import { INITIAL_DATA } from "../../../server/src/initialData";
 
 export class LocalModel implements IClientModel
@@ -17,13 +17,15 @@ export class LocalModel implements IClientModel
   onUpdate: (data: IGameObjectData) => void;
   onAddObject: (data: IGameObjectData) => void;
   onDeleteObject: (data: IGameObjectData) => void;
-  onShot: (point: Vector) => void;
+  onShot: (data: { position: IVector, id: string }) => void;
   onChatMsg: (msg: IChatMsg) => void;
   onUsersList: (msg: IUserItem[]) => void;
+  onGamesList: (msg: ISendItemGame[]) => void;
   myPlayer: PlayerController;
   player: string;
   game: GameModel;
   map: number[][];
+  onMoveBullet: (data: { position: IVector, id: string })=>void;
 
   constructor(){
 
@@ -31,7 +33,7 @@ export class LocalModel implements IClientModel
 
   addUser() {
     this.player = 'user' + Math.floor(Math.random() * 100);
-    const bots: IRegisteredPlayerInfo[] = new Array(2).fill(null).map(item => {
+    const bots: IRegisteredPlayerInfo[] = new Array(3).fill(null).map(item => {
       return {
         id: 'bot' + Math.floor(Math.random() * 100),
         type: 'bot'
@@ -56,7 +58,6 @@ export class LocalModel implements IClientModel
       return new BotCommander(playerController);
     });
     game.onUpdate = (data, action) => {
-    //   bots.forEach(player=> player.sendMessage({}));
       if (action === 'update') {
         this.onUpdate(data);
         bots.forEach(item=> item.sendMessage('update', JSON.stringify(data)));
@@ -70,8 +71,11 @@ export class LocalModel implements IClientModel
         bots.forEach(item=> item.sendMessage('delete', JSON.stringify(data)));
       }
     }
-    game.onShot = (point) => {
-      this.onShot(point);
+    game.onShot = (point, id) => {
+      this.onShot({ position: point, id: id });
+    }
+    game.onMoveBullet = (point, id) => {
+     this.onMoveBullet({ position: point, id: id })
     }
 
     // game.onUpdate = (id, data)=>{
@@ -119,15 +123,16 @@ export class LocalModel implements IClientModel
 
   cancelBuild(){
   }
-  registerGamePlayer() {
+  registerGamePlayer(gameID:number) {
   }
-  registerSpectator() {
+  registerSpectator(gameID:number) {
   
   }
 
   chatSend():Promise<string>{ return new Promise((r)=>r(''))}
   getUsersList():Promise<string>{ return new Promise((r)=>r(''))}
-
+  createGame():Promise<string>{ return new Promise((r)=>r(''))}
+  
   //to map
   addBuild(name: string, position: Vector, playerId: string):Promise<string>{
     const result = this.myPlayer.addGameObject(name, position);

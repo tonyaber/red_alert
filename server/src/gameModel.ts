@@ -29,7 +29,7 @@ export class GameModel{
   onUpdate: (state: IGameObjectData, action: string) => void;
   onSideUpdate: (id: string, data: string) => void;
   sendPrivateResponse: (id: string, content: string) => void;
-  onShot: (point: Vector) => void;
+  onShot: (point: Vector, id: string) => void;
   tickList: TickList;
   gameObjects: GameObject[] = [];
   nextId: () => string;
@@ -38,6 +38,7 @@ export class GameModel{
   mapForTrace: number[][];
   mapForBuilds: number[][];
   tilesCollection: TilesCollection;
+  onMoveBullet: (point: Vector, id: string) => void;;
   
   constructor(players: IRegisteredPlayerInfo[], state: { map: number[][], builds: any }) {
     this.tickList = new TickList();
@@ -129,12 +130,13 @@ export class GameModel{
     gameObject.onDelete = (state) => {
       delete this.objects[state.objectId];
       this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
+      this.mapForBuilds[position.x][position.y] = 0;
       this.onUpdate(state, 'delete'); 
     }
 
     gameObject.onDamageTile = (targetId, point) => {
-      this.gameObjects.find(it => it.objectId === targetId).damage(point);
-      this.onShot(point);
+      // this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
+      // this.onShot(point);
       //gameObjects
     }
     gameObject.create();
@@ -160,7 +162,7 @@ export class GameModel{
         this.objects[state.objectId] = gameObject;
         
         if(gameObject.subType==='build'){        
-          this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position);
+          this.addMapBuild((gameObject as AbstractBuildObject).data.buildMatrix, position, -1);
           this.tilesCollection.addBuild((gameObject as AbstractBuildObject).data.buildMatrix, position)
         }
         this.onUpdate(state, 'create');     
@@ -175,15 +177,26 @@ export class GameModel{
       }
       gameObject.onDelete = (state) => {
         this.playersSides.find(item => item.id === playerId).removeBuilding(objectName);
-        delete this.objects[state.objectId];
+        
         this.gameObjects = this.gameObjects.filter(it => it.objectId != state.objectId);
-        this.onUpdate(state, 'delete'); 
+        if (gameObject.subType === 'build') { 
+           this.addMapBuild(state.content.buildMatrix, state.content.position, 0);
+        }
+        this.onUpdate(state, 'delete');
+        delete this.objects[state.objectId]; 
       }
 
-      gameObject.onDamageTile = (targetId, point) => {
-        this.gameObjects.find(it => it.objectId === targetId).damage(point);
-        this.onShot(point);
+      gameObject.onDamageTile = (targetId, point, id: string) => {
+        const obj = this.gameObjects.find(it => it.objectId === targetId);
+        if (obj) {
+          this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
+          this.onShot(point, id);
+        }
+        
         //gameObjects
+      }
+      gameObject.moveBullet = (point: Vector, id: string) => {
+          this.onMoveBullet(point, id);
       }
       gameObject.create();
       this.gameObjects.push(gameObject);
@@ -206,8 +219,10 @@ export class GameModel{
         }
       }
     }
-    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item=>item.getState());
-    
+    const builds = this.gameObjects.filter(it => it instanceof AbstractBuildObject && it.data.playerId === playerId).map(item => {
+      return item.getAllInfo();
+    });
+  
     const closestBuild = findClosestBuild(Vector.fromIVector(position), builds);
           
     if (!(!builds.length || closestBuild.distance <= 6)) { 
@@ -217,14 +232,14 @@ export class GameModel{
   }
 
 
-  addMapBuild(buildMatrix: number[][], position: IVector) {
+  addMapBuild(buildMatrix: number[][], position: IVector, state: number) {
     for (let i = 0; i < buildMatrix.length + 2; i++){
       for (let j = 0; j < buildMatrix[0].length + 2; j++){
         if (position.x - 1 + j > 0 &&
           position.y - 1 + i > 0 &&
           position.x - 1 + j < this.mapForBuilds.length &&
           position.y - 1 + i < this.mapForBuilds[0].length) {
-          this.mapForBuilds[position.x-1 + j][position.y-1 + i] = -1;
+          this.mapForBuilds[position.x-1 + j][position.y-1 + i] = state;
         }        
       }
     }    
@@ -237,17 +252,22 @@ export class GameModel{
   }
 
   setAttackTarget(playerId: string, unitId: string, targetId: string) {
-    this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId).attack(targetId);
-    return 'attack';
+    const unit = this.gameObjects.find(item => item.objectId === unitId && item.data.playerId === playerId)
+    if (unit) {
+      unit.attack(targetId);
+      return 'attack';
+    }
+    return 'false';
   }
+    
 
   setPrimary(playerId: string, buildId: string, name: string) {
-  console.log(playerId, buildId, name)
+  //console.log(playerId, buildId, name)
     const newPrimary = this.gameObjects.find(item => item.objectId === buildId && item.data.playerId === playerId);
-    console.log(newPrimary)
+    //console.log(newPrimary)
     if (newPrimary&&this._getPrimary(playerId, name)) {
       const oldPrimary = this._getPrimary(playerId, name);
-      console.log(oldPrimary)
+      //console.log(oldPrimary)
       oldPrimary.setState((lastState) => {
         return {
           ...lastState,

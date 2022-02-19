@@ -8,21 +8,49 @@ import { SpectatorCommander } from "./spectatorCommander";
 import { Session } from "./serverSocket";
 import { INITIAL_DATA } from './initialData';
 
+export interface IGameOptions {
+  id: number;
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
+  mapGame: number[][];
+}
 
 export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
 
   players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
-  map: number[][] =[];
-  constructor(){
-    
+  map: number[][] =[];  
+  private _settings:IGameOptions; 
+  constructor(props:IGameOptions){
+    this._settings = props;
   }
-
+  get id(){ return this._settings.id };
+  get settings(){ return this._settings };
+  getPlayersInfo():IRegisteredPlayerInfo[]{ return this.registeredPlayersInfo };
+  
   registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
-    this.registeredPlayersInfo.push({ type, id: userId, connection });
-    if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
-      this.startGame();
+    if(this.registeredPlayersInfo.find((x)=>x.id===userId)){
+      return {successfully:false};
+    } else {
+      this.registeredPlayersInfo.push({ type, id: userId, connection });
+      if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
+        this.startGame();
+      }
+      return {successfully:true};
+    }
+  }
+  
+  unregisterPlayer(userId:string){
+    const user = this.registeredPlayersInfo.find((x)=>x.id===userId)
+    if(user){
+      const index = this.registeredPlayersInfo.indexOf(user);
+      this.registeredPlayersInfo.splice(index,1);
+      return {successfully:true};
+    } else {
+      return {successfully:false};
     }
   }
 
@@ -54,8 +82,8 @@ export class GameServer {
 
       }     
     }
-    this.gameModel.onShot = (point) => {
-      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify(point)));
+    this.gameModel.onShot = (point, id) => {
+      this.players.forEach(player=> player.sendMessage('shot', JSON.stringify({position: point, id: id})));
     }
     this.gameModel.onSideUpdate = (id, data)=>{
       (this.players.filter(it => it instanceof SpectatorCommander) as SpectatorCommander[])
@@ -63,6 +91,10 @@ export class GameServer {
         .forEach(item=>item.sendMessage('updateSidePanel', data))
       this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
       
+    }
+
+    this.gameModel.onMoveBullet = (point, id) => {
+     this.players.forEach(player=> player.sendMessage('moveBullet', JSON.stringify({position: point, id: id})));
     }
    
     ///start to game, fix it later

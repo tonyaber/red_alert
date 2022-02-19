@@ -10,16 +10,16 @@ export class GameObject {
     playerId: null,
     primary: false,
     action: null,
-    target: null
+    target: null,
   };
   onUpdate: ( state: IGameObjectData) => void;
   onCreate: (state: IGameObjectData, subType: string) => void;
   onDelete: (state: IGameObjectData) => void;
-  onDamageTile: (targetId: string, point: Vector) => void;
+  onDamageTile: (targetId: string, point: Vector, id: string) => void;
+  moveBullet: (point: Vector, id: string) => void;
+
   objectId: string;
-
   objects: Record<string, GameObject> = {}
-
   subType: string;
   type: string;
   direction: Vector;
@@ -34,6 +34,7 @@ export class GameObject {
     // this.data.health = 100;
     // this.type = type;
     // this.objectId = objectId;
+    this.buildMatrix = [[0,1, 1,0], [1,1,1,1], [1,1,1,1], [1,1,1,1]];
   }
 
   setMap(traceMap: TilesCollection) {
@@ -72,27 +73,35 @@ export class GameObject {
   }
 
   setState(callback:(data:IGameObjectContent)=>IGameObjectContent) {
-    // this.data = callback(this.getState());
-    // this.update();
+     this.data = callback(this.getState());
+     this.update();
   }
 
   getState() {
     return this.data;
   }
-  
-  protected update() {
-    // this.onUpdate({
-    //   type: this.type,
-    //   objectId: this.objectId,
-    //   content: this.getState(),
-    // });    
+
+  getAllInfo() {
+    return {
+      type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    }
   }
-  damage(point: Vector) {
+ 
+  protected update() {
+    this.onUpdate({
+      type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });    
+  }
+  damage(point: Vector, unit: GameObject) {
     
-    if (this.data.health === 0) {
+    if (this.data.health <= 0) {
       this.destroy();
     } else if(this.data.health>0){
-      console.log(this.data.health)
+      //console.log(this.data.health)
       this.setState((data) => {
         return {
           ...data,

@@ -20,6 +20,7 @@ export class AbstractBuildObject extends GameObject{
 
   subType: string = 'build';
   type: string;
+  playerSides: PlayerSide[];
 
   constructor(objects:Record<string, GameObject>, playerSides: PlayerSide[], objectId: string, type: string, state: { position: IVector, playerId: string }) {
     super();
@@ -34,6 +35,7 @@ export class AbstractBuildObject extends GameObject{
       [1,1,1,1],
       [1,1,1,1],
     ];
+    this.playerSides = playerSides;
   }
   
   create() {
