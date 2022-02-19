@@ -191,7 +191,7 @@ export class GameModel{
         if (obj) {
           this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
         }
-         this.onShot(point, id); 
+        this.onShot(point, id); 
         //gameObjects
       }
       gameObject.moveBullet = (point: Vector, id: string) => {

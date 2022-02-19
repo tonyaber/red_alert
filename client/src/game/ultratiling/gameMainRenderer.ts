@@ -112,7 +112,8 @@ export class GameMainRender{
     this.debugInfoView.render(ctx);
     this.explosions.forEach(it => it.render(ctx, this.camera.position, 15));
     
-    this.cursorStatus.render(ctx,this.camera.position, this.camera.getTileSize());
+    this.cursorStatus.render(ctx, this.camera.position, this.camera.getTileSize());
+   // Object.values(this.bullets).forEach(item => item.render(ctx, this.camera.position));
   }
 
   setCameraPosition(position:Vector){
@@ -132,7 +133,7 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
     const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    this.cursorStatus.planned = null;
+    if (interactiveObject instanceof AbstractBuild && data.content.playerId === this.playerId) { this.cursorStatus.planned = null };
     this.changeBuildsMap(interactiveObject, data, 1);
   }
 
@@ -160,8 +161,9 @@ export class GameMainRender{
   }
 
   addShot(data: { position: IVector, id: string }) {
-    this.bullets[data.id].destroy();
-    delete this.bullets[data.id]
+   
+    // this.bullets[data.id].destroy();
+    // delete this.bullets[data.id]
     const pointPosition =  Vector.fromIVector(data.position)
     const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
@@ -173,11 +175,12 @@ export class GameMainRender{
 
   }
   addBullet(data: { position: IVector, id: string }) {  
-    if (this.bullets[data.id]) {
-      this.bullets[data.id].updateShot(data.position)
-    } else {
-      this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
-    } 
+    // if (this.bullets[data.id]) {
+    //   this.bullets[data.id].updateShot(data.position)
+    // } else {
+    //   this.bullets[data.id] = new Bullet(this.boundingLayer, this.res, this.camera, data.position, data.id);
+      
+    // } 
   }
 
   updateObject(data: IGameObjectData) {
@@ -192,7 +195,6 @@ export class GameMainRender{
     const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);
     this.changeBuildsMap(interactiveObject, data, 0);
     interactiveObject.destroy();
-    console.log(data)
   }
 
   setPlannedBuild(object: IObject) {

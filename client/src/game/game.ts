@@ -127,7 +127,7 @@ export class Game extends Control{
     
 
     this.node.onclick = ()=>{
-      this.node.requestFullscreen();
+     // this.node.requestFullscreen();
     }
 
     const handleBorder = (position:Vector, border:number)=>{

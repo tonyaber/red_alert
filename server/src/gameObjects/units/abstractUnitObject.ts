@@ -4,8 +4,6 @@ import {PlayerSide} from "../../playerSide";
 import {GameObject} from "../gameObject"
 import { tracePath } from "../../trace";
 import { makeCircleMap } from '../../makeCircleMap';
-
-import {TilesCollection} from "../../tileCollection";
 import {AbstractWeapon} from '../weapon/abstractWeapon';
 import {AbstractBullet} from "../bullet/abstractBullet";
 import { findClosestBuild, findClosestUnit, getTilingDistance } from "../../distance";
@@ -59,69 +57,72 @@ export class AbstractUnitObject extends GameObject {
     this.playerSides = playerSides;
   }
 
-  
-
-  // //logic
-  // this.objects.forEach(it => {
-  //   if (it) {
-  //     //it._update();
-  //   }
-  // })
-  // //
-  tick(delta: number) {
- //console.log(this.data.action)
-    if ((this.data.action === 'move' || this.data.action === 'moveToAttack') && this.target) {
-      if (this.target && Math.abs(this.target.x - this.data.position.x) < 0.2 && Math.abs(this.target.y - this.data.position.y) < 0.2) {
-        const step = this.path.pop();
-        if (this.data.action === 'moveToAttack') {
-          if (this.objects[this.targetId] instanceof AbstractBuildObject) {
-            const map = this.objects[this.targetId].data.buildMatrix;
-            const {distance, tile} = getTilingDistance(this.data.position, this.objects[this.targetId].data.position.clone(), map);
+  private _handleMoveToAttack() {
+     if (this.objects[this.targetId] instanceof AbstractBuildObject) {
+      const map = this.objects[this.targetId].data.buildMatrix;
+      const { distance, tile } = getTilingDistance(this.data.position, this.objects[this.targetId].data.position.clone(), map);
            
-            if (distance < this.attackRadius) {           
-              this.targetHit = this.objects[this.targetId].data.position.clone().add(tile);
-              this.data.action = 'attack';
-              return;
-            }
-          } else if  (this.objects[this.targetId] instanceof GoldGameObject || this.objects[this.targetId] instanceof AbstractUnitObject){
-            const dist = this.objects[this.targetId].data.position.clone().sub(this.data.position).abs();
-            if (dist < this.attackRadius) {
-              this.targetHit = this.objects[this.targetId].data.position.clone();
-              this.data.action = 'attack';
-              return;
-            }
-          }
+      if (distance < this.attackRadius) {
+        this.targetHit = this.objects[this.targetId].data.position.clone().add(tile);
+        this.data.action = 'attack';
+        return;
+      }
+    } else if (this.objects[this.targetId] instanceof GoldGameObject || this.objects[this.targetId] instanceof AbstractUnitObject) {
+      const dist = this.objects[this.targetId].data.position.clone().sub(this.data.position).abs();
+      if (dist < this.attackRadius) {
+        this.targetHit = this.objects[this.targetId].data.position.clone();
+        this.data.action = 'attack';
+        return;
+      }
+    }
+  }
 
+  private _handleMove() {
+    const step = this.path.pop();
+    if (!step) {
+     // if (Math.abs(this.data.position.x - this.target.x) < 0.3 && Math.abs(this.data.position.y - this.target.y) < 0.3) {
+        this.target = null;        
+      //}
+      this.data.action = 'idle';
+      return;
+    } 
 
+    this.target = new Vector(step.x, step.y);
+    
+    if (this.traceMap.arrayTiles[Math.floor(step.y)][Math.floor(step.x)] === -1) {
+      this.target = null;
+      this.path.length = 0;
+      this.data.action = 'idle';
+      this.update();
+      return;
+    }   
+  }
 
-          
+  private _handleAttack(delta: number) {
+    if (this.objects[this.targetId]) {
+        // this.weapon.position = this.data.position;
+        this.weapon.position =this.data.position.clone();
+        this.weapon.tryShot(this.targetHit);
+        this.weapon.step(delta);
+        // if (!this.objects[this.targetId] || this.objects[this.targetId].data.position != this.targetHit) {
+        //   this.data.action = 'idle';
+        // }
+      }
+      else {
+        this.targetId = null;
+        this.data.action = 'idle';
+        this.update();
+      }
+  }
+
+  tick(delta: number) {
+    if ((this.data.action === 'move' || this.data.action === 'moveToAttack')) {
+      if (this.target && Math.abs(this.target.x - this.data.position.x) < 0.2 && Math.abs(this.target.y - this.data.position.y) < 0.2) {
+        if (this.data.action === 'moveToAttack') {
+          this._handleMoveToAttack()
         }
-
-        if (!step) {
-          if (Math.abs(this.data.position.x - this.target.x) < 0.3
-            && Math.abs(this.data.position.y - this.target.y) < 0.3) {
-            this.target = null
-            this.data.action = 'idle';
-           // console.log(tilesCollection.arrayTiles)
-          }
-          // if (this.data.action === 'moveToAttack') {
-          //   this.data.action = 'attack';
-          // } else {
-          //   
-          // }
-          return;
-        }else {
-          this.target = new Vector(step.x, step.y);
-          
-        }
-        if (this.traceMap.arrayTiles[Math.floor(step.y)][Math.floor(step.x)] === -1) {
-          this.target = null;
-          this.path.length = 0;
-          this.data.action = 'idle';
-          this.update();
-          return;
-        }   
-        
+      this._handleMove();  
+     
         
       }
       if (this.target) {
@@ -136,20 +137,13 @@ export class AbstractUnitObject extends GameObject {
       
     }
     if (this.data.action === 'attack') {
-      if (this.objects[this.targetId]) {
-        // this.weapon.position = this.data.position;
-        this.weapon.position =this.data.position.clone();
-        this.weapon.tryShot(this.targetHit);
-        this.weapon.step(delta);
-      }
-      else {
-        this.targetId = null;
-        this.data.action = 'idle';
-        this.update();
-      }
+      this._handleAttack(delta);
     }
-    if (this.data.action ==='idle') {
-     this.findClosetEnemy();
+    if (this.data.action === 'idle') {
+      if (Math.random() > 0.03) {
+        //this.findClosetEnemy();
+      }
+    // 
     }
     if (this.data.action === 'cash') {
      this.findClosetEnemy();
@@ -218,14 +212,17 @@ export class AbstractUnitObject extends GameObject {
   tracePathToTarget(target: IVector, action: string) {
     const circle = makeCircleMap(this.attackRadius);
     const traceMap = this.getTraceMap(target);
-    circle.forEach((it, i)=> it.forEach((jt, j) => {
+    if (action === 'moveToAttack') {
+      circle.forEach((it, i)=> it.forEach((jt, j) => {
       if (jt===1) {
         const row = traceMap[Math.floor(i + target.y - circle.length / 2)]
         if (row) {
           row[Math.floor(j + target.x - circle.length / 2)] = Number.MAX_SAFE_INTEGER
         }
       }
-    }))
+      }))
+    }
+    
     const targetToTile = {x: Math.floor(target.x), y: Math.floor(target.y)}
     const positionToTile = {
       x: Math.floor(this.data.position.x),
@@ -279,8 +276,8 @@ export class AbstractUnitObject extends GameObject {
     this.targetId = targetId;
     
     if (this.objects[targetId]) {
-      const target = this.objects[targetId].data.position;
-      this.targetHit = this.objects[targetId].data.position;
+      const target = this.objects[targetId].data.position.clone();
+      this.targetHit = this.objects[targetId].data.position.clone();
       this.tracePathToTarget(target, this.data.action);
       this.update();
     }  
@@ -315,6 +312,13 @@ export class AbstractUnitObject extends GameObject {
         }
       })
     } 
+  }
+   destroy() {
+    this.onDelete({
+       type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });  
   }
 }
 
