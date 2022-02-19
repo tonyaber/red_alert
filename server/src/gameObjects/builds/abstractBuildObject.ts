@@ -61,4 +61,26 @@ export class AbstractBuildObject extends GameObject{
       content: this.getState(),
     });    
   }
+  damage(point: Vector, unit: GameObject) {
+    
+    if (this.data.health <= 0) {
+      this.destroy();
+    } else if(this.data.health>0){
+      //console.log(this.data.health)
+      this.setState((data) => {
+        return {
+          ...data,
+          health:this.data.health-10,
+        }
+      })
+    } 
+  }
+
+  destroy() {
+    this.onDelete({
+       type: this.type,
+      objectId: this.objectId,
+      content: this.getState(),
+    });  
+  }
 }

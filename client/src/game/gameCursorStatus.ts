@@ -67,7 +67,7 @@ export class GameCursorStatus{
   }
 
   getBuildMask() {
-    
+   
     const mask = checkMap(this.getMap(), this.planned.mtx, this.tilePosition);
     const redMask = this.planned.mtx;
   

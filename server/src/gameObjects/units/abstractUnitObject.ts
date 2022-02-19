@@ -10,6 +10,7 @@ import {AbstractWeapon} from '../weapon/abstractWeapon';
 import {AbstractBullet} from "../bullet/abstractBullet";
 import { findClosestBuild, findClosestUnit, getTilingDistance } from "../../distance";
 import { AbstractBuildObject } from "../builds/abstractBuildObject";
+import { GoldGameObject } from "../gold";
 
 export class AbstractUnitObject extends GameObject {
   data: IGameObjectContent = {
@@ -48,7 +49,7 @@ export class AbstractUnitObject extends GameObject {
     this.target = null
     this.path = []
     
-    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2000, this.objectId);
+    this.weapon = new AbstractWeapon(AbstractBullet, this.attackRadius, 2500, this.objectId);
     this.weapon.moveBullet = (position: Vector, id: string) => {
       this.moveBullet(position, id);
     }
@@ -75,17 +76,17 @@ export class AbstractUnitObject extends GameObject {
         if (this.data.action === 'moveToAttack') {
           if (this.objects[this.targetId] instanceof AbstractBuildObject) {
             const map = this.objects[this.targetId].data.buildMatrix;
-            const {distance, tile} = getTilingDistance(this.data.position, this.objects[this.targetId].data.position, map);
+            const {distance, tile} = getTilingDistance(this.data.position, this.objects[this.targetId].data.position.clone(), map);
            
-            if (distance < this.attackRadius) {
-              this.targetHit = tile;
+            if (distance < this.attackRadius) {           
+              this.targetHit = this.objects[this.targetId].data.position.clone().add(tile);
               this.data.action = 'attack';
               return;
             }
-          } else {
-            const dist = Vector.fromIVector(this.objects[this.targetId].data.position).sub(this.data.position).abs();
+          } else if  (this.objects[this.targetId] instanceof GoldGameObject || this.objects[this.targetId] instanceof AbstractUnitObject){
+            const dist = this.objects[this.targetId].data.position.clone().sub(this.data.position).abs();
             if (dist < this.attackRadius) {
-              this.targetHit = this.objects[this.targetId].data.position;
+              this.targetHit = this.objects[this.targetId].data.position.clone();
               this.data.action = 'attack';
               return;
             }
@@ -100,12 +101,13 @@ export class AbstractUnitObject extends GameObject {
           if (Math.abs(this.data.position.x - this.target.x) < 0.3
             && Math.abs(this.data.position.y - this.target.y) < 0.3) {
             this.target = null
+            this.data.action = 'idle';
            // console.log(tilesCollection.arrayTiles)
           }
           // if (this.data.action === 'moveToAttack') {
           //   this.data.action = 'attack';
           // } else {
-          //   this.data.action = 'idle';
+          //   
           // }
           return;
         }else {
@@ -136,8 +138,8 @@ export class AbstractUnitObject extends GameObject {
     if (this.data.action === 'attack') {
       if (this.objects[this.targetId]) {
         // this.weapon.position = this.data.position;
-        this.weapon.position = Vector.fromIVector(this.data.position);
-        this.weapon.tryShot(this.objects[this.targetId].data.position);
+        this.weapon.position =this.data.position.clone();
+        this.weapon.tryShot(this.targetHit);
         this.weapon.step(delta);
       }
       else {
@@ -147,10 +149,10 @@ export class AbstractUnitObject extends GameObject {
       }
     }
     if (this.data.action ==='idle') {
-     //this.findClosetEnemy();
+     this.findClosetEnemy();
     }
     if (this.data.action === 'cash') {
-     // this.findClosetEnemy();
+     this.findClosetEnemy();
     }
   }
 
@@ -275,8 +277,10 @@ export class AbstractUnitObject extends GameObject {
     this.data.action = 'moveToAttack'; //attack
     this.path.length = 0;
     this.targetId = targetId;
+    
     if (this.objects[targetId]) {
       const target = this.objects[targetId].data.position;
+      this.targetHit = this.objects[targetId].data.position;
       this.tracePathToTarget(target, this.data.action);
       this.update();
     }  

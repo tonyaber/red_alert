@@ -26,5 +26,6 @@ export class Bullet extends InteractiveObject{
   destroy(): void {
     this.infoLayer._clearTile(this.camera.getTileVector(this.camera.position), this.info, this.camera.getTileSize());
     this.infoLayer.deleteObject(this.info);
+    super.destroy();
   }
 }

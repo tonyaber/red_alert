@@ -132,34 +132,36 @@ export class GameMainRender{
   addObject(data: IGameObjectData) {
     const BuildConstructor = builds[data.type];
     const interactiveObject = new BuildConstructor(this.tilingLayer, this.boundingLayer, this.res, this.camera, data);
-    
+    this.cursorStatus.planned = null;
     this.changeBuildsMap(interactiveObject, data, 1);
   }
 
   changeBuildsMap(interactiveObject: InteractiveObject, data: IGameObjectData, state: number) {
    
     if (interactiveObject instanceof Gold || interactiveObject instanceof Rock) {
-      this.buildsMap[data.content.position.y][data.content.position.x] = 1;
+      this.buildsMap[data.content.position.y][data.content.position.x] = state;
     }
     if (interactiveObject instanceof AbstractBuild) {
-      this.cursorStatus.planned = null;
+      
        for (let i = 0; i < data.content.buildMatrix.length + 2; i++){
-        for (let j = 0; j <  data.content.buildMatrix[0].length + 2; j++){
+         for (let j = 0; j < data.content.buildMatrix[0].length + 2; j++){
+           //if (state === 0) { console.log(data.content.position.x - 1 + j, data.content.position.y - 1 + i) }
           if (data.content.position.x - 1 + j > 0 &&
             data.content.position.y - 1 + i > 0 &&
             data.content.position.x - 1 + j < this.buildsMap.length &&
             data.content.position.y - 1 + i < this.buildsMap[0].length) {
-            this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = state;
+            
+           this.buildsMap[data.content.position.y-1 + i][data.content.position.x-1 + j] = state;
           }        
         }
       }       
     }
+   // if(state===0)console.log(this.buildsMap)
   }
 
   addShot(data: { position: IVector, id: string }) {
-    // this.bullets[data.id].destroy();
-    // delete this.bullets[data.id]
-    // this.interactiveList.list.filter(it => it.id != data.id);
+    this.bullets[data.id].destroy();
+    delete this.bullets[data.id]
     const pointPosition =  Vector.fromIVector(data.position)
     const explosion = new Explosion(pointPosition.scale(this.camera.getTileSize()));
     
@@ -171,11 +173,11 @@ export class GameMainRender{
 
   }
   addBullet(data: { position: IVector, id: string }) {  
-    // if (this.bullets[data.id]) {
-    //   this.bullets[data.id].updateShot(data.position)
-    // } else {
-    //   this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
-    // } 
+    if (this.bullets[data.id]) {
+      this.bullets[data.id].updateShot(data.position)
+    } else {
+      this.bullets[data.id] = new Bullet(this.boundingLayer,this.res,this.camera, data.position, data.id);
+    } 
   }
 
   updateObject(data: IGameObjectData) {
@@ -187,12 +189,10 @@ export class GameMainRender{
   }
 
   deleteObject(data: IGameObjectData) {
-    const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);   
+    const interactiveObject = this.interactiveList.list.find(item => item.id === data.objectId);
+    this.changeBuildsMap(interactiveObject, data, 0);
     interactiveObject.destroy();
-    this.interactiveList.list = this.interactiveList.list.filter(it => it.id != data.objectId);
-    this.changeBuildsMap(interactiveObject, data, 0);   
-    interactiveObject.destroy();
-    
+    console.log(data)
   }
 
   setPlannedBuild(object: IObject) {
