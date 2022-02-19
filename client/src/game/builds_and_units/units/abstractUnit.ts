@@ -7,6 +7,7 @@ import { TilingLayer } from '../../ultratiling/tileLayer';
 import { TileObject } from '../../ultratiling/tileObject';
 import { InteractiveObject } from '../interactiveObject';
 import { inBox } from '../../inBox';
+import appState from "../../playersStorage"
 
 export class AbstractUnit extends InteractiveObject{
    tiles: Array<TileObject> =[];
@@ -47,7 +48,12 @@ export class AbstractUnit extends InteractiveObject{
     texts.update();
     //console.log(infos.canvas);
     //document.body.appendChild(infos.canvas);*/
-    this.info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId);
+
+    // Получим цвет игрока
+    const colorIndex = appState.players.find((item) => item.id === data.content.playerId).colorIndex
+    const color = appState.colors[colorIndex]
+
+    this.info = new UnitInfoView(pos.clone(), res["rocks"],this.name, this.health, this.playerId, color);
     this.info.update();
     this.infoLayer.addObject(this.info);
     

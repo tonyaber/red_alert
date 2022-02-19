@@ -2,6 +2,7 @@ import { IVector, Vector } from "../../../common/vector";
 import { IGameUpdateResponse, IChatMsg, IUserItem} from "./dto";
 import { IGameObjectData, IObjectInfo, ISendItemGame } from "./dto";
 import {IGameOptions} from '../application/settingsPageMulti'
+import { GameModel } from "../../../server/src/gameModel";
 
 export class IClientModel
 {
@@ -42,4 +43,5 @@ export class IClientModel
   createGame: (msg?: IGameOptions)=>Promise<string>;
   getUsersList: (msg?: IChatMsg)=>Promise<string>;
   //all game player methods
+  game: GameModel;
 }

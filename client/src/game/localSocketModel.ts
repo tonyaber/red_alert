@@ -7,6 +7,7 @@ import { IGameObjectData, IObjectInfo } from "./dto";
 import { IClientModel } from './IClientModel'
 import { IVector, Vector } from '../../../common/vector'
 import { INITIAL_DATA } from "../../../server/src/initialData";
+import appState from "./playersStorage"
 
 export class LocalModel implements IClientModel
 {
@@ -26,7 +27,6 @@ export class LocalModel implements IClientModel
   game: GameModel;
   map: number[][];
   onMoveBullet: (data: { position: IVector, id: string })=>void;
-
   constructor(){
 
   }
@@ -40,6 +40,7 @@ export class LocalModel implements IClientModel
         colorIndex: index + 2
       }
     });
+    appState.players = bots;
     this.onAuth(this.player);
     this.startGame(bots);
   }
@@ -52,6 +53,7 @@ export class LocalModel implements IClientModel
       type: 'human',
       colorIndex: 1
     });
+    appState.players = gamePlayersInfo;
     const game = new GameModel(gamePlayersInfo,  {map: this.map, builds: INITIAL_DATA});
     const myPlayerController: PlayerController = new PlayerController(this.player, game);
     this.myPlayer = myPlayerController;

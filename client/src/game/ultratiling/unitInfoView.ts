@@ -11,20 +11,22 @@ export class UnitInfoView extends CachedSprite{
   animation:UnitAnimation;
   direction: number;
   selected:boolean= false;
+  color: string
 
-  constructor(position: Vector, img: HTMLImageElement, name: string, health: number,  playerId: string) {    
+  constructor(position: Vector, img: HTMLImageElement, name: string, health: number,  playerId: string, color: string = "#f00") {    
     super(30, 50, position);
     this.img = img;
     this.name = name;
     this.health = health;
     this.playerId = playerId;
     this.animation = new UnitAnimation(new Vector(0, 0), 2);
+    this.color = color;
   }
 
   update(): void {
     const topText = this.ctx.measureText('h').actualBoundingBoxAscent;
     this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = "#f00";
+    this.ctx.fillStyle = this.color; //"#f00";
     //this.ctx.fillRect(0,0, this.canvas.width, this.canvas.height);
     //this.ctx.drawImage(this.img, 0, 0, 30, 30);
     this.animation.render(this.ctx, new Vector(-15, -30), 100);

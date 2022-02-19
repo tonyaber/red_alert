@@ -15,7 +15,6 @@ export class Game extends Control{
     super(parentNode, 'div', red['global_main']);
     
     const sidePanelInfo: IStartGameResponse = JSON.parse(sidePanelData);
-    console.log('sidePanelInfo', sidePanelInfo.players)
     if (socket instanceof SocketModel && sidePanelInfo.type === 'spectator') {
       sidePanelInfo.players.forEach(item => {
         if (item != id) {

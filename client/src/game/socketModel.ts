@@ -12,7 +12,9 @@ import {
 import { IClientModel } from "./IClientModel";
 import session from "../application/session";
 import {IGameOptions} from "../application/settingsPageMulti";
+import { GameModel } from "../../../server/src/gameModel";
 export class SocketModel implements IClientModel {
+  game: GameModel;
   onSideUpdate: (data: { sidePanelData: IObjectInfo[]; money: number }) => void;
   onCanvasObjectUpdate: (response: IGameUpdateResponse) => void;
   onStartGame: (data: string) => void;
