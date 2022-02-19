@@ -19,6 +19,7 @@ export class Rock extends InteractiveObject{
   
   info: GoldInfoView;
   infoLayer: any;
+  layer: TilingLayer;
   
   constructor(layer:TilingLayer, infoLayer:BoundingLayer, res:Record<string, HTMLImageElement>, camera: Camera, data: IGameObjectData){
     super();
@@ -26,10 +27,11 @@ export class Rock extends InteractiveObject{
     this.camera = camera;
     this.position = Vector.fromIVector(data.content.position);
     const tileNumber = Math.round(8 + Math.random() * (10 - 8));
+    this.layer = layer;
     
     const tile = new TileObject(tileNumber, this.position)
     tile.onUpdate = ()=>{
-      layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
+      this.layer.updateCacheTile(layer.camera,  this.position.x,  this.position.y, tile.tileType);
     }
     tile.onUpdate();
     // this.info = new GoldInfoView(Vector.fromIVector(data.content.position), res["rocks"], camera.getTileSize());
@@ -48,8 +50,10 @@ export class Rock extends InteractiveObject{
     }
     return false;
   }
-  
-  
+  destroy(): void {
+    this.layer.updateCacheTile(this.layer.camera, this.position.x, this.position.y, 1);  
+    super.destroy();
+  }
 
   update(){
   }

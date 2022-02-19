@@ -148,6 +148,7 @@ export class GameModel{
 
   //player methods
   addGameObject(playerId: string, objectName: string, position: IVector) {
+   // console.log(position, playerId)
     if (this.checkBuilding(position, playerId) || !BUILDS.includes(objectName)) {
       const state = { position, playerId }
       const gameObjectConstructor = gameObjects[objectName];
@@ -191,7 +192,7 @@ export class GameModel{
         if (obj) {
           this.gameObjects.find(it => it.objectId === targetId).damage(point, gameObject);
         }
-         this.onShot(point, id); 
+        this.onShot(point, id); 
         //gameObjects
       }
       gameObject.moveBullet = (point: Vector, id: string) => {

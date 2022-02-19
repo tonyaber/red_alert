@@ -81,8 +81,10 @@ export class InteractiveObject{
   }
   deleteSelected() {
   
-}
-  destroy(){
+  }
+  
+  destroy() {
+    interactiveList.remove(this.id);
     
   }
 //   isHovered: boolean;

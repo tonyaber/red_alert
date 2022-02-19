@@ -51,6 +51,7 @@ export class Game extends Control{
       canvas.updateObject(data)
     }
     socket.onAddObject = (data) => {
+      
       canvas.addObject(data);
     }
 
@@ -128,7 +129,7 @@ export class Game extends Control{
     
 
     this.node.onclick = ()=>{
-      this.node.requestFullscreen();
+     // this.node.requestFullscreen();
     }
 
     const handleBorder = (position:Vector, border:number)=>{

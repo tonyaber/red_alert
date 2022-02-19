@@ -64,4 +64,8 @@ export class InteractiveList{
     }
   }
 
+  remove(id: string) {
+  this.list = this.list.filter(it => it.id != id);  
+  }
+
 }

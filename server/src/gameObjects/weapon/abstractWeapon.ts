@@ -56,11 +56,13 @@ export class AbstractWeapon{
         this.moveBullet(position, id);
       }
       bullet.onTarget = (id: string)=>{
-        this.bullets = this.bullets.filter(it=>it!=bullet);    
+        this.bullets = this.bullets.filter(it=>it.id!=id);    
         this.onBulletTarget?.(target.clone(), id);
       }
       this.bullets.push(bullet);
     }
     
   }
+
+ 
 }
