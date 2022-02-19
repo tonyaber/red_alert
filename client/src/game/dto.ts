@@ -63,6 +63,7 @@ export interface IUpdateSidePanel{
 }
 
 export interface IRegisterGamePlayerRequest{
+ gameID:number;
  type: 'bot'|'human'|'spectator'
 }
 
@@ -78,4 +79,14 @@ export interface IChatMsg{
 export interface IUserItem{
   name: string;
   id: string;
+  type: string;
+}
+
+export interface ISendItemGame {
+  id: number;
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
+  users: IUserItem[];
 }

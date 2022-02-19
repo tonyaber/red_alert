@@ -1,7 +1,7 @@
 import Control from '../../../common/control';
 import { IClientModel } from '../game/IClientModel';
 import style from './roomPage.css'
-import { IChatMsg, IUserItem } from '../game/dto'
+import { IChatMsg, IUserItem, ISendItemGame } from '../game/dto'
 import session from './session';
 
 export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
@@ -38,24 +38,46 @@ export class RoomPage/*SettingPage*/ extends Control{   //RoomPage???
     const btnSendMsg = new Control(wrapperChat.node, 'button', style['btn_send'], 'Send');
 
     const wrapperGames = new Control(lobby.node, 'div', style['games_wrapper'], 'Games');
+    socket.onGamesList = (msg:ISendItemGame[]):void => {      
+      wrapperGames.node.innerHTML='';  
+      msg.forEach(x => {
+        const div_game = new Control(wrapperGames.node, 'div', style['game_item'], x.id + ' ' + x.info);
+        const wrapper_games_user = new Control(div_game.node, 'div', style['game-users'],'');
+        let involved = false
+        x.users.forEach(u=>{
+          involved = involved || u.id===session.id;
+          const games_user = new Control(wrapperGames.node, 'div', style['game_users_item'], '['+u.type+":"+u.name+']');
+        })
+        if(!involved){
+          const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Register');
+          btnRegister.node.onclick = () => {
+            socket.registerGamePlayer(x.id)
+          }  
+          const btnSpectator = new Control(div_game.node, 'button', '', 'Spectator');
+          btnSpectator.node.onclick = () => {
+            socket.registerSpectator(x.id);
+          }  
+        } else {           
+          const btnRegister = new Control(div_game.node, 'button', style['btn_register'], 'Leave');
+          btnRegister.node.onclick = () => {
+            socket.registerGamePlayer(-1)
+          }  
+        }        
+      });
+    }
+
     const btnCreateMap = new Control(this.node, 'button', style['btn_map'], 'Create game');
     btnCreateMap.node.onclick = () => {
       this.onCreateGame();
-    }    
-    const btnRegister = new Control(this.node, 'button', style['btn_register'], 'Register');
-    btnRegister.node.onclick = () => {
-      socket.registerGamePlayer()
-    }
-    const btnSpectator = new Control(this.node, 'button', '', 'Spectator');
-    btnSpectator.node.onclick = () => {
-      socket.registerSpectator();
-    }
+    }        
+   
     socket.onStartGame = (data: string) => {
       this.onStartGame(data);
     }
     // Это обрабатываются события Чата
     // Получение сообщений
-    socket.onChatMsg = (msg: IChatMsg) => {      
+    socket.onChatMsg = (msg: IChatMsg) => {    
+      if(!msg.msg.trim())  return;
       const newMsg = new Control(chat.node,'div','chat_msg','<b>'+msg.user+': </b>'+msg.msg);
       
       if(msg.user === 'system') {
