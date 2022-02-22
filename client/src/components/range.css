@@ -1,0 +1,39 @@
+.double-range{
+  display: flex;
+  justify-content: space-around;
+  height: 30px;
+  align-items: center;
+}
+
+.value-range{
+  width: 70px;
+  height: 20px;
+  margin: 15px 0;
+  background-color: white;
+  border: 1px solid #db2424;
+  border-radius: 5px;
+  color: #db2424;
+  font-weight: 700;
+  text-align: center;
+  line-height: 20px;
+}
+/* .container-range{
+  position: relative;
+  pointer-events: none;
+} */
+
+.container-range input[type="range"]{
+ /* -webkit-appearance: none;*/
+  height: 5px;
+  width: 100%;
+  display: block;
+  margin: 20px;
+}
+/*
+.container-range input[type="range"]:last-child{
+  margin-top: -25px;
+}
+*/
+input[type="range"]::-webkit-slider-thumb {
+  pointer-events: all;
+}

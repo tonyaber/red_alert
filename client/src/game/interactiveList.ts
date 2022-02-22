@@ -1,9 +1,9 @@
-import { InteractiveObject } from "./interactiveObject";
-import { Vector } from '../common/vector';
+import { InteractiveObject } from "./builds_and_units/interactiveObject";
+import { Vector } from '../../../common/vector';
 
 export class InteractiveList{
-  public list:InteractiveObject[];
-  hoveredObjects: InteractiveObject[];
+  public list:InteractiveObject[] = [];
+  hoveredObjects: InteractiveObject[] = [];
 
   _hovered:InteractiveObject;
   set hovered(value:InteractiveObject){
@@ -62,6 +62,10 @@ export class InteractiveList{
     if (this.hovered != highObject) {
       this.hovered = highObject;
     }
+  }
+
+  remove(id: string) {
+  this.list = this.list.filter(it => it.id != id);  
   }
 
 }

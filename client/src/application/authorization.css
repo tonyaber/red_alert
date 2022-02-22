@@ -1,0 +1,41 @@
+.main{
+  height: 100vh;
+  
+}
+
+.body{
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content{ 
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 50%;
+  height: 60%;
+  background-color: ghostwhite;
+  border: 30px solid rgb(236, 31, 31);
+  border-image: linear-gradient(#a1a1a1, #d41919) 30;
+
+}
+
+.user_name, 
+.user_label{
+  margin: 30px 0;
+  width: 40%;
+  height: 30px;
+
+}
+
+.play_btn, 
+.cancel_btn{
+  width: 45%;
+  height: 30px;
+}
+
+.cancel_btn{
+  width: 45%;
+}

@@ -1,37 +1,92 @@
-import { GamePlayer } from "./gameModel";
-import { Vector } from '../common/vector';
+import { IVector, Vector } from "../../../common/vector";
+
+//action: add/delete/atack/move
+
+export interface IGameObjectContent{
+  position: IVector;
+  health?: number;
+  playerId: string;
+  primary?: boolean;
+  action?: string;
+  target?: Vector; 
+  buildMatrix?: number[][];
+}
+export interface IGameObjectData{  
+  type: string;//name
+  objectId: string; 
+  content: IGameObjectContent;
+}
+
+export interface IObject {
+  deps: string[],
+  name: string,
+  cost: number,
+  subType: string,
+  time: number,
+  mtx?: number[][]
+ }
 export interface IObjectInfo {
-  deps: string[];
+  object: IObject,
+  status: string,
+  progress: number,
+}
+export interface IServerRequestMessage {
+  type: string;
+  content: string;
+}
+
+export interface IServerResponseMessage {
+  sessionID: string;
+  type: string;
+  content: string;
+  requestId: string;
+}
+export interface IObjectContent{
+   position: Vector,
+      name: string,
+      id: string,
+      data: {
+        health: number
+      },
+}
+
+export interface IStartGameResponse {
+  sidePanel: IUpdateSidePanel;
+  players: string[];
+  type?: 'bot'|'human'|'spectator'
+}
+
+export interface IUpdateSidePanel{
+  sidePanelData: IObjectInfo[];
+  money: number;
+
+}
+
+export interface IRegisterGamePlayerRequest{
+ gameID:number;
+ type: 'bot'|'human'|'spectator'
+}
+
+export interface IGameUpdateResponse{
+  type: 'update' | 'delete' | 'create';
+  data: IGameObjectData;
+}
+
+export interface IChatMsg{
+  user: string;
+  msg: string;
+}
+export interface IUserItem{
   name: string;
-  cost: number;
-  category: string;
-  time: number;
-  type: "unit" | "build";
+  id: string;
+  type: string;
 }
 
-export interface IObject{
-  object: IObjectInfo;
-  status: string;
-  progress: number;
-}
-
-export interface IObjectList{
-  name: string;
-  health: number;
-  type: "unit" | "build";
-  radius?: number;
-  speed?: number;
-  minRadius?: number;
-  reloadingTime?: number;
-  bullet?: number;
-  player: GamePlayer;
-}
-
-export interface IProgress {
-  progress: number;
-  name: string;
-}
-
-export interface ITickable{
-  tick: (deltaTime: number) => void;
+export interface ISendItemGame {
+  id: number;
+  credits: number;
+  mapID: number;
+  speed: number;
+  info: string;
+  users: IUserItem[];
 }
