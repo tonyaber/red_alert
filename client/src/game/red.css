@@ -185,6 +185,10 @@
   background: url('../assets/png/radar.png') no-repeat 50% 50%/contain;
 }
 
+.soldier{
+  background: url('../sprites/units/soldier.png') no-repeat 50% 50%/contain;
+}
+
    /* techCenter,
     radar,
     repairStation,

@@ -1,10 +1,10 @@
-import { Vector } from "../../../common/vector";
+import { IVector, Vector } from "../../../common/vector";
 
 //action: add/delete/atack/move
 
 export interface IGameObjectContent{
-  position: Vector;
-  health: number;
+  position: IVector;
+  health?: number;
   playerId: string;
   primary?: boolean;
   action?: string;
@@ -23,6 +23,7 @@ export interface IObject {
   cost: number,
   subType: string,
   time: number,
+  mtx?: number[][]
  }
 export interface IObjectInfo {
   object: IObject,
@@ -35,6 +36,7 @@ export interface IServerRequestMessage {
 }
 
 export interface IServerResponseMessage {
+  sessionID: string;
   type: string;
   content: string;
   requestId: string;
@@ -67,4 +69,13 @@ export interface IRegisterGamePlayerRequest{
 export interface IGameUpdateResponse{
   type: 'update' | 'delete' | 'create';
   data: IGameObjectData;
+}
+
+export interface IChatMsg{
+  user: string;
+  msg: string;
+}
+export interface IUserItem{
+  name: string;
+  id: string;
 }

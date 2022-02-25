@@ -18,6 +18,8 @@ import { RepairStation } from "./builds/repairStation";
 import { OreBarrel } from "./builds/oreBarrel";
 import { OreFactory } from "./builds/oreFactory";
 import { DefendTower } from "./builds/defendTower";
+import { Gold } from './gold';
+import { Rock } from './rock';
 
 export const builds:Record<string, IBuildConstructor> = {
   'soldier': Soldier,
@@ -38,4 +40,6 @@ export const builds:Record<string, IBuildConstructor> = {
   'oreBarrel': OreBarrel,
   'oreFactory': OreFactory,
   'defendTower': DefendTower,
+  'gold': Gold,
+  'rock': Rock,
 };

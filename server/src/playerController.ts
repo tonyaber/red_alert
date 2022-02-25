@@ -50,14 +50,17 @@ export class PlayerController{
     return this.gameModel.setAttackTarget(this.playerId, unitId, targetId)
   }
 
-  setPrimary(buildId: string, name: string) {    
+  setPrimary(buildId: string, name: string) {   
     return this.gameModel.setPrimary(this.playerId, buildId, name);
   }
-  addInitialDate(name: string, playerId: string, position: IVector) {
-    console.log(playerId)
+  
+  addInitialData(name: string, playerId: string, position: IVector) {
     if (playerId === this.playerId) {
       return this.gameModel.addGameObject(this.playerId,name, position)
     }
+  }
+  addInitialMap(map:number[][]){
+    return this.gameModel.createMap(map);
   }
 
 }

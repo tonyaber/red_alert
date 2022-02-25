@@ -31,12 +31,12 @@ export class AbstractWeapon{
 
   tryShot(target:Vector){
     //if (!this.position) {console.log('no pos'); return;}
-   console.log('weapon',  target.clone().sub(this.position.clone()).abs(), this.attackRadius)
+   //console.log('weapon',  target.clone().sub(this.position.clone()).abs(), this.attackRadius)
     //if (this.loading<=0 && target.clone().sub(this.position.clone().scale(this.tileSize)).abs()<this.attackRadius){
       //console.log('radiused');
-    if (Math.random() > 0.5) {
-      this.shot(target);
-    }
+   
+      this.shot(target.clone());
+    
       
      // return true;
     //}
@@ -46,7 +46,7 @@ export class AbstractWeapon{
 
   private shot(target: Vector) {
     
-    const bullet = new this.BulletConstructor(target, this.position.clone());
+    const bullet = new this.BulletConstructor(target.clone(), this.position.clone());
     this.loading = this.reloadTime;
     bullet.onTarget = ()=>{
       this.bullets = this.bullets.filter(it=>it!=bullet);    

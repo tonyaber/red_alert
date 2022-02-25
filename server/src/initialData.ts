@@ -1,60 +1,60 @@
 import { Vector } from "../../common/vector";
 
-export const INITIAL_DATE = [
+export const INITIAL_DATA = [
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(1,1))
+      position: (new Vector(8,4))
     },
     {
       name: 'barrack',
-      position: (new Vector(2,6))
+      position: (new Vector(13,6))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(7,5))
+      position: (new Vector(8,10))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(21,21))
+      position: (new Vector(41,2))
     },
     {
       name: 'barrack',
-      position: (new Vector(22,26))
+      position: (new Vector(47,5))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(27,25))
+      position: (new Vector(42,8))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(21,1))
+      position: (new Vector(37,20))
     },
     {
       name: 'barrack',
-      position: (new Vector(22,6))
+      position: (new Vector(42,22))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(27,5))
+      position: (new Vector(37,25))
     },
   ],
   [
     {
       name: 'buildingCenter',
-      position: (new Vector(1,21))
+      position: (new Vector(3,32))
     },
     {
       name: 'barrack',
-      position: (new Vector(2,26))
+      position: (new Vector(8,34))
     },
     {
       name: 'oreFactory',
-      position: (new Vector(7,25))
+      position: (new Vector(3,39))
     },
   ],
 ];

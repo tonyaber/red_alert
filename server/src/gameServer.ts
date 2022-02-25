@@ -5,17 +5,21 @@ import { BotCommander } from './botCommander';
 import { HumanCommander } from "./humanCommander";
 import { PlayerController } from "./playerController";
 import { SpectatorCommander } from "./spectatorCommander";
+import { Session } from "./serverSocket";
+import { INITIAL_DATA } from './initialData';
+
 
 export class GameServer {
   registeredPlayersInfo: IRegisteredPlayerInfo[] = [];
 
   players: (HumanCommander | BotCommander|SpectatorCommander)[] = [];
   gameModel: GameModel;
+  map: number[][] =[];
   constructor(){
     
   }
 
-  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:connection){
+  registerPlayer(type:'bot'|'human'|'spectator', userId:string, connection:Session){
     this.registeredPlayersInfo.push({ type, id: userId, connection });
     if (this.registeredPlayersInfo.filter(item=>item.type ==='human'||item.type ==='bot').length >= 2) {
       this.startGame();
@@ -23,7 +27,7 @@ export class GameServer {
   }
 
   startGame() {
-    this.gameModel = new GameModel(this.registeredPlayersInfo);
+    this.gameModel = new GameModel(this.registeredPlayersInfo, {map: this.map, builds: INITIAL_DATA} );
     this.players = this.registeredPlayersInfo.map(it=> {
       const playerController = new PlayerController(it.id, this.gameModel);
       if (it.type === 'bot') {
@@ -60,22 +64,33 @@ export class GameServer {
       this.players.find(it => it.playerController.playerId === id).sendMessage('updateSidePanel', data);
       
     }
+   
     ///start to game, fix it later
     const allPlayers = this.registeredPlayersInfo.map(it => it.id);
     this.players.forEach(item => {
       const sidePanel = this.gameModel.getState(item.playerController.playerId);
       const type = item instanceof BotCommander ? 'bot' : item instanceof HumanCommander ? 'human' : 'spectator';
-      const response:IStartGameResponse = { players: allPlayers, sidePanel, type}
+      const response: IStartGameResponse = { players: allPlayers, sidePanel, type}
+
       item.sendMessage('startGame', JSON.stringify(response));
       
     })
+    
+    this.gameModel.init();
+  
+  }
+
+  createGame(data:{map:number[][] } ) {   
+    this.map = data.map;
+    
+   // this.gameModel.createMap()
   }
  
-  handleMessage(ms: IServerRequestMessage, id) {
+  handleMessage(ms: IServerRequestMessage, id:string) {
     return (this.players.find(item=>item.playerController.playerId ===id) as HumanCommander).handleClientMessage(JSON.parse(ms.content))
   }
 
-  sendMessage(connection: connection, msg: string, date: string) {
-    connection.sendUTF(JSON.stringify({ msg, date }));
+  sendMessage(connection: connection, msg: string, data: string) {
+    connection.sendUTF(JSON.stringify({ msg, data }));
   }
 }
